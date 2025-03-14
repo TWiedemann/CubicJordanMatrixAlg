@@ -102,6 +102,13 @@ DDSpec := rec(
 );
 
 DD := ArithmeticElementCreator(DDSpec);
+DDZero := DD([]);
+
+# ddEl: c1*dd_{a1,b1} + c2*dd_{a2,b2} + ...
+# Output: [[c1, a1, b1], [c2, a2, b2], ...]
+DDCoeffList := function(ddEl)
+    return UnderlyingElement(ddEl);
+end;
 
 InstallMethod(String, [IsDDElement], x -> DDRepToString(UnderlyingElement(x)));
 
@@ -111,3 +118,124 @@ InstallMethod(dd, [IsCubicElement, IsCubicElement], function(cubicEl1, cubicEl2)
     return DD([[One(ComRing), cubicEl1, cubicEl2]]);
 end);
 
+L0RepToString := function(rep)
+    # TODO
+end;
+
+# Elements of L0 are represented by records with entries "dd", "xiCoeff", "zetaCoeff",
+# "cubicPos" and "cubicNeg"
+L0Spec := rec(
+    ElementName := "L0Element",
+    Addition := function(a, b)
+        return rec(
+            dd := a.dd + b.dd,
+            xiCoeff := a.xiCoeff + b.xiCoeff,
+            zetaCoeff := a.zetaCoeff + b.zetaCoeff,
+            cubicPos := a.cubicPos + b.cubicPos,
+            cubicNeg := a.cubicNeg + b.cubicNeg
+        );
+    end,
+    AdditiveInverse := function(a)
+        return rec(
+            dd := -a.dd,
+            xiCoeff := -a.xiCoeff,
+            zetaCoeff := -a.zetaCoeff,
+            cubicPos := -a.cubicPos,
+            cubicNeg := -a.cubicNeg
+        );
+    end,
+    Print := function()
+        Print(L0RepToString);
+    end,
+    # Lie bracket
+    Multiplication := function(a, b)
+        local dd, xiCoeff, zetaCoeff, cubicPos, cubicNeg, summand, coeff, cubic1, cubic2;
+        dd := a.dd*b.dd + 
+            DD([[-One(ComRing), a.cubicPos, b.cubicNeg], [One(ComRing), b.cubicPos, a.cubicNeg]]);
+        xiCoeff := Zero(ComRing);
+        zetaCoeff := Zero(ComRing);
+        cubicPos := a.zetaCoeff * b.cubicPos - b.zetaCoeff * a.cubicPos;
+        cubicNeg := -a.zetaCoeff * b.cubicNeg + b.zetaCoeff * a.Neg;
+        for summand in DDCoeffList(a.dd) do
+            coeff := summand[1]; # in ComRing
+            cubic1 := summand[2];
+            cubic2 := summand[3];
+            cubicPos := cubicPos + JordanD(cubic1, cubic2, b.cubicPos);
+            cubicNeg := cubicNeg - JordanD(cubic2, cubic1, b.cubicNeg);
+        od;
+        for summand in DDCoeffList(b.dd) do
+            coeff := summand[1]; # in ComRing
+            cubic1 := summand[2];
+            cubic2 := summand[3];
+            cubicPos := cubicPos - JordanD(cubic1, cubic2, a.cubicPos);
+            cubicNeg := cubicNeg + JordanD(cubic2, cubic1, a.cubicNeg);
+        od;
+        return rec(
+            dd := dd,
+            xiCoeff := xiCoeff,
+            zetaCoeff := zetaCoeff,
+            cubicPos := cubicPos,
+            cubicNeg := cubicNeg
+        );
+    end
+);
+
+L0 := ArithmeticElementCreator(L0Spec);
+
+InstallMethod(String, [IsL0Element], x -> L0RepToString(UnderlyingElement(x)));
+
+Xi := L0(rec(
+    dd := DDZero,
+    xiCoeff := One(ComRing),
+    zetaCoeff := Zero(ComRing),
+    cubicPos := CubicZero,
+    cubicNeg := CubicZero
+));
+
+Zeta := L0(rec(
+    dd := DDZero,
+    xiCoeff := Zero(ComRing),
+    zetaCoeff := One(ComRing),
+    cubicPos := CubicZero,
+    cubicNeg := CubicZero
+));
+
+DeclareOperation("CubicPosToL0Emb", [IsCubicElement]);
+DeclareOperation("CubicNegToL0Emb", [IsCubicElement]);
+DeclareOperation("DDToL0Emb", [IsDDElement]);
+
+InstallMethod(CubicPosToL0Emb, [IsCubicElement], function(a)
+    return L0(rec(
+        dd := DDZero,
+        xiCoeff := Zero(ComRing),
+        zetaCoeff := Zero(ComRing),
+        cubicPos := a,
+        cubicNeg := CubicZero
+    ));
+end);
+
+InstallMethod(CubicNegToL0Emb, [IsCubicElement], function(a)
+    return L0(rec(
+        dd := DDZero,
+        xiCoeff := Zero(ComRing),
+        zetaCoeff := Zero(ComRing),
+        cubicPos := CubicZero,
+        cubicNeg := a
+    ));
+end);
+
+InstallMethod(DDToL0Emb, [IsDDElement], function(ddEl)
+    return L0(rec(
+        dd := ddEl,
+        xiCoeff := Zero(ComRing),
+        zetaCoeff := Zero(ComRing),
+        cubicPos := CubicZero,
+        cubicNeg := CubicZero
+    ));
+end);
+
+DeclareOperation("ddL0", [IsCubicElement, IsCubicElement]);
+
+InstallMethod(ddL0, [IsCubicElement, IsCubicElement], function(cubicEl1, cubicEl2)
+    return DDToL0Emb(dd(cubicEl1, cubicEl2));
+end);
