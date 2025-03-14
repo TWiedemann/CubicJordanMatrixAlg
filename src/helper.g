@@ -1,5 +1,27 @@
 ### ----- Helper functions -----
 
+### Functions on strings
+
+# stringList: A (possibly empty) list of non-empty strings
+# Output: The string "$stringList[1] + $stringList[2] + ..."
+StringSum := function(stringList, zeroString)
+	local l, s, i;
+	l := Length(stringList);
+	if l = 0 then
+		return zeroString;
+	elif l = 1 then
+		return stringList[1];
+	else
+		s := stringList[1];
+		for i in [2..l] do
+			s := Concatenation(s, "+", stringList[i]);
+		od;
+		return s;
+	fi;
+end;
+
+### Functions on magmas
+
 # Magma: A free Magma.
 # rep: An external representation of an element of Magma.
 # replaceList: A sublist of GeneratorsOfMagmaWithOne(Magma). (Consists of magma elements, not of their representations!)
