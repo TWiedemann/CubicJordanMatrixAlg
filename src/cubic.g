@@ -1,5 +1,8 @@
 ### Cubic norm structure (i.e., cubic Jordan matrix algebra), called Cubic in the following
 
+# We will write Cubic' for the other part of the cubic norm pair, but the structural
+# maps of Cubic' are the same as those of Cubic.
+
 TwistDiag := List([1,2,3], i -> ComRingGamIndet(i)); # [g1, g2, g3]
 CycPerm := [ [1,2,3], [2,3,1], [3,1,2] ]; # List of cyclic permutations of [1,2,3]
 
