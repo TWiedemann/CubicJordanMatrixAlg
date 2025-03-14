@@ -21,6 +21,8 @@ CubicRepToMatrix := function(rep)
 			[g[1]*u[2], g[2]*ConicAlgInv(u[1]), x[3]]];
 end;
 
+CubicZeroString := "0_J";
+
 CubicRepToString := function(a)
 	local stringList, i, s;
 	stringList := [];
@@ -38,8 +40,6 @@ CubicRepToString := function(a)
 	od;
 	return StringSum(stringList, CubicZeroString);
 end;
-
-CubicZeroString := "0_J";
 
 CubicSpec := rec(
 	ElementName := "CubicElement",
@@ -183,7 +183,12 @@ end;
 
 ## ----- Structural maps of a cubic norm structure ------
 
-CubicNorm := function(A)
+DeclareOperation("CubicNorm", [IsCubicElement]);
+DeclareOperation("CubicAdj", [IsCubicElement]);
+DeclareOperation("CubicCross", [IsCubicElement, IsCubicElement]);
+DeclareOperation("CubicTr", [IsCubicElement, IsCubicElement]);
+
+InstallMethod(CubicNorm, [IsCubicElement], function(A)
 	local sum, perm, i, j, l;
 	sum := CubicComCoeff(A, 1) * CubicComCoeff(A, 2) * CubicComCoeff(A, 3)
 		+ TwistDiag[1] * TwistDiag[2] * TwistDiag[3] * ConicAlgTr(CubicAlgCoeff(A, 1)*CubicAlgCoeff(A, 2)*CubicAlgCoeff(A, 3));
@@ -194,9 +199,9 @@ CubicNorm := function(A)
 		sum := sum - CubicComCoeff(A, i) * TwistDiag[j] * TwistDiag[l] * ConicAlgNorm(CubicAlgCoeff(A, i));
 	od;
 	return sum;
-end;
+end );
 
-CubicAdj := function(A)
+InstallMethod(CubicAdj, [IsCubicElement], function(A)
 	local result, perm, i, j, l, a_i, a_j, a_l, A_i, A_j, A_l, comEl, algEl;
 	result := Zero(Cubic);
 	for perm in CycPerm do
@@ -215,9 +220,9 @@ CubicAdj := function(A)
 		result := result + CubicAlgEl(j, l, algEl);
 	od;
 	return result;
-end;
+end );
 
-CubicCross := function(A, B)
+InstallMethod(CubicCross, [IsCubicElement, IsCubicElement], function(A, B)
 	local result, perm, i, j, l, a_i, a_j, a_l, b_i, b_j, b_l, A_i, A_j, A_l, B_i, B_j, B_l, comEl, algEl;
 	result := Zero(Cubic);
 	for perm in CycPerm do
@@ -242,9 +247,9 @@ CubicCross := function(A, B)
 		result := result + CubicAlgEl(j, l, algEl);
 	od;
 	return result;
-end;
+end );
 
-CubicTr := function(A, B)
+InstallMethod(CubicTr, [IsCubicElement, IsCubicElement], function(A, B)
 	local result, i, j, l, perm;
 	result := Zero(ComRing);
 	for perm in CycPerm do
@@ -254,18 +259,22 @@ CubicTr := function(A, B)
 		result := result + CubicComCoeff(A, i)*CubicComCoeff(B, i) + TwistDiag[j]*TwistDiag[l] * ConicAlgBiTr(CubicAlgCoeff(A, i), CubicAlgCoeff(B, i));
 	od;
 	return result;
-end;
+end );
 
 ## ------- Structural maps of the corresponding Jordan algebra ----
 
-JordanU := function(a, b)
+DeclareOperation("JordanU", [IsCubicElement, IsCubicElement]);
+DeclareOperation("JordanULin", [IsCubicElement, IsCubicElement, IsCubicElement]);
+DeclareOperation("JordanD", [IsCubicElement, IsCubicElement, IsCubicElement]);
+
+InstallMethod(JordanU, [IsCubicElement, IsCubicElement], function(a, b)
 	return CubicTr(a,b)*a -CubicCross(CubicAdj(a), b);
-end;
+end );
 
-JordanULin := function(a,b,c)
+InstallMethod(JordanULin, [IsCubicElement, IsCubicElement, IsCubicElement], function(a,b,c)
 	return CubicTr(a, c)*b + CubicTr(b, c)*a - CubicCross(CubicCross(a,b), c);
-end;
+end );
 
-JordanD := function(a,b,c)
+InstallMethod(JordanD, [IsCubicElement, IsCubicElement, IsCubicElement], function(a,b,c)
 	return JordanULin(a,c,b);
-end;
+end );
