@@ -1,7 +1,7 @@
-# The Brown algebra (ComRing, ConicAlg, ConicAlg, ComRing) to which L_{\pm 1} is isomorphic
+# The Brown algebra (ComRing, Cubic, Cubic, ComRing) to which L_{\pm 1} is isomorphic
 BrownSpec := rec(
 	ElementName := "BrownElement",
-	Zero := a -> [Zero(ComRing), Zero(ConicAlg), Zero(ConicAlg), Zero(ComRing)],
+	Zero := a -> [Zero(ComRing), CubicZero, CubicZero, Zero(ComRing)],
 	Addition := function(a, b)
 		return a+b;
 	end,
@@ -9,6 +9,7 @@ BrownSpec := rec(
 	MathInfo := IsAdditivelyCommutativeElement
 );
 Brown := ArithmeticElementCreator(BrownSpec);
+BrownZero := Brown(BrownSpec.Zero(fail));
 
 BrownPart := function(brownEl, i)
 	if i in [1,2,3,4] then
@@ -39,7 +40,7 @@ BrownConicPart := function(brownEl, i)
 	fi;
 end;
 
-# Element-wise scalar multiplication ComRing x Brown -> Brown
-BrownScalMult := function(comEl, brownEl)
+# Scalar multiplication ComRing x Brown -> Brown
+InstallMethod(\*, "for ComRingElement and CubicElement", [IsRingElement, IsCubicElement], function(comEl, brownEl)
 	return Brown(comEl * UnderlyingElement(brownEl));
-end;
+end);
