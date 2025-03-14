@@ -299,14 +299,17 @@ DeclareOperation("JordanU", [IsCubicElement, IsCubicElement]);
 DeclareOperation("JordanULin", [IsCubicElement, IsCubicElement, IsCubicElement]);
 DeclareOperation("JordanD", [IsCubicElement, IsCubicElement, IsCubicElement]);
 
+# Cubic x Cubic' -> Cubic
 InstallMethod(JordanU, [IsCubicElement, IsCubicElement], function(a, b)
 	return CubicTr(a,b)*a -CubicCross(CubicAdj(a), b);
 end );
 
+# Cubic x Cubic x Cubic' -> Cubic
 InstallMethod(JordanULin, [IsCubicElement, IsCubicElement, IsCubicElement], function(a,b,c)
 	return CubicTr(a, c)*b + CubicTr(b, c)*a - CubicCross(CubicCross(a,b), c);
 end );
 
+# Cubic x Cubic' x Cubic -> Cubic
 InstallMethod(JordanD, [IsCubicElement, IsCubicElement, IsCubicElement], function(a,b,c)
 	return JordanULin(a,c,b);
 end );
