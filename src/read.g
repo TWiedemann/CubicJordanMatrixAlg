@@ -13,6 +13,7 @@ Reread("./cubic.g");
 myUnbind("IsBrownElement");
 Reread("./brown.g");
 myUnbind("IsDDElement");
+myUnbind("IsL0Element");
 Reread("./lie0.g");
 Reread("./lie.g");
 Read("./user_vars.g");
