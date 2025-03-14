@@ -3,4 +3,5 @@ Read("./helper.g");
 Read("./conic.g");
 Read("./cubic.g");
 # Read("./struc.g");
+Read("./brown.g");
 Read("./lie.g");
