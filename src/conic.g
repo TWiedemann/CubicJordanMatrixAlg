@@ -1,12 +1,12 @@
 BaseRing := Rationals;
-# ConicAlg contains indeterminates a_1, ... a_{conicalg_rank} (and their conjugations)
-conicalg_rank := 6;
-# ComRing contains indeterminates t_1, ..., t_{comring_rank} (and the norms and traces of elements of ConicAlg) 
-comring_rank := 6;
-# Let t = trace_max_length. For all k <= t and all i_1, ..., i_k in [ 1..conicalg_rank ],
+# ConicAlg contains indeterminates a_1, ... a_{ConicAlg_rank} (and their conjugations)
+ConicAlg_rank := 6;
+# ComRing contains indeterminates t_1, ..., t_{ComRing_rank} (and the norms and traces of elements of ConicAlg) 
+ComRing_rank := 6;
+# Let t = Trace_MaxLength. For all k <= t and all i_1, ..., i_k in [ 1..ConicAlg_rank ],
 # an indeterminate which represents tr(a_{i_1} ... a_{i_t}) will be created.
 # If longer products are needed during the runtime, then an error message is printed.
-trace_max_length := 3; 
+Trace_MaxLength := 3; 
 
 ConicAlgBasicIndetName := function(i)
 	return Concatenation("a", String(i));
@@ -17,36 +17,36 @@ ConicAlgBasicInvIndetName := function(i)
 end;
 
 conicalgIndetNames := [];
-for i in [1..conicalg_rank] do
+for i in [1..ConicAlg_rank] do
 	Add(conicalgIndetNames, ConicAlgBasicIndetName(i));
 od;
-for i in [1..conicalg_rank] do
+for i in [1..ConicAlg_rank] do
 	Add(conicalgIndetNames, ConicAlgBasicInvIndetName(i)); # Conjugation
 od;
 
-comRingBasicIndetName := function(i)
+ComRingBasicIndetName := function(i)
 	return Concatenation("t", String(i));
 end;
 
-comRingNormIndetName := function(i)
-	if i in [1..conicalg_rank] then
+ComRingNormIndetName := function(i)
+	if i in [1..ConicAlg_rank] then
 		return Concatenation("n(", conicalgIndetNames[i], ")");
-	elif i in [conicalg_rank+1..2*conicalg_rank] then
-		return Concatenation("n(", conicalgIndetNames[i-conicalg_rank], ")");
+	elif i in [ConicAlg_rank+1..2*ConicAlg_rank] then
+		return Concatenation("n(", conicalgIndetNames[i-ConicAlg_rank], ")");
 	else
 		return fail;
 	fi;
 end;
 
-comRingTraceIndetName := function(indexList)
+ComRingTraceIndetName := function(indexList)
 	local name, i;
-	if Length(indexList) > trace_max_length then
+	if Length(indexList) > Trace_MaxLength then
 		Error("Product in trace too long");
 		return fail;
 	fi;
 	name := "tr(";
 	for i in indexList do
-		if not i in [1..2*conicalg_rank] then
+		if not i in [1..2*ConicAlg_rank] then
 			return fail;
 		else
 			name := Concatenation(name, conicalgIndetNames[i]);
@@ -58,7 +58,7 @@ end;
 
 # The elements \gamma_1, ..., \gamma_3 of the diagonal matrix \Gamma which "twists"
 # the cubic Jordan matrix algebra.
-comRingGamIndetName := function(i)
+ComRingGamIndetName := function(i)
 	if i in [1, 2, 3] then
 		return Concatenation("g", String(i));
 	else
@@ -66,58 +66,58 @@ comRingGamIndetName := function(i)
 	fi;
 end;
 
-comRingIndetNumberForBasic := function(i)
+ComRingIndetNumberForBasic := function(i)
 	return i;
 end;
 
-comRingIndetNumberForNorm := function(i)
-	return comring_rank + i;
+ComRingIndetNumberForNorm := function(i)
+	return ComRing_rank + i;
 end;
 
 # (Obsolete)
-# indexList: A list of integers between -conicalg_rank and 2*conicalg_rank, not containing zero.
-# An index i in [1..conicalg_rank] represents a_i, an index conicalg_rank+i in [conicalg_rank+1..2*conicalg_rank]
-# represents a_i' and an index i in [-conicalg_rank..-1] represents the index a_{-i}'.
+# indexList: A list of integers between -ConicAlg_rank and 2*ConicAlg_rank, not containing zero.
+# An index i in [1..ConicAlg_rank] represents a_i, an index ConicAlg_rank+i in [ConicAlg_rank+1..2*ConicAlg_rank]
+# represents a_i' and an index i in [-ConicAlg_rank..-1] represents the index a_{-i}'.
 # (I.e. for convenience, we have two formats of representing a_i'.)
-comRingIndetNumberForTrace := function(indexList)
+ComRingIndetNumberForTrace := function(indexList)
 	local l, result, i;
 	l := Length(indexList);
-	# Replace any negative entry i by conicalg_rank-i
+	# Replace any negative entry i by ConicAlg_rank-i
 	for i in [1..l] do
 		if indexList[i] < 0 then
-			indexList[i] := conicalg_rank - indexList[i];
+			indexList[i] := ConicAlg_rank - indexList[i];
 		fi;
 	od;
-	result := comring_rank + conicalg_rank; # Basic indeterminates and norm indeterminates
+	result := ComRing_rank + ConicAlg_rank; # Basic indeterminates and norm indeterminates
 	for i in [1..l-1] do
-		result := result + (2*conicalg_rank)^i; # Trace indeterminates of length i
+		result := result + (2*ConicAlg_rank)^i; # Trace indeterminates of length i
 	od;
 	for i in [1..l] do
-		result := result + (indexList[i]-1)*(2*conicalg_rank)^(l-i);
+		result := result + (indexList[i]-1)*(2*ConicAlg_rank)^(l-i);
 	od;
 	return result+1;
 end;
 
-comRingIndetNames := [];
+ComRingIndetNames := [];
 # Basic indeterminates
-for i in [1..comring_rank] do
-	Add(comRingIndetNames, Concatenation("t", String(i)));
+for i in [1..ComRing_rank] do
+	Add(ComRingIndetNames, Concatenation("t", String(i)));
 od;
 # Norms
-for i in [1..conicalg_rank] do
-	Add(comRingIndetNames, comRingNormIndetName(i));
+for i in [1..ConicAlg_rank] do
+	Add(ComRingIndetNames, ComRingNormIndetName(i));
 od;
 # Traces
-for l in [1..trace_max_length] do
+for l in [1..Trace_MaxLength] do
 	indexList := [];
 	for i in [1..l] do
 		Add(indexList, 1);
 	od;
-	Add(comRingIndetNames, comRingTraceIndetName(indexList)); # Add [ 1, ..., 1 ]
+	Add(ComRingIndetNames, ComRingTraceIndetName(indexList)); # Add [ 1, ..., 1 ]
 	while true do
 		# Increase indexList by one step
 		for i in [l, l-1 .. 1 ] do
-			if indexList[i] < 2*conicalg_rank then
+			if indexList[i] < 2*ConicAlg_rank then
 				indexList[i] := indexList[i] + 1;
 				for j in [i+1..l] do
 					indexList[j] := 1;
@@ -130,16 +130,16 @@ for l in [1..trace_max_length] do
 		if indexList = fail then
 			break;
 		else
-			Add(comRingIndetNames, comRingTraceIndetName(indexList));
+			Add(ComRingIndetNames, ComRingTraceIndetName(indexList));
 		fi;
 	od;
 od;
 # \Gamma
 for i in [1,2,3] do
-	Add(comRingIndetNames, comRingGamIndetName(i));
+	Add(ComRingIndetNames, ComRingGamIndetName(i));
 od;
 
-ComRing := PolynomialRing(BaseRing, comRingIndetNames);
+ComRing := PolynomialRing(BaseRing, ComRingIndetNames);
 ConicAlgMag := FreeMagmaWithOne(conicalgIndetNames);
 ConicAlg := FreeMagmaRing(ComRing, ConicAlgMag);
 
@@ -147,10 +147,10 @@ ConicAlgMagIndets := GeneratorsOfMagmaWithOne(ConicAlgMag);
 embConicAlgMag := x -> ImageElm(Embedding(ConicAlgMag, ConicAlg), x);
 ConicAlgIndets := List(ConicAlgMagIndets, embConicAlgMag);
 
-ConicAlgMagBasicIndets := ConicAlgMagIndets{[1..conicalg_rank]};
-ConicAlgBasicIndets := ConicAlgIndets{[1..conicalg_rank]};
-ConicAlgMagInvIndets := ConicAlgMagIndets{[conicalg_rank+1..2*conicalg_rank]};
-ConicAlgInvIndets := ConicAlgIndets{[conicalg_rank+1..2*conicalg_rank]};
+ConicAlgMagBasicIndets := ConicAlgMagIndets{[1..ConicAlg_rank]};
+ConicAlgBasicIndets := ConicAlgIndets{[1..ConicAlg_rank]};
+ConicAlgMagInvIndets := ConicAlgMagIndets{[ConicAlg_rank+1..2*ConicAlg_rank]};
+ConicAlgInvIndets := ConicAlgIndets{[ConicAlg_rank+1..2*ConicAlg_rank]};
 
 a1 := ConicAlg.1;
 a2 := ConicAlg.2;
@@ -167,20 +167,20 @@ ConicAlgInvIndet := function(i)
 	return ConicAlgInvIndets[i];
 end;
 
-comRingBasicIndet := function(i)
-	return Indeterminate(BaseRing, comRingBasicIndetName(i));
+ComRingBasicIndet := function(i)
+	return Indeterminate(BaseRing, ComRingBasicIndetName(i));
 end;
 
-comRingNormIndet := function(i)
-	return Indeterminate(BaseRing, comRingNormIndetName(i));
+ComRingNormIndet := function(i)
+	return Indeterminate(BaseRing, ComRingNormIndetName(i));
 end;
 
-comRingTraceIndet := function(indexList)
-	return Indeterminate(BaseRing, comRingTraceIndetName(indexList));
+ComRingTraceIndet := function(indexList)
+	return Indeterminate(BaseRing, ComRingTraceIndetName(indexList));
 end;
 
-comRingGamIndet := function(i)
-	return Indeterminate(BaseRing, comRingGamIndetName(i));
+ComRingGamIndet := function(i)
+	return Indeterminate(BaseRing, ComRingGamIndetName(i));
 end;
 
 ConicAlgMagInv := function(m)
@@ -227,10 +227,10 @@ ConicAlgMagTrOnRep := function(mRep)
 	assocRep := assocRepFromNonAssocRep(mRep);
 	if IsEmpty(assocRep) then
 		return 2*One(ComRing); # Tr(1) = 2
-	elif Length(assocRep) = 1 and assocRep[1] in [conicalg_rank+1..2*conicalg_rank] then
-		return comRingTraceIndet([ assocRep[1] - conicalg_rank ]); # Tr(a') = Tr(a)
+	elif Length(assocRep) = 1 and assocRep[1] in [ConicAlg_rank+1..2*ConicAlg_rank] then
+		return ComRingTraceIndet([ assocRep[1] - ConicAlg_rank ]); # Tr(a') = Tr(a)
 	else
-		return comRingTraceIndet(assocRep);
+		return ComRingTraceIndet(assocRep);
 	fi;
 end;
 
@@ -247,8 +247,8 @@ end;
 ConicAlgMagNormOnRep := function(mRep)
 	if mRep = 0 then
 		return Zero(ComRing);
-	elif mRep in [1..2*conicalg_rank] then
-		return comRingNormIndet(mRep);
+	elif mRep in [1..2*ConicAlg_rank] then
+		return ComRingNormIndet(mRep);
 	elif IsList(mRep) then
 		return ConicAlgMagNormOnRep(mRep[1]) * ConicAlgMagNormOnRep(mRep[2]);
 	else
