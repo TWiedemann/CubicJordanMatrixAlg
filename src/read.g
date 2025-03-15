@@ -17,4 +17,6 @@ myUnbind("IsL0Element");
 myUnbind("IsLieElement");
 Reread("./lie0.g");
 Reread("./lie.g");
+myUnbind("IsF4GroupElement");
+Reread("./group.g");
 Read("./user_vars.g");
