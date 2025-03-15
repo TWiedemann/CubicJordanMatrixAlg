@@ -1,3 +1,5 @@
+## Obsolete?
+
 K := Rationals; # Ground field
 
 ## The root system F_4
