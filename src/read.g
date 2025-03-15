@@ -14,6 +14,7 @@ myUnbind("IsBrownElement");
 Reread("./brown.g");
 myUnbind("IsDDElement");
 myUnbind("IsL0Element");
+myUnbind("IsLieElement");
 Reread("./lie0.g");
 Reread("./lie.g");
 Read("./user_vars.g");
