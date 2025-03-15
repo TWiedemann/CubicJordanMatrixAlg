@@ -11,34 +11,46 @@ BrownSpec := rec(
 Brown := ArithmeticElementCreator(BrownSpec);
 BrownZero := Brown(BrownSpec.Zero(fail));
 
-BrownPart := function(brownEl, i)
+## Getters for components
+
+DeclareOperation(BrownElTuple, [IsBrownElement]);
+DeclareOperation(BrownElPart, [IsBrownElement, IsInteger]);
+DeclareOperation(BrownElComPart, [IsBrownElement, IsInteger]);
+DeclareOperation(BrownElConicPart, [IsBrownElement, IsInteger]);
+
+# Output: List [a, b, c, d] of the entries of brownEl
+InstallMethod(BrownElTuple, [IsBrownElement], function(brownEl)
+	return UnderlyingElement(brownEl);
+end);
+
+InstallMethod(BrownElPart, [IsBrownElement, IsInteger], function(brownEl, i)
 	if i in [1,2,3,4] then
 		return UnderlyingElement(brownEl)[i];
 	else
 		Error("Brown algebra element: Invalid position.");
 		return fail;
 	fi;
-end;
+end);
 
-BrownComPart := function(brownEl, i)
+InstallMethod(BrownElComPart, [IsBrownElement, IsInteger], function(brownEl, i)
 	if i = 1 then
-		return BrownPart(brownEl, 1);
+		return BrownElPart(brownEl, 1);
 	elif i = 2 then
-		return BrownPart(brownEl, 4);
+		return BrownElPart(brownEl, 4);
 	else
 		Error("Brown algebra element: Invalid position (ComPart).");
 	fi;
-end;
+end);
 
-BrownConicPart := function(brownEl, i)
+InstallMethod(BrownElConicPart, [IsBrownElement, IsInteger], function(brownEl, i)
 	if i = 1 then
-		return BrownPart(brownEl, 2);
+		return BrownElPart(brownEl, 2);
 	elif i = 2 then
-		return BrownPart(brownEl, 3);
+		return BrownElPart(brownEl, 3);
 	else
 		Error("Brown algebra element: Invalid position (ConicPart).");
 	fi;
-end;
+end);
 
 # Scalar multiplication ComRing x Brown -> Brown
 InstallMethod(\*, "for ComRingElement and CubicElement", [IsRingElement, IsCubicElement], function(comEl, brownEl)
