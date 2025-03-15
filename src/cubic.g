@@ -78,7 +78,7 @@ end);
 ## Getters for coefficients
 
 # Return u_i as above
-CubicAlgCoeff := function(cubicEl, i)
+CubicElAlgCoeff := function(cubicEl, i)
 	if i in [1,2,3] then
 		return UnderlyingElement(cubicEl)[2][i];
 	else
@@ -88,7 +88,7 @@ CubicAlgCoeff := function(cubicEl, i)
 end;
 
 # Return x_i as above
-CubicComCoeff := function(cubicEl, i)
+CubicElComCoeff := function(cubicEl, i)
 	if i in [1,2,3] then
 		return UnderlyingElement(cubicEl)[1][i];
 	else
@@ -104,13 +104,13 @@ CubicCoeffMat := function(cubicEl, i, j)
 		return fail;
 	fi;
 	if i = j then
-		return CubicComCoeff(cubicEl, i);
+		return CubicElComCoeff(cubicEl, i);
 	else
 		k := Difference([1,2,3], [i,j])[1]; # {1, 2, 3} = {i, j, k} as sets
 		if [i, j, k] in CycPerm then
-			return CubicAlgCoeff(cubicEl, k);
+			return CubicElAlgCoeff(cubicEl, k);
 		else
-			return ConicAlgInv(CubicAlgCoeff(cubicEl, k));
+			return ConicAlgInv(CubicElAlgCoeff(cubicEl, k));
 		fi;
 	fi;
 end;
@@ -121,7 +121,7 @@ end;
 
 # i: 1, 2, or 3
 # t: Element of ComRing
-# Output: The element x of Cubic with CubicComCoeff(x, i) = t and every other coefficient zero.
+# Output: The element x of Cubic with CubicElComCoeff(x, i) = t and every other coefficient zero.
 # I.e., the element t[ii].
 CubicComEl := function(i, t)
 	local comList, conicList;
@@ -141,7 +141,7 @@ end;
 
 # i: 1, 2, or 3
 # a: Element of ConicAlg
-# Output: The element x of Cubic with CubicAlgCoeff(x, i) = a and every other coefficient zero.
+# Output: The element x of Cubic with CubicElAlgCoeff(x, i) = a and every other coefficient zero.
 # I.e., the element a[jl] if [i, j, l] is the cyclic permutation starting from i.
 CubicAlgEl := function(i, a)
 	local comList, conicList;
@@ -222,13 +222,13 @@ DeclareOperation("CubicTr", [IsCubicElement, IsCubicElement]);
 # [GPR24, (36.4.5)]
 InstallMethod(CubicNorm, [IsCubicElement], function(A)
 	local sum, perm, i, j, l;
-	sum := CubicComCoeff(A, 1) * CubicComCoeff(A, 2) * CubicComCoeff(A, 3)
-		+ TwistDiag[1] * TwistDiag[2] * TwistDiag[3] * ConicAlgTr(CubicAlgCoeff(A, 1)*CubicAlgCoeff(A, 2)*CubicAlgCoeff(A, 3));
+	sum := CubicElComCoeff(A, 1) * CubicElComCoeff(A, 2) * CubicElComCoeff(A, 3)
+		+ TwistDiag[1] * TwistDiag[2] * TwistDiag[3] * ConicAlgTr(CubicElAlgCoeff(A, 1)*CubicElAlgCoeff(A, 2)*CubicElAlgCoeff(A, 3));
 	for perm in CycPerm do
 		i := perm[1];
 		j := perm[2];
 		l := perm[3];
-		sum := sum - CubicComCoeff(A, i) * TwistDiag[j] * TwistDiag[l] * ConicAlgNorm(CubicAlgCoeff(A, i));
+		sum := sum - CubicElComCoeff(A, i) * TwistDiag[j] * TwistDiag[l] * ConicAlgNorm(CubicElAlgCoeff(A, i));
 	od;
 	return sum;
 end );
@@ -241,12 +241,12 @@ InstallMethod(CubicAdj, [IsCubicElement], function(A)
 		i := perm[1];
 		j := perm[2];
 		l := perm[3];
-		a_i := CubicAlgCoeff(A, i);
-		a_j := CubicAlgCoeff(A, j);
-		a_l := CubicAlgCoeff(A, l);
-		A_i := CubicComCoeff(A, i);
-		A_j := CubicComCoeff(A, j);
-		A_l := CubicComCoeff(A, l);
+		a_i := CubicElAlgCoeff(A, i);
+		a_j := CubicElAlgCoeff(A, j);
+		a_l := CubicElAlgCoeff(A, l);
+		A_i := CubicElComCoeff(A, i);
+		A_j := CubicElComCoeff(A, j);
+		A_l := CubicElComCoeff(A, l);
 		comEl := A_j*A_l - TwistDiag[j]*TwistDiag[l]*ConicAlgNorm(a_i);
 		result := result + CubicComEl(i, comEl);
 		algEl := -A_i*a_i + TwistDiag[i] * ConicAlgInv(a_j*a_l);
@@ -263,18 +263,18 @@ InstallMethod(CubicCross, [IsCubicElement, IsCubicElement], function(A, B)
 		i := perm[1];
 		j := perm[2];
 		l := perm[3];
-		a_i := CubicAlgCoeff(A, i);
-		a_j := CubicAlgCoeff(A, j);
-		a_l := CubicAlgCoeff(A, l);
-		b_i := CubicAlgCoeff(B, i);
-		b_j := CubicAlgCoeff(B, j);
-		b_l := CubicAlgCoeff(B, l);
-		A_i := CubicComCoeff(A, i);
-		A_j := CubicComCoeff(A, j);
-		A_l := CubicComCoeff(A, l);
-		B_i := CubicComCoeff(B, i);
-		B_j := CubicComCoeff(B, j);
-		B_l := CubicComCoeff(B, l);
+		a_i := CubicElAlgCoeff(A, i);
+		a_j := CubicElAlgCoeff(A, j);
+		a_l := CubicElAlgCoeff(A, l);
+		b_i := CubicElAlgCoeff(B, i);
+		b_j := CubicElAlgCoeff(B, j);
+		b_l := CubicElAlgCoeff(B, l);
+		A_i := CubicElComCoeff(A, i);
+		A_j := CubicElComCoeff(A, j);
+		A_l := CubicElComCoeff(A, l);
+		B_i := CubicElComCoeff(B, i);
+		B_j := CubicElComCoeff(B, j);
+		B_l := CubicElComCoeff(B, l);
 		comEl := A_j*B_l + B_j*A_l - TwistDiag[j]*TwistDiag[l]*ConicAlgBiTr(a_i, b_i);
 		result := result + CubicComEl(i, comEl);
 		algEl := -A_i*b_i - B_i*a_i + TwistDiag[i]*ConicAlgInv(a_j*b_l + b_j*a_l);
@@ -291,7 +291,7 @@ InstallMethod(CubicTr, [IsCubicElement, IsCubicElement], function(A, B)
 		i := perm[1];
 		j := perm[2];
 		l := perm[3];
-		result := result + CubicComCoeff(A, i)*CubicComCoeff(B, i) + TwistDiag[j]*TwistDiag[l] * ConicAlgBiTr(CubicAlgCoeff(A, i), CubicAlgCoeff(B, i));
+		result := result + CubicElComCoeff(A, i)*CubicElComCoeff(B, i) + TwistDiag[j]*TwistDiag[l] * ConicAlgBiTr(CubicElAlgCoeff(A, i), CubicElAlgCoeff(B, i));
 	od;
 	return result;
 end );
