@@ -271,7 +271,7 @@ InstallMethod(CubicCross, [IsCubicElement, IsCubicElement], function(A, B)
 		B_i := CubicElComCoeff(B, i);
 		B_j := CubicElComCoeff(B, j);
 		B_l := CubicElComCoeff(B, l);
-		comEl := A_j*B_l + B_j*A_l - TwistDiag[j]*TwistDiag[l]*ConicAlgBiTr(a_i, b_i);
+		comEl := A_j*B_l + B_j*A_l - TwistDiag[j]*TwistDiag[l]*ConicAlgNormLin(a_i, b_i);
 		result := result + CubicComEl(i, comEl);
 		algEl := -A_i*b_i - B_i*a_i + TwistDiag[i]*ConicAlgInv(a_j*b_l + b_j*a_l);
 		result := result + CubicAlgElMat(j, l, algEl);
@@ -287,7 +287,7 @@ InstallMethod(CubicTr, [IsCubicElement, IsCubicElement], function(A, B)
 		i := perm[1];
 		j := perm[2];
 		l := perm[3];
-		result := result + CubicElComCoeff(A, i)*CubicElComCoeff(B, i) + TwistDiag[j]*TwistDiag[l] * ConicAlgBiTr(CubicElAlgCoeff(A, i), CubicElAlgCoeff(B, i));
+		result := result + CubicElComCoeff(A, i)*CubicElComCoeff(B, i) + TwistDiag[j]*TwistDiag[l] * ConicAlgNormLin(CubicElAlgCoeff(A, i), CubicElAlgCoeff(B, i));
 	od;
 	return result;
 end );

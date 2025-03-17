@@ -292,13 +292,18 @@ end;
 
 ConicAlgTr := ConicAlgFunctionalFromMagFunctional(ConicAlgMagTr);
 
-ConicAlgBiTr := function(a, b)
+# a, b: Element of ConicAlg.
+# Output: n(a,b) such that n(a+b) = n(a) + n(b) + n(a,b).
+# By [GPR24, (16.12.4), (16.5.2)], we have n(a,b) = n(1, a'b) = t(a'b)
+ConicAlgNormLin := function(a, b)
+	ReqConicAlgEl([a,b]);
 	return ConicAlgTr(ConicAlgInv(a)*b);
 end;
 
+# mRep: ExtRepOfObj of an element of ConicAlgMag
 ConicAlgMagNormOnRep := function(mRep)
-	if mRep = 0 then
-		return Zero(ComRing);
+	if mRep = 0 then # n(1_ConicAlg) = 1_ComRing
+		return One(ComRing);
 	elif mRep in [1..2*ConicAlg_rank] then
 		return ComRingNormIndet(mRep);
 	elif IsList(mRep) then
@@ -314,6 +319,7 @@ end;
 
 ConicAlgNorm := function(a)
 	local coeffList, result, i, j, magmaEl, magmaEl2, coeff, coeff2;
+	ReqConicAlgEl(a);
 	coeffList := CoefficientsAndMagmaElements(a);
 	result := Zero(ComRing);
 	for i in [1..Length(coeffList)/2] do
