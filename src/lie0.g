@@ -374,19 +374,19 @@ InstallMethod(L0AsEndo, [IsL0Element, IsInt], function(L0El, i)
 			mu := BrownElPart(brownEl, 4);
 			## Return value
 			# Action of Cubic and Cubic'
-			newLam := -CubicTr(b, a2);
+			newLam := -CubicBiTr(b, a2);
 			newB := lam*a - CubicCross(a2, b2);
 			newB2 := CubicCross(a, b) - mu*a2;
-			newMu := CubicTr(a, b2);
+			newMu := CubicBiTr(a, b2);
 			# Action of DD
 			for summand in ddList do
 				coeff := summand[1]; # in ComRing
 				c := summand[2]; # in Cubic
 				c2 := summand[3]; # in Cubic'
-				newLam := newLam - lam*CubicTr(c, c2);
-				newB := newB + JordanD(c, c2, b) - CubicTr(c, c2)*b;
-				newB2 := newB2 - JordanD(c2, c, b2) + CubicTr(c, c2)*b2;
-				newMu := newMu + mu*CubicTr(c, c2);
+				newLam := newLam - lam*CubicBiTr(c, c2);
+				newB := newB + JordanD(c, c2, b) - CubicBiTr(c, c2)*b;
+				newB2 := newB2 - JordanD(c2, c, b2) + CubicBiTr(c, c2)*b2;
+				newMu := newMu + mu*CubicBiTr(c, c2);
 			od;
 			result := Brown([newLam, newB, newB2, newMu]);
 			# Action of xi and zeta. This is the only part where i is relevant.

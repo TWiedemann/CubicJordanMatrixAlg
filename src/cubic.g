@@ -213,7 +213,7 @@ end;
 DeclareOperation("CubicNorm", [IsCubicElement]);
 DeclareOperation("CubicAdj", [IsCubicElement]);
 DeclareOperation("CubicCross", [IsCubicElement, IsCubicElement]);
-DeclareOperation("CubicTr", [IsCubicElement, IsCubicElement]);
+DeclareOperation("CubicBiTr", [IsCubicElement, IsCubicElement]);
 
 # [GPR24, (36.4.5)]
 InstallMethod(CubicNorm, [IsCubicElement], function(A)
@@ -280,7 +280,7 @@ InstallMethod(CubicCross, [IsCubicElement, IsCubicElement], function(A, B)
 end );
 
 # [GRP24, (36.4.7)]
-InstallMethod(CubicTr, [IsCubicElement, IsCubicElement], function(A, B)
+InstallMethod(CubicBiTr, [IsCubicElement, IsCubicElement], function(A, B)
 	local result, i, j, l, perm;
 	result := Zero(ComRing);
 	for perm in CycPerm do
@@ -300,12 +300,12 @@ DeclareOperation("JordanD", [IsCubicElement, IsCubicElement, IsCubicElement]);
 
 # Cubic x Cubic' -> Cubic
 InstallMethod(JordanU, [IsCubicElement, IsCubicElement], function(a, b)
-	return CubicTr(a,b)*a -CubicCross(CubicAdj(a), b);
+	return CubicBiTr(a,b)*a -CubicCross(CubicAdj(a), b);
 end );
 
 # Cubic x Cubic x Cubic' -> Cubic
 InstallMethod(JordanULin, [IsCubicElement, IsCubicElement, IsCubicElement], function(a,b,c)
-	return CubicTr(a, c)*b + CubicTr(b, c)*a - CubicCross(CubicCross(a,b), c);
+	return CubicBiTr(a, c)*b + CubicBiTr(b, c)*a - CubicCross(CubicCross(a,b), c);
 end );
 
 # Cubic x Cubic' x Cubic -> Cubic

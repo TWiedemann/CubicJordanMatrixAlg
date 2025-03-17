@@ -32,7 +32,7 @@ InstallMethod(LieBracketBrownPosPos, [IsBrownElement, IsBrownElement], function(
 	c1 := BrownElPart(brown2, 2);
 	c2 := BrownElPart(brown2, 3);
 	rho := BrownElPart(brown2, 4);
-	return CubicTr(b1, c2) - CubicTr(c1, b2) + mu*nu - lam*rho;
+	return CubicBiTr(b1, c2) - CubicBiTr(c1, b2) + mu*nu - lam*rho;
 end);
 
 # brown1: Element of Brown, regarded as element of L_{-1}
@@ -50,8 +50,8 @@ InstallMethod(LieBracketBrownNegPos, [IsBrownElement, IsBrownElement], function(
 	c2 := BrownElPart(brown2, 3);
 	rho := BrownElPart(brown2, 4);
 	return (-lam*c2 + CubicCross(b1, c2) - nu*b2)
-			+ ((lam*rho - CubicTr(b1, c2)) * L0Zeta
-				+ (CubicTr(c1, b2) - mu*nu) * (L0Xi - L0Zeta)
+			+ ((lam*rho - CubicBiTr(b1, c2)) * L0Zeta
+				+ (CubicBiTr(c1, b2) - mu*nu) * (L0Xi - L0Zeta)
 				+ dd(b1, c2) + dd(c1, b2))
 			+ (-rho*b1 + CubicCross(b2, c2) - mu*c1);
 end);

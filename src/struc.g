@@ -54,10 +54,10 @@ end;
 
 strucMult := function(S, T)
 	local M11, M12, M21, M22;
-	M11 := S[1][1] * T[1][1] + strucConst * cubicTr(S[1][2], T[2][1]);
+	M11 := S[1][1] * T[1][1] + strucConst * CubicBiTr(S[1][2], T[2][1]);
 	M12 := S[1][1]*T[1][2] + T[2][2]*S[1][2] + strucConst * cubicCross(S[2][1], T[2][1]);
 	M21 := S[2][2]*T[2][1] + T[1][1]*S[2][1] + cubicCross(S[1][2], T[1][2]);
-	M22 := S[2][2]*T[2][2] + strucConst*cubicTr(S[2][1], T[1][2]);
+	M22 := S[2][2]*T[2][2] + strucConst*CubicBiTr(S[2][1], T[1][2]);
 	return strucEl(M11, M12, M21, M22);
 end;
 
