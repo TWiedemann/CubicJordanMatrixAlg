@@ -1,4 +1,4 @@
-SanitizeImmediately := true; # If true, DDSanitizeRep is applied after sever
+SanitizeImmediately := true; # If true, DDSanitizeRep is applied after several transformations which may produce unsanitized (but correct) output
 
 # DD is the ComRing-span of all dd_{a,b} for a, b \in Cubic.
 # An element c1 * dd_{a1, b1} + c2 * dd_{a2, b2} + ... is represented by
@@ -98,7 +98,8 @@ DDSpec := rec(
 			DDSanitizeRep(productRep);
 		fi;
 		return productRep;
-	end
+	end,
+	MathInfo := IsAdditivelyCommutativeElement
 );
 
 DD := ArithmeticElementCreator(DDSpec);
@@ -115,8 +116,21 @@ InstallMethod(String, [IsDDElement], x -> DDRepToString(UnderlyingElement(x)));
 DeclareOperation("dd", [IsCubicElement, IsCubicElement]);
 
 InstallMethod(dd, [IsCubicElement, IsCubicElement], function(cubicEl1, cubicEl2)
-	return DD([[One(ComRing), cubicEl1, cubicEl2]]);
+	if IsZero(cubicEl1) or IsZero(cubicEl2) then
+		return DDZero;
+	else
+		return DD([[One(ComRing), cubicEl1, cubicEl2]]);
+	fi;
 end);
+
+# Scalar multiplication ComRing x Brown -> Brown
+InstallOtherMethod(\*, "for ComRingElement and CubicElement", [IsRingElement, IsBrownElement], 2, function(comEl, brownEl)
+	ReqComRingEl(comEl);
+	return Brown(comEl * UnderlyingElement(brownEl));
+end);
+
+CubicInL0SymStringPos := "ad^+"; # c in Cubic is printed as ad^+_c
+CubicInL0SymStringNeg := "ad^-"; # c in Cubic' is printed as ad^-_c
 
 # rep: Internal representation of an element of L0
 # Output: A string representing this element
@@ -125,7 +139,15 @@ L0RepToString := function(rep)
 	stringList := [];
 	for s in ["dd", "cubicPos", "cubicNeg"] do
 		if not IsZero(rep.(s)) then
-			Add(stringList, String(rep.(s)));
+			if s = "dd" then
+				Add(stringList, String(rep.(s)));
+			elif s = "cubicPos" then
+				Add(stringList, Concatenation(CubicInL0SymStringPos,
+						"_{", String(rep.(s)), "}"));
+			elif s = "cubicPos" then
+				Add(stringList, Concatenation(CubicInL0SymStringNeg,
+						"_{", String(rep.(s)), "}"));
+			fi;
 		fi;
 	od;
 	for list in [["xiCoeff", "\xi"], ["zetaCoeff", "\zeta"]] do
@@ -139,7 +161,7 @@ L0RepToString := function(rep)
 			fi;
 		fi;
 	od;
-	return StringSum(stringList);
+	return StringSum(stringList, L0ZeroString);
 end;
 
 # Elements of L0 are represented by records with entries "dd", "xiCoeff", "zetaCoeff",
@@ -171,8 +193,8 @@ L0Spec := rec(
 		cubicPos := CubicZero,
 		cubicNeg := CubicZero
 	),
-	Print := function()
-		Print(L0RepToString);
+	Print := function(a)
+		Print(L0RepToString(a));
 	end,
 	# Lie bracket
 	Multiplication := function(a, b)
