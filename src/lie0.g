@@ -167,8 +167,8 @@ InstallMethod(DDToL0Emb, [IsDDElement], function(ddEl)
 	));
 end);
 
-DeclareOperation("ddL0", [IsCubicElement, IsCubicElement]);
-InstallMethod(ddL0, [IsCubicElement, IsCubicElement], function(cubicEl1, cubicEl2)
+DeclareOperation("L0dd", [IsCubicElement, IsCubicElement]);
+InstallMethod(L0dd, [IsCubicElement, IsCubicElement], function(cubicEl1, cubicEl2)
 	return DDToL0Emb(dd(cubicEl1, cubicEl2));
 end);
 
