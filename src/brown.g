@@ -79,3 +79,31 @@ InstallOtherMethod(\*, "for ComRingElement and BrownElement", [IsRingElement, Is
 	ReqComRingEl(comEl);
 	return Brown(comEl * UnderlyingElement(brownEl));
 end);
+
+## Root homomorphisms
+
+DeclareOperation("BrownRootHomF4", [IsList, IsRingElement]);
+
+# root: An element [r1, r2, r3, r4] of F4 with r1 = 1 or r1 = -1.
+# a: An element of ConicAlg or of Comring
+# Output: An element b of the Brown algebra such that BrownPosToLieEmb(b) is the a-element
+# of the [1, r2, r3, r4]-space of Lie and such that BrownNegToLieEmb(b) is the a-element
+# of the [-1, r2, r3, r4]-space of Lie. (Note that r1 is ignored)
+InstallMethod(BrownRootHomF4, [IsList, IsRingElement], function(root, a)
+	if not root in F4Roots then
+		Error("Argument is not a root");
+		return fail;
+	elif not root[1] in [1, -1] then
+		Error("BrownRootHomF4 not defined for this root");
+		return fail;
+	fi;
+	if root{[2..4]} = [1,1,1] then
+		return BrownElFromTuple([Zero(ComRing), CubicZero, CubicZero, a]);
+	elif root{[2..4]} = [-1, -1, -1] then
+		return BrownElFromTuple([a, CubicZero, CubicZero, Zero(ComRing)]);
+	elif Sum(root{[2..4]}) = 1 then
+		return BrownElFromTuple(Zero(ComRing), CubicZero, CubicRootHomF4(root, a), Zero(ComRing));
+	else
+		return BrownElFromTuple(Zero(ComRing), CubicRootHomF4(root, a), CubicZero, Zero(ComRing));
+	fi;
+end);

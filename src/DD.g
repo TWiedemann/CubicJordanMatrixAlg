@@ -135,3 +135,20 @@ InstallOtherMethod(\*, "for ComRingElement and DDElement", [IsRingElement, IsDDE
     od; 
 	return DD(resultRep);
 end);
+
+## ------- Root homomorphisms ----
+
+DeclareOperation("DDRootHomA2", [IsList, IsRingElement]);
+
+# root: A root in A_2.
+# a: An element of ConicAlg.
+# Output: The a-element in the root space of DD w.r.t root.
+InstallMethod(DDRootHomA2, [IsList, IsRingElement], function(root, a)
+    local i, j, l;
+    ReqConicAlgEl(a);
+    # The root space w.r.t. root is Z_{i \to j}
+    i := Position(root, 1);
+    j := Position(root, -1);
+    l := Position(root, 0);
+    return dd(CubicAlgElMat(i, l, One(ConicAlg)), CubicAlgElMat(l, j, a));
+end);

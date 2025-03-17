@@ -313,3 +313,47 @@ end );
 InstallMethod(JordanD, [IsCubicElement, IsCubicElement, IsCubicElement], function(a,b,c)
 	return JordanULin(a,c,b);
 end );
+
+## ------- Root homomorphisms ----
+
+DeclareOperation("CubicRootHomF4", [IsList, IsRingElement]);
+
+# root: An element [r1, r2, r3, r4] of F4 s.t. the [r1,r2,r3,r4]-space of Lie lies in Cubic or Cubic'
+# a: An element of ConicAlg or of Comring
+# Output: An element c of Cubic which, embedded "appropriately" into Lie, is the a-element
+# of the [r1,r2,r3,r4]-space of Lie.
+InstallMethod(CubicRootHomF4, [IsList, IsRingElement], function(root, a)
+	local k, sum;
+	if not root in F4Roots then
+		Error("Argument is not a root");
+		return fail;
+	elif AbsoluteValue(root[1])= 2  or AbsoluteValue(Sum(root{[2..4]})) in [0, 3] then
+		Error("CubicRootHomF4 not defined for this root");
+		return fail;
+	fi;
+	if root[1] = 0 then
+		# L_0
+		k := PositionProperty(root{[2..4]}, x -> AbsoluteValue(x) = 2);
+		if k <> fail then
+			ReqComRingEl(a);
+			return CubicComEl(k, a);
+		else
+			ReqConicAlgEl(a);
+			k := Position(root{[2..4]}, 0);
+			return CubicAlgEl(k, a);
+		fi;
+	else
+		# L_{+-1}
+		if 0 in root{[2..4]} then
+			ReqConicAlgEl(a);
+			k := PositionProperty(root{[2..4]}, x -> x <> 0); # First (and only) non-zero position of roots[2..4]
+			return CubicAlgEl(k, a);
+		else
+			ReqComRingEl(a);
+			# k is the only position of root{[2..4]} whose entry appears only once
+			sum := Sum(root{[2..4]});
+			k := PositionProperty(root{[2..4]}, x -> x <> sum);
+			return CubicComEl(k, a);
+		fi;
+	fi;
+end);

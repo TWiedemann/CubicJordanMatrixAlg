@@ -25,7 +25,7 @@ _F4LongPosRoots := function()
 	local list, i, e, a, b, c, d;
 	list := [];
 	for i in [1..4] do
-		for e in [1, -1] do
+		for e in [2, -2] do
 			a := [0,0,0,0];
 			a[i] := e;
 			Add(list, a);
@@ -49,6 +49,8 @@ F4LongPosRoots := _F4LongPosRoots();
 F4LongRoots := Concatenation(F4LongPosRoots, -F4LongPosRoots);
 F4PosRoots := Concatenation(F4ShortPosRoots, F4LongPosRoots);
 F4Roots := Concatenation(F4PosRoots, -F4PosRoots);
+
+A2Roots := [[1,-1,0], [1,0,-1], [0,1,-1], [0,-1,1], [-1,0,1], [-1,1,0]];
 
 F4CartanInt := function(a, b)
 	return 2 * (a*b) / (b*b);

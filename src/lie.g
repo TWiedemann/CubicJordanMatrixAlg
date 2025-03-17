@@ -167,6 +167,7 @@ InstallMethod(LieElFromTuple, [IsRingElement, IsBrownElement, IsL0Element,
 LieX := LieElFromTuple(One(ComRing), BrownZero, L0Zero, BrownZero, Zero(ComRing));
 LieY := LieElFromTuple(Zero(ComRing), BrownZero, L0Zero, BrownZero, One(ComRing));
 
+DeclareOperation("DDToLieEmb", [IsDDElement]);
 DeclareOperation("L0ToLieEmb", [IsL0Element]);
 DeclareOperation("BrownPosToLieEmb", [IsBrownElement]);
 DeclareOperation("BrownNegToLieEmb", [IsBrownElement]);
@@ -174,6 +175,8 @@ DeclareOperation("BrownNegToLieEmb", [IsBrownElement]);
 InstallMethod(L0ToLieEmb, [IsL0Element], function(L0el)
 	return LieElFromTuple(Zero(ComRing), BrownZero, L0el, BrownZero, Zero(ComRing));
 end);
+
+InstallMethod(DDToLieEmb, [IsDDElement], x -> L0ToLieEmb(DDToL0Emb(x)));
 
 InstallMethod(BrownPosToLieEmb, [IsBrownElement], function(brownEl)
 	return LieElFromTuple(Zero(ComRing), BrownZero, L0Zero, brownEl, Zero(ComRing));
@@ -244,4 +247,43 @@ InstallOtherMethod(\*, "for ComRingElement and LieElement", [IsRingElement, IsLi
 		pos1 := comEl * LiePart(lieEl, 1),
 		pos2 := comEl * LiePart(lieEl, 2)
 	));
+end);
+
+### Root homomorphisms
+
+DeclareOperation("LieRootHomF4", [IsList, IsRingElement]);
+
+InstallMethod(LieRootHomF4, [IsList, IsRingElement], function(root, a)
+	local sum;
+	if root in F4LongRoots then
+		ReqComRingEl(a);
+	elif root in F4ShortRoots then
+		ReqConicAlgEl(a);
+	else
+		Error("Argument must be a root in F4");
+		return fail;
+	fi;
+	# L_{-2}
+	if root = [-2, 0, 0, 0] then
+		return a * LieX;
+	# L_{-1}
+	elif root[1] = -1 then
+		return BrownNegToLieEmb(BrownRootHomF4(root, a));
+	# L_0
+	elif root[1] = 0 then
+		sum := Sum(root{[2..4]});
+		if sum = 2 then
+			return CubicPosToL0Emb(CubicRootHomF4(root, a));
+		elif sum = -2 then
+			return CubicNegToL0Emb(CubicRootHomF4(root, a));
+		else # sum = 0
+			return DDToLieEmb(DDRootHomA2(root{[2..4]}, a));
+		fi;
+	# L_1
+	elif root[1] = 1 then
+		return BrownPosToLieEmb(BrownRootHomF4(root, a));
+	# L_2
+	elif root = [2, 0, 0, 0] then
+		return a * LieY;
+	fi;
 end);
