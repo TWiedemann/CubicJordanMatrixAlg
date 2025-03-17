@@ -133,7 +133,7 @@ LieSpec := rec(
 
 Lie := ArithmeticElementCreator(LieSpec);
 
-## Constructors for elements of Lie
+## Constructors and embeddings for elements of Lie
 LieZero := Lie(LieSpec.Zero(fail));
 LieX := Lie(rec(
 	neg2 := One(ComRing),
@@ -149,6 +149,47 @@ LieY := Lie(rec(
 	pos1 := BrownZero,
 	pos2 := Zero(ComRing)
 ));
+
+DeclareOperation("L0ToLieEmb", [IsL0Element]);
+DeclareOperation("BrownPosToLieEmb", [IsBrownElement]);
+DeclareOperation("BrownNegToLieEmb", [IsBrownElement]);
+
+InstallMethod(L0ToLieEmb, [IsL0Element], function(L0el)
+	return Lie(rec(
+	neg2 := Zero(ComRing),
+	neg1 := BrownZero,
+	zero := L0el,
+	pos1 := BrownZero,
+	pos2 := Zero(ComRing)
+	));
+end);
+
+InstallMethod(BrownPosToLieEmb, [IsBrownElement], function(brownEl)
+	return Lie(rec(
+	neg2 := Zero(ComRing),
+	neg1 := BrownZero,
+	zero := L0Zero,
+	pos1 := brownEl,
+	pos2 := Zero(ComRing)
+	));
+end);
+
+InstallMethod(BrownNegToLieEmb, [IsBrownElement], function(brownEl)
+	return Lie(rec(
+	neg2 := Zero(ComRing),
+	neg1 := brownEl,
+	zero := L0Zero,
+	pos1 := BrownZero,
+	pos2 := Zero(ComRing)
+	));
+end);
+
+DeclareOperation("Liedd", [IsCubicElement, IsCubicElement]);
+InstallMethod(Liedd, [IsCubicElement, IsCubicElement], function(cubicEl1, cubicEl2)
+	return DDToL0Emb(dd(cubicEl1, cubicEl2));
+end);
+
+## Getters for components
 
 DeclareOperation("LiePart", [IsLieElement, IsInt]);
 InstallMethod(LiePart, [IsLieElement, IsInt], function(lieEl, i)
@@ -166,6 +207,27 @@ InstallMethod(LiePart, [IsLieElement, IsInt], function(lieEl, i)
 		Error("LiePart: Invalid position");
 		return fail;
 	fi;
+end);
+
+InstallOtherMethod(IsZero, [IsLieElement], function(lieEl)
+	local i;
+	for i in [-2..2] do
+		if not IsZero(LiePart(lieEl, i)) then
+			return false;
+		fi;
+	od;
+	return true;
+end);
+
+# Display and String
+
+InstallMethod(String, [IsLieElement], x -> LieRepToString(UnderlyingElement(x)));
+
+InstallMethod(Display, [IsLieElement], function(lieEl)
+	local i;
+	for i in [-2..2] do
+		Print(String(i), " part: ", String(LiePart(lieEl, i)), "\n");
+	od;
 end);
 
 ## Scalar multiplication ComRing x Lie -> Lie

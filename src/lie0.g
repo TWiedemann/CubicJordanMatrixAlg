@@ -196,6 +196,11 @@ InstallMethod(L0DDCoeff, [IsL0Element], function(L0El)
 	return UnderlyingElement(L0El).dd;
 end);
 
+InstallOtherMethod(IsZero, [IsL0Element], function(L0el)
+	return IsZero(L0XiCoeff(L0el)) and IsZero(L0ZetaCoeff(L0el)) and IsZero(L0DDCoeff(L0el))
+		and IsZero(L0CubicPosCoeff(L0el)) and IsZero(L0CubicNegCoeff(L0el));
+end);
+
 ## Scalar multiplication ComRing x L0 -> L0
 InstallOtherMethod(\*, "for ComRingElement and L0Element", [IsRingElement, IsL0Element], 2, function(comEl, L0El)
 	return L0(rec(
