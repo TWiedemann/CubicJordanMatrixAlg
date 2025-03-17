@@ -38,7 +38,7 @@ DDRepToString := function(a)
 	for summand in a do
 		s := Concatenation(DDSymString, "_{", String(summand[2]), ",", String(summand[3]), "}");
 		if summand[1] <> One(ComRing) then
-			s := Concatenation(String(summand[1]), "*", s); 
+			s := Concatenation("(", String(summand[1]), ")", "*", s); 
 		fi;
 		Add(stringList, s);
 	od;
@@ -123,8 +123,13 @@ InstallMethod(dd, [IsCubicElement, IsCubicElement], function(cubicEl1, cubicEl2)
 	fi;
 end);
 
-# Scalar multiplication ComRing x Brown -> Brown
-InstallOtherMethod(\*, "for ComRingElement and CubicElement", [IsRingElement, IsBrownElement], 2, function(comEl, brownEl)
-	ReqComRingEl(comEl);
-	return Brown(comEl * UnderlyingElement(brownEl));
+# Scalar multiplication ComRing x DD -> DD
+InstallOtherMethod(\*, "for ComRingElement and DDElement", [IsRingElement, IsDDElement], 2, function(comEl, ddEl)
+	local resultRep, summand;
+    ReqComRingEl(comEl);
+    resultRep := [];
+    for summand in UnderlyingElement(ddEl) do
+        Add(resultRep, [comEl*summand[1], summand[2], summand[3]]);
+    od; 
+	return DD(resultRep);
 end);
