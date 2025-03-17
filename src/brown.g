@@ -67,7 +67,7 @@ InstallMethod(BrownElCubicPart, [IsBrownElement, IsInt], function(brownEl, i)
 end);
 
 # Scalar multiplication ComRing x Brown -> Brown
-InstallOtherMethod(\*, "for ComRingElement and CubicElement", [IsRingElement, IsBrownElement], 2, function(comEl, brownEl)
+InstallOtherMethod(\*, "for ComRingElement and BrownElement", [IsRingElement, IsBrownElement], 2, function(comEl, brownEl)
 	ReqComRingEl(comEl);
 	return Brown(comEl * UnderlyingElement(brownEl));
 end);
