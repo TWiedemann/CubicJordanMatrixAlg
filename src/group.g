@@ -85,21 +85,3 @@ InstallMethod(GrpRootHomF4, [IsList, IsRingElement], function(root, a)
 	fi;
 	return F4Exp(LieRootHomF4(root, a));
 end);
-
-## ------- Equality tests ----
-
-
-DeclareOperation("LieEndoIsAuto", [IsLieEndo]);
-
-InstallMethod(LieEndoIsAuto, [IsLieEndo], function(f)
-	local lieGens1, lieGens2, isAuto, lieEl1, lieEl2;
-	lieGens1 := LieGensAsModule(0);
-	lieGens2 := LieGensAsModule(1);
-	isAuto := true;
-	for lieEl1 in lieGens1 do
-		for lieEl2 in lieGens2 do
-			isAuto := TestEquality(f(lieEl1 * lieEl2), f(lieEl1) * f(lieEl2), true) and isAuto;
-		od;
-	od;
-	return isAuto;
-end);

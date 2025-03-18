@@ -327,21 +327,3 @@ LieGensAsModule := function(i)
 	return gens;
 end;
 
-### ---- Equality test ----
-
-DeclareOperation("TestEquality", [IsLieElement, IsLieElement, IsBool]);
-InstallMethod(TestEquality, [IsLieElement, IsLieElement, IsBool], function(lieEl1, lieEl2, print)
-	local diff, isEqual, i, part;
-	diff := lieEl1 - lieEl2;
-	isEqual := true;
-	for i in [-2..2] do
-		part := LiePart(diff, i);
-		if not IsZero(part) then
-			isEqual := false;
-			if print then
-				Print(String(i), " part: ", part, "\n");
-			fi;
-		fi;
-	od;
-	return isEqual;
-end);

@@ -32,4 +32,5 @@ Reread(myFilePath("lie0.g"));
 Reread(myFilePath("lie.g"));
 myUnbind("IsF4GroupElement");
 Reread(myFilePath("group.g"));
+Reread(myFilePath("test.g"));
 Read(myFilePath("user_vars.g"));

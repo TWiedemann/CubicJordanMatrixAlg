@@ -80,6 +80,21 @@ InstallOtherMethod(\*, "for ComRingElement and BrownElement", [IsRingElement, Is
 	return Brown(comEl * UnderlyingElement(brownEl));
 end);
 
+# i: Integer.
+# Output: A list of the generic basic elements of Brown, using indeterminates a_i and t_i
+BrownGensAsModule := function(i)
+	local t, result, gen;
+	t := ComRingBasicIndet(i);
+	result := [];
+	Add(result, BrownElFromTuple(t, CubicZero, CubicZero, Zero(ComRing)));
+	Add(result, BrownElFromTuple(Zero(ComRing), CubicZero, CubicZero, t));
+	for gen in CubicGensAsModule(i) do
+		Add(result, BrownElFromTuple(Zero(ComRing), gen, CubicZero, Zero(ComRing)));
+		Add(result, BrownElFromTuple(Zero(ComRing), CubicZero, gen, Zero(ComRing)));
+	od;
+	return result;
+end;
+
 ## Root homomorphisms
 
 DeclareOperation("BrownRootHomF4", [IsList, IsRingElement]);
