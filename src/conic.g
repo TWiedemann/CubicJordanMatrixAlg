@@ -175,30 +175,6 @@ ComRingIndetNumberForNorm := function(i)
 	return ComRing_rank + i;
 end;
 
-# (Obsolete)
-# indexList: A list of integers between -ConicAlg_rank and 2*ConicAlg_rank, not containing zero.
-# An index i in [1..ConicAlg_rank] represents a_i, an index ConicAlg_rank+i in [ConicAlg_rank+1..2*ConicAlg_rank]
-# represents a_i' and an index i in [-ConicAlg_rank..-1] represents the index a_{-i}'.
-# (I.e. for convenience, we have two formats of representing a_i'.)
-ComRingIndetNumberForTrace := function(indexList)
-	local l, result, i;
-	l := Length(indexList);
-	# Replace any negative entry i by ConicAlg_rank-i
-	for i in [1..l] do
-		if indexList[i] < 0 then
-			indexList[i] := ConicAlg_rank - indexList[i];
-		fi;
-	od;
-	result := ComRing_rank + ConicAlg_rank; # Basic indeterminates and norm indeterminates
-	for i in [1..l-1] do
-		result := result + (2*ConicAlg_rank)^i; # Trace indeterminates of length i
-	od;
-	for i in [1..l] do
-		result := result + (indexList[i]-1)*(2*ConicAlg_rank)^(l-i);
-	od;
-	return result+1;
-end;
-
 # Returns the list of all strings which appear as indeterminate names in ComRing
 _ComRingIndetNames := function()
 	local ComRingIndetNames, i, j, l, indexList, name;
