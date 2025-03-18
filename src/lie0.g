@@ -297,17 +297,17 @@ InstallMethod(L0AsEndo, [IsL0Element, IsInt], function(L0El, i)
 			newB := lam*a - CubicCross(a2, b2);
 			newB2 := CubicCross(a, b) - mu*a2;
 			newMu := CubicBiTr(a, b2);
-			# Action of DD
+			# Action of DD [DMW, 3.8]
 			for summand in ddList do
 				coeff := summand[1]; # in ComRing
 				c := summand[2]; # in Cubic
 				c2 := summand[3]; # in Cubic'
-				newLam := newLam - lam*CubicBiTr(c, c2);
-				newB := newB + JordanD(c, c2, b) - CubicBiTr(c, c2)*b;
-				newB2 := newB2 - JordanD(c2, c, b2) + CubicBiTr(c, c2)*b2;
-				newMu := newMu + mu*CubicBiTr(c, c2);
+				newLam := newLam - coeff*lam*CubicBiTr(c, c2);
+				newB := newB + coeff*(JordanD(c, c2, b) - CubicBiTr(c, c2)*b);
+				newB2 := newB2 - coeff*(JordanD(c2, c, b2) + CubicBiTr(c, c2)*b2);
+				newMu := newMu + coeff*(mu*CubicBiTr(c, c2));
 			od;
-			result := Brown([newLam, newB, newB2, newMu]);
+			result := BrownElFromTuple(newLam, newB, newB2, newMu);
 			# Action of xi and zeta. This is the only part where i is relevant.
 			if i = 1 then
 				result := result + xi*XiPosEndo(brownEl) + zeta*ZetaPosEndo(brownEl);
