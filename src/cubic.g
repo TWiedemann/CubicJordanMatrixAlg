@@ -192,22 +192,15 @@ CubicGenericEl := function(i)
 	fi;
 end;
 
-
-
-# A: An element of the cubic norm structure.
-# Output: Zero(ComRing) if A is the zero element. Otherwise returns a non-zero coefficient of A (which lies either in ConicAlg or in ComRing).
-# This will be used to determine whether an element of the Brown algebra lies in a root space.
-# CubicGetNonTrivCoeff := function(A)
-# 	local i, j;
-# 	for i in [1..3] do
-# 		for j in [i..3] do
-# 			if A[i][j] <> Zero(ComRing) and A[i][j] <> Zero(ConicAlg) then
-# 				return A[i][j];
-# 			fi;
-# 		od;
-# 	od;
-# 	return Zero(ComRing);
-# end;
+# i: Integer.
+# Output: A list of the six generic basic elements of Cubic, using indeterminates a_i and t_i
+CubicGensAsModule := function(i)
+	local a, t;
+	t := ComRingBasicIndet(i);
+	a := ConicAlgBasicIndet(i);
+	return [CubicComEl(1, t), CubicComEl(2, t), CubicComEl(3, t),
+				CubicAlgEl(1, a), CubicAlgEl(2, a), CubicAlgEl(3, a)];
+end;
 
 ## ----- Structural maps of a cubic norm structure ------
 

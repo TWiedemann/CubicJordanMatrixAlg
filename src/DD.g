@@ -103,8 +103,9 @@ DDSpec := rec(
 );
 
 DD := ArithmeticElementCreator(DDSpec);
-DDZero := DD([]);
+InstallMethod(String, [IsDDElement], x -> DDRepToString(UnderlyingElement(x)));
 
+## ---- Getters ----
 DeclareOperation("DDCoeffList", [IsDDElement]);
 
 # ddEl: c1*dd_{a1,b1} + c2*dd_{a2,b2} + ...
@@ -113,10 +114,10 @@ InstallMethod(DDCoeffList, [IsDDElement], function(ddEl)
 	return UnderlyingElement(ddEl);
 end);
 
-InstallMethod(String, [IsDDElement], x -> DDRepToString(UnderlyingElement(x)));
+## ---- Constructors ----
+DDZero := DD([]);
 
 DeclareOperation("dd", [IsCubicElement, IsCubicElement]);
-
 InstallMethod(dd, [IsCubicElement, IsCubicElement], function(cubicEl1, cubicEl2)
 	if IsZero(cubicEl1) or IsZero(cubicEl2) then
 		return DDZero;
@@ -124,6 +125,7 @@ InstallMethod(dd, [IsCubicElement, IsCubicElement], function(cubicEl1, cubicEl2)
 		return DD([[One(ComRing), cubicEl1, cubicEl2]]);
 	fi;
 end);
+
 
 # Scalar multiplication ComRing x DD -> DD
 InstallOtherMethod(\*, "for ComRingElement and DDElement", [IsRingElement, IsDDElement], 2, function(comEl, ddEl)

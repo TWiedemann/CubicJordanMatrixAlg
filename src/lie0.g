@@ -212,7 +212,7 @@ InstallOtherMethod(\*, "for ComRingElement and L0Element", [IsRingElement, IsL0E
 	));
 end);
 
-## Action of L0 on Lie
+## ---- Action of L0 on Lie ----
 
 # a: Element of ComRing or of Brown
 # Output: The result of the action of xi on a (regarded as an element of L_1 or L_2)

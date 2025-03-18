@@ -2,7 +2,7 @@
 F4Vec := FullRowSpace(Rationals, 4); # Euclidean space (with standard inner product) containing F_4
 
 # Return list of positive short roots
-_F4ShortPosRoots := function()
+_F4ShortRoots := function()
 	local list, i, j, ei, ej, a;
 	list := [];
 	for i in [1..4] do
@@ -21,7 +21,7 @@ _F4ShortPosRoots := function()
 end;
 
 # Return list of positive long roots
-_F4LongPosRoots := function()
+_F4LongRoots := function()
 	local list, i, e, a, b, c, d;
 	list := [];
 	for i in [1..4] do
@@ -43,12 +43,9 @@ _F4LongPosRoots := function()
 	return list;
 end;
 
-F4ShortPosRoots := _F4ShortPosRoots();
-F4ShortRoots := Concatenation(F4ShortPosRoots, -F4ShortPosRoots);
-F4LongPosRoots := _F4LongPosRoots();
-F4LongRoots := Concatenation(F4LongPosRoots, -F4LongPosRoots);
-F4PosRoots := Concatenation(F4ShortPosRoots, F4LongPosRoots);
-F4Roots := Concatenation(F4PosRoots, -F4PosRoots);
+F4ShortRoots := _F4ShortRoots();
+F4LongRoots := _F4LongRoots();
+F4Roots := Concatenation(F4ShortRoots, F4LongRoots);
 
 A2Roots := [[1,-1,0], [1,0,-1], [0,1,-1], [0,-1,1], [-1,0,1], [-1,1,0]];
 
@@ -59,4 +56,52 @@ end;
 # Returns \sigma_a(b), the reflection along a applied to b
 F4Refl := function(a, b)
 	return b - F4CartanInt(a,b)*a;
+end;
+
+F4RootG2Coord := function(root)
+	local sum;
+	if not root in F4Roots then
+		Error("Not a root in F4");
+		return fail;
+	fi;
+	# L_2
+	if root = [2, 0, 0, 0] then
+		return [2, -1];
+	# L_{-2}
+	elif root = [-2, 0, 0, 0] then
+		return [-2, -1];
+	# ComRing-parts of the Brown algebra
+	elif root = [-1, -1, -1, -1] then
+		return [-1, -2];
+	elif root = [-1, 1, 1, 1] then
+		return [-1, 1];
+	elif root = [1, -1, -1, -1] then
+		return [1, -1];
+	elif root = [1, 1, 1, 1] then
+		return [1, 2];
+	# L_0
+	elif root[1] = 0 then
+		sum := Sum(root);
+		if sum = 0 then
+			return [0, 0];
+		elif sum > 0 then
+			return [0, 1];
+		else
+			return [0, -1];
+		fi;
+	# Cubic-parts of L_{-1}
+	elif root[1] = -1 then
+		if Sum(root) = 0 then
+			return [-1, 0];
+		else
+			return [-1, -1];
+		fi;
+	# Cubic-parts of L_1
+	else
+		if Sum(root) = 0 then
+			return [1, 0];
+		else
+			return [1, 1];
+		fi;
+	fi;
 end;

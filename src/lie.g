@@ -171,6 +171,8 @@ DeclareOperation("DDToLieEmb", [IsDDElement]);
 DeclareOperation("L0ToLieEmb", [IsL0Element]);
 DeclareOperation("BrownPosToLieEmb", [IsBrownElement]);
 DeclareOperation("BrownNegToLieEmb", [IsBrownElement]);
+DeclareOperation("CubicPosToLieEmb", [IsCubicElement]);
+DeclareOperation("CubicNegToLieEmb", [IsCubicElement]);
 
 InstallMethod(L0ToLieEmb, [IsL0Element], function(L0el)
 	return LieElFromTuple(Zero(ComRing), BrownZero, L0el, BrownZero, Zero(ComRing));
@@ -184,6 +186,14 @@ end);
 
 InstallMethod(BrownNegToLieEmb, [IsBrownElement], function(brownEl)
 	return LieElFromTuple(Zero(ComRing), brownEl, L0Zero, BrownZero, Zero(ComRing));
+end);
+
+InstallMethod(CubicPosToLieEmb, [IsCubicElement], function(cubicEl)
+	return L0ToLieEmb(CubicPosToL0Emb(cubicEl));
+end);
+
+InstallMethod(CubicNegToLieEmb, [IsCubicElement], function(cubicEl)
+	return L0ToLieEmb(CubicNegToL0Emb(cubicEl));
 end);
 
 DeclareOperation("Liedd", [IsCubicElement, IsCubicElement]);
@@ -224,7 +234,7 @@ InstallOtherMethod(IsZero, [IsLieElement], function(lieEl)
 	return true;
 end);
 
-# Display and String
+## Display and String
 
 InstallMethod(String, [IsLieElement], x -> LieRepToString(UnderlyingElement(x)));
 
@@ -273,9 +283,9 @@ InstallMethod(LieRootHomF4, [IsList, IsRingElement], function(root, a)
 	elif root[1] = 0 then
 		sum := Sum(root{[2..4]});
 		if sum = 2 then
-			return CubicPosToL0Emb(CubicRootHomF4(root, a));
+			return CubicPosToLieEmb(CubicRootHomF4(root, a));
 		elif sum = -2 then
-			return CubicNegToL0Emb(CubicRootHomF4(root, a));
+			return CubicNegToLieEmb(CubicRootHomF4(root, a));
 		else # sum = 0
 			return DDToLieEmb(DDRootHomA2(root{[2..4]}, a));
 		fi;
@@ -286,4 +296,52 @@ InstallMethod(LieRootHomF4, [IsList, IsRingElement], function(root, a)
 	elif root = [2, 0, 0, 0] then
 		return a * LieY;
 	fi;
+end);
+
+## ---- Generators ----
+
+# i: Integer.
+# Output: A list of generic basic elements of Lie, involving indeterminates t_j, a_j
+# with j in [2*i+1, 2*i+2]
+LieGensAsModule := function(i)
+	local t1, a1, gens, cubicGens1, cubicGens2, root, cubic1, cubic2;
+	t1 := ComRingBasicIndet(2*i + 1);
+	a1 := ConicAlgBasicIndet(2*i + 1);
+	gens := [LieXi, LieZeta];
+	for root in F4Roots do
+		if F4RootG2Coord(root) <> [0, 0] then
+			if root in F4ShortRoots then
+				Add(gens, LieRootHomF4(root, a1));
+			else
+				Add(gens, LieRootHomF4(root, t1));
+			fi;
+		fi;
+	od;
+	cubicGens1 := CubicGensAsModule(2*i + 1);
+	cubicGens2 := CubicGensAsModule(2*i + 2);
+	for cubic1 in cubicGens1 do
+		for cubic2 in cubicGens2 do
+			Add(gens, Liedd(cubic1, cubic2));
+		od;
+	od;
+	return gens;
+end;
+
+### ---- Equality test ----
+
+DeclareOperation("TestEquality", [IsLieElement, IsLieElement, IsBool]);
+InstallMethod(TestEquality, [IsLieElement, IsLieElement, IsBool], function(lieEl1, lieEl2, print)
+	local diff, isEqual, i, part;
+	diff := lieEl1 - lieEl2;
+	isEqual := true;
+	for i in [-2..2] do
+		part := LiePart(diff, i);
+		if not IsZero(part) then
+			isEqual := false;
+			if print then
+				Print(String(i), " part: ", part, "\n");
+			fi;
+		fi;
+	od;
+	return isEqual;
 end);
