@@ -7,6 +7,9 @@ InstallMethod(TestEquality, [IsLieElement, IsLieElement, IsBool], function(lieEl
 	isEqual := true;
 	for i in [-2..2] do
 		part := LiePart(diff, i);
+		if i = 0 then
+			part := ApplyDistAndPeirceLaw(part);
+		fi;
 		if not IsZero(part) then
 			isEqual := false;
 			if print then
@@ -34,6 +37,33 @@ TestDDRelation := function()
 			Display(gen);
 			Display(a);
 		fi;
+	od;
+end;
+
+TestDRelation := function()
+	local indices, list, i, j, l, a, x, b, y, cubicGeneric;
+	indices := [[1,1,2], [1,2,2], [1,3,2], [2,1,1], [2,2,1], [2,3,1]];
+	for list in indices do
+		i := list[1];
+		j := list[2];
+		l := list[3];
+		if i = j then
+			a := ComRingBasicIndet(4);
+			x := CubicComEl(i, a);
+		else
+			a := ConicAlgBasicIndet(4);
+			x := CubicAlgElMat(i, j, a);
+		fi;
+		if j = l then
+			b := ComRingBasicIndet(5);
+			y := CubicComEl(j, b);
+		else
+			b := ConicAlgBasicIndet(5);
+			y := CubicAlgElMat(j, l, b);
+		fi;
+		cubicGeneric := CubicGenericEl(0);
+		Display(list);
+		Display(JordanD(x, y, cubicGeneric));
 	od;
 end;
 
