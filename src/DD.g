@@ -138,6 +138,48 @@ InstallOtherMethod(\*, "for ComRingElement and DDElement", [IsRingElement, IsDDE
 	return DD(resultRep);
 end);
 
+## ---- Simplifier ----
+
+# ddEl: Element of DD.
+# Output: An element of DD which (mathematically) represents the same element of DD,
+# but each summand of the output is of the form t * dd_{a,b} for some t \in ComRing and
+# a, b \in Cubic where both a and b have exactly one non-zero entry.
+# Further, each summand of the form dd_{a[ij], b[kl]} with Intersection([i,j], [k,l]) = []
+# is removed (because it represents 0). [DMW, 3.8, 5.2, 5.3 (iii)]
+DeclareOperation("ApplyDistAndPeirceLaw", [IsDDElement]);
+InstallMethod(ApplyDistAndPeirceLaw, [IsDDElement], function(ddEl)
+	local coeffList, newCoeffList, summand, coeff, cubic1, cubic2, summand1, summand2,
+			i, j, k, l, summandList1, summandList2;
+	coeffList := DDCoeffList(ddEl);
+	newCoeffList := [];
+	for summand in coeffList do
+		coeff := summand[1];
+		cubic1 := summand[2];
+		cubic2 := summand[3];
+		# Split up the summands of cubic1 and cubic2 (distributive law)
+		for summandList1 in SummandsWithPos(cubic1) do
+			for summandList2 in SummandsWithPos(cubic2) do
+				# TODO: Apply CoefficientsAndMagmaElements to elements of ConicAlg and push all coefficients from ComRing to coeff
+				# In the same run, push all elements of ConicAlg to the right factor whenever possible
+				i := summandList1[1];
+				j := summandList1[2];
+				summand1 := summandList1[3];
+				k := summandList2[1];
+				l := summandList2[2];
+				summand2 := summandList2[3];
+				# Remove zero summands (Peirce law)
+				if not IsEmpty(Intersection([i,j], [k,l])) then
+					Add(newCoeffList, [coeff, summand1, summand2]);
+				fi;
+			od;
+		od;
+	od;
+	if SanitizeImmediately then
+		DDSanitizeRep(newCoeffList);
+	fi;
+	return DD(newCoeffList);
+end);
+
 ## ------- Root homomorphisms ----
 
 DeclareOperation("DDRootHomA2", [IsList, IsRingElement]);

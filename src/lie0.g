@@ -328,3 +328,15 @@ InstallMethod(L0AsEndo, [IsL0Element, IsInt], function(L0El, i)
 		return fail;
 	fi;
 end);
+
+## ---- Simplifier ----
+
+# L0el: Element of L0.
+# Output: The same element with ApplyDistAndPeirceLaw applied to the DD-part.
+DeclareOperation("ApplyDistAndPeirceLaw", [IsL0Element]);
+InstallMethod(ApplyDistAndPeirceLaw, [IsL0Element], function(L0el)
+	local rep;
+	rep := StructuralCopy(UnderlyingElement(L0el));
+	rep.dd := ApplyDistAndPeirceLaw(rep.dd);
+	return L0(rep);
+end);

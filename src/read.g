@@ -1,4 +1,4 @@
-windows := true;
+windows := false; # If true, the absolute paths to the files on my Windows PC are used
 
 myFilePath := function(s)
 	if windows then

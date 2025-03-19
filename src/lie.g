@@ -259,6 +259,18 @@ InstallOtherMethod(\*, "for ComRingElement and LieElement", [IsRingElement, IsLi
 	));
 end);
 
+## ---- Simplifier ----
+
+# lieEl: Element of Lie.
+# Output: The same element with ApplyDistAndPeirceLaw applied to the DD-part.
+DeclareOperation("ApplyDistAndPeirceLaw", [IsLieElement]);
+InstallMethod(ApplyDistAndPeirceLaw, [IsLieElement], function(lieEl)
+	local rep;
+	rep := StructuralCopy(UnderlyingElement(lieEl));
+	rep.zero := ApplyDistAndPeirceLaw(rep.zero);
+	return Lie(rep);
+end);
+
 ### Root homomorphisms
 
 DeclareOperation("LieRootHomF4", [IsList, IsRingElement]);

@@ -188,7 +188,10 @@ CubicGenericEl := function(i)
 	if 3*i+3 > ConicAlg_rank or 3*i+3 > ComRing_rank then
 		return fail;
 	else
-		return CubicEl(ComRingBasicIndet(3*i+1), ComRingBasicIndet(3*i+2), ComRingBasicIndet(3*i+3), ConicAlgBasicIndet(3*i+1), ConicAlgBasicIndet(3*i+2), ConicAlgBasicIndet(3*i+3));
+		return CubicEl(
+			ComRingBasicIndet(3*i+1), ComRingBasicIndet(3*i+2), ComRingBasicIndet(3*i+3),
+			ConicAlgBasicIndet(3*i+1), ConicAlgBasicIndet(3*i+2), ConicAlgBasicIndet(3*i+3)
+		);
 	fi;
 end;
 
@@ -201,6 +204,40 @@ CubicGensAsModule := function(i)
 	return [CubicComEl(1, t), CubicComEl(2, t), CubicComEl(3, t),
 				CubicAlgEl(1, a), CubicAlgEl(2, a), CubicAlgEl(3, a)];
 end;
+
+## ---- Summands ---.
+
+DeclareOperation("SummandsWithPos", [IsCubicElement]);
+DeclareOperation("Summands", [IsCubicElement]);
+
+# cubicEl: Element of Cubic.
+# Output: List with (at most 6) entries of the form [i, j, cubic]. Here cubic is an
+# element in Cubic with non-zero coefficient at position [i, j] and zero at every other
+# position. The sum of all entries cubic equals cubicEl.
+InstallMethod(SummandsWithPos, [IsCubicElement], function(cubicEl)
+	local result, i, a, t;
+	result := [];
+	for i in [1..3] do
+		t := CubicElComCoeff(cubicEl, i);
+		if not IsZero(t) then
+			Add(result, [i, i, CubicComEl(i, t)]);
+		fi;
+	od;
+	for i in [1..3] do
+		a := CubicElAlgCoeff(cubicEl, i);
+		if not IsZero(a) then
+			Add(result, [CycPerm[i][2], CycPerm[i][3], CubicAlgEl(i, a)]);
+		fi;
+	od;
+	return result;
+end);
+
+# cubicEl: Element of Cubic.
+# Output: List of the (at most 6) basic summands of cubicEl, regarded as elements of Cubic.
+InstallMethod(Summands, [IsCubicElement], function(cubicEl)
+	return List(SummandsWithPos, x -> x[3]);
+end);
+
 
 ## ----- Structural maps of a cubic norm structure ------
 
