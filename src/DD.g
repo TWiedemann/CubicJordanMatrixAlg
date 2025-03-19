@@ -148,36 +148,100 @@ end);
 # is removed (because it represents 0). [DMW, 3.8, 5.2, 5.3 (iii)]
 DeclareOperation("ApplyDistAndPeirceLaw", [IsDDElement]);
 InstallMethod(ApplyDistAndPeirceLaw, [IsDDElement], function(ddEl)
-	local coeffList, newCoeffList, summand, coeff, cubic1, cubic2, summand1, summand2,
-			i, j, k, l, summandList1, summandList2;
-	coeffList := DDCoeffList(ddEl);
-	newCoeffList := [];
+	local coeffList, resultCoeffList, summand, cubic1, cubic2, summand1, summand2,
+			i1, i2, j1, j2, summandList1, summandList2, p, q, aCoeffList, bCoeffList,
+			aMonomial, bMonomial, ddCoeffList, a, b, aCoeff, bCoeff, ddCoeff;
+	# x: Element of ComRing or ConicAlg.
+	# Output: If x in ComRing: [x, One(ComRing)].
+	# If x in ConicAlg: List [t_1, c_1, ..., t_k, c_k] with t_i in ComRing and c_i in ConicAlg
+	# where c_i is a monomial (i.e., is the image of an element of ConicAlgMag).
+	# The output l satisfies x = sum_{i=1}^{Length(l)} l[2*i-1] * l[2*i]
+	CoeffList := function(x)
+
+	end;
+	ddCoeffList := DDCoeffList(ddEl);
+	resultCoeffList := [];
 	for summand in coeffList do
-		coeff := summand[1];
+		ddCoeff := summand[1];
 		cubic1 := summand[2];
 		cubic2 := summand[3];
 		# Split up the summands of cubic1 and cubic2 (distributive law)
-		for summandList1 in SummandsWithPos(cubic1) do
-			for summandList2 in SummandsWithPos(cubic2) do
+		for summandList1 in Summands(cubic1) do
+			for summandList2 in Summands(cubic2) do
 				# TODO: Apply CoefficientsAndMagmaElements to elements of ConicAlg and push all coefficients from ComRing to coeff
 				# In the same run, push all elements of ConicAlg to the right factor whenever possible
-				i := summandList1[1];
-				j := summandList1[2];
-				summand1 := summandList1[3];
-				k := summandList2[1];
-				l := summandList2[2];
-				summand2 := summandList2[3];
+				i1 := summandList1[1];
+				j1 := summandList1[2];
+				a := summandList1[3]; # in ComRing or Conicalg
+				i2 := summandList2[1];
+				j2 := summandList2[2];
+				b := summandList2[3]; # in ComRing or ConicAlg
+				intersection := Intersection([i1,j1], [i2,j2]);
+				if sharedIndices = 1 then
+					# Define k, p, l such that dd(cubic1, cubic2) lies in Z_{kp,pl}
+					p := intersection[1];
+					if j1 = p then
+						k := i1;
+					else
+						k := j1;
+					fi;
+					if i2 = p then
+						l := j2;
+					else
+						l := i2;
+					fi;
+					# Replace a by ConicAlgInv(a) if necessary to ensure that
+					# cubic1 = CubicAlgElMat(k, p, a)
+					if i1 <> k then
+						# Since { i1, j1 } = { k, p }, we have a in ConicAlg in this case
+						a := ConicAlgInv(a);
+					fi;
+					# Similarly for b
+					if j2 <> l then
+						b := ConicAlgInv(b);
+					fi;
+
+				elif sharedIndices = 2 then
+
+				fi;
 				# Remove zero summands (Peirce law)
-				if not IsEmpty(Intersection([i,j], [k,l])) then
-					Add(newCoeffList, [coeff, summand1, summand2]);
+				if not IsEmpty(Intersection([i1,j1], [i2,j2])) then
+					# Split up a and b into sums of monomials
+					aCoeffList := CoefficientsAndMagmaElements(a);
+					bCoeffList := CoefficientsAndMagmaElements(b);
+					for p in [1..Length(aCoeffList)/2] do
+						for q in [1..Length(bCoeffList)/2] do
+							aCoeff := aCoeffList[2*p - 1]; # in ComRing
+							bCoeff := bCoeffList[2*q - 1]; # in ComRing
+							aMonomial := aCoeffList[2*p]; # in ConicAlgMag
+							bMonomial := bCoeffList[2*q]; # in ConicAlgMag
+							if i1 <> j1 and Set([i1, j1]) = Set([i2, j2]) then
+								Add(
+									resultCoeffList,
+									[ 
+										ddCoeff*aCoeff*bCoeff,
+										ConicAlgMagToAlg(aMonomial), 
+										ConicAlgMagToAlg(bMonomial) 
+									]
+								);
+							else
+								Add(
+									resultCoeffList,
+									[
+										ddCoeff*aCoeff*bCoeff,
+									]
+								);
+							fi;
+						od;
+					od;
 				fi;
 			od;
 		od;
 	od;
 	if SanitizeImmediately then
-		DDSanitizeRep(newCoeffList);
+		DDSanitizeRep(resultCoeffList);
 	fi;
-	return DD(newCoeffList);
+	return DD(resultCoeffList);
 end);
 
 ## ------- Root homomorphisms ----

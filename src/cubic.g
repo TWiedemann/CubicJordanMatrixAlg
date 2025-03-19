@@ -171,17 +171,24 @@ CubicAlgElOne := function(i, j)
 	return CubicAlgEl(i, j, One(ConicAlg));
 end;
 
+# i, j: Indices 1, 2 or 3
+# a: Element of ComRing or ConicAlg
+# Output: The element of Cubic with a at position (i, j).
+CubicElMat := function(i, j, a)
+	if i = j and a in ComRing then
+		return CubicComEl(i, a);
+	elif i <> j and a in ConicAlg then
+		return CubicAlgElMat(i, j, a);
+	else
+		Error("Invalid input");
+		return fail;
+	fi;
+end;
+
 CubicEl := function(t11, t22, t33, a1, a2, a3)
 	return CubicComEl(1, t11) + CubicComEl(2, t22) + CubicComEl(3, t33) + CubicAlgEl(1, a1) + CubicAlgEl(2, a2) + CubicAlgEl(3, a3);
 end;
 
-# CubicGenericElForIndets := function(i11, i22, i33, j12, j13, j23)
-# 	if Maximum(i11, i22, i33) > ComRing_rank or Maximum(j12, j13, j23) > ConicAlg_rank then
-# 		return fail;
-# 	else
-# 		return CubicEl(ComRingBasicIndet(i11), ComRingBasicIndet(i22), ComRingBasicIndet(i33), ConicAlgBasicIndet(j12), ConicAlgBasicIndet(j13), ConicAlgBasicIndet(j23));
-# 	fi;
-# end;
 
 # Returns generic element with indeterminate numbers 3*i+1, 3*i+2, 3*i+3
 CubicGenericEl := function(i)
@@ -207,26 +214,25 @@ end;
 
 ## ---- Summands ---.
 
-DeclareOperation("SummandsWithPos", [IsCubicElement]);
+# DeclareOperation("SummandsWithPos", [IsCubicElement]);
 DeclareOperation("Summands", [IsCubicElement]);
 
 # cubicEl: Element of Cubic.
-# Output: List with (at most 6) entries of the form [i, j, cubic]. Here cubic is an
-# element in Cubic with non-zero coefficient at position [i, j] and zero at every other
-# position. The sum of all entries cubic equals cubicEl.
-InstallMethod(SummandsWithPos, [IsCubicElement], function(cubicEl)
+# Output: List with (at most 6) entries of the form [i, j, a]. Here a is an
+# element in ComRing or ConicAlg. The sum of all elements CubicElMat(i, j, a) equals cubicEl.
+InstallMethod(Summands, [IsCubicElement], function(cubicEl)
 	local result, i, a, t;
 	result := [];
 	for i in [1..3] do
 		t := CubicElComCoeff(cubicEl, i);
 		if not IsZero(t) then
-			Add(result, [i, i, CubicComEl(i, t)]);
+			Add(result, [i, i, t]);
 		fi;
 	od;
 	for i in [1..3] do
 		a := CubicElAlgCoeff(cubicEl, i);
 		if not IsZero(a) then
-			Add(result, [CycPerm[i][2], CycPerm[i][3], CubicAlgEl(i, a)]);
+			Add(result, [CycPerm[i][2], CycPerm[i][3], a]);
 		fi;
 	od;
 	return result;
@@ -234,9 +240,9 @@ end);
 
 # cubicEl: Element of Cubic.
 # Output: List of the (at most 6) basic summands of cubicEl, regarded as elements of Cubic.
-InstallMethod(Summands, [IsCubicElement], function(cubicEl)
-	return List(SummandsWithPos, x -> x[3]);
-end);
+# InstallMethod(Summands, [IsCubicElement], function(cubicEl)
+# 	return List(SummandsWithPos, x -> x[3]);
+# end);
 
 
 ## ----- Structural maps of a cubic norm structure ------

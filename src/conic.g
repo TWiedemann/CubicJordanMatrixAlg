@@ -231,6 +231,7 @@ ComRingIndetNames := _ComRingIndetNames();
 ComRing := PolynomialRing(BaseRing, ComRingIndetNames);
 ConicAlgMag := FreeMagmaWithOne(ConicAlgIndetNames);
 ConicAlg := FreeMagmaRing(ComRing, ConicAlgMag);
+ConicAlgMagToAlg := x -> ImageElm(Embedding(ConicAlgMag, ConicAlg), x);
 
 ConicAlgMagIndets := GeneratorsOfMagmaWithOne(ConicAlgMag);
 embConicAlgMag := x -> ImageElm(Embedding(ConicAlgMag, ConicAlg), x);
