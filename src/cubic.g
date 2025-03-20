@@ -99,7 +99,7 @@ CubicElComCoeff := function(cubicEl, i)
 end;
 
 # Return the matrix entry of cubicEl at position (i,j) "without TwistDiag"
-CubicCoeffMat := function(cubicEl, i, j)
+CubicElCoeffMat := function(cubicEl, i, j)
 	local k;
 	if not (i in [1,2,3] and j in [1,2,3]) then
 		return fail;
