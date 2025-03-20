@@ -150,15 +150,16 @@ DeclareOperation("ApplyDistAndPeirceLaw", [IsDDElement]);
 InstallMethod(ApplyDistAndPeirceLaw, [IsDDElement], function(ddEl)
 	local coeffList, resultCoeffList, summand, cubic1, cubic2, summand1, summand2,
 			i1, i2, j1, j2, summandList1, summandList2, p, q, aCoeffList, bCoeffList,
-			aMonomial, bMonomial, ddCoeffList, a, b, aCoeff, bCoeff, ddCoeff;
+			aMonomial, bMonomial, ddCoeffList, a, b, aCoeff, bCoeff, ddCoeff,
+			intersection, k, l;
 	# x: Element of ComRing or ConicAlg.
 	# Output: If x in ComRing: [x, One(ComRing)].
 	# If x in ConicAlg: List [t_1, c_1, ..., t_k, c_k] with t_i in ComRing and c_i in ConicAlg
 	# where c_i is a monomial (i.e., is the image of an element of ConicAlgMag).
 	# The output l satisfies x = sum_{i=1}^{Length(l)} l[2*i-1] * l[2*i]
-	CoeffList := function(x)
+	# CoeffList := function(x)
 
-	end;
+	# end;
 	ddCoeffList := DDCoeffList(ddEl);
 	resultCoeffList := [];
 	for summand in coeffList do
@@ -177,7 +178,7 @@ InstallMethod(ApplyDistAndPeirceLaw, [IsDDElement], function(ddEl)
 				j2 := summandList2[2];
 				b := summandList2[3]; # in ComRing or ConicAlg
 				intersection := Intersection([i1,j1], [i2,j2]);
-				if sharedIndices = 1 then
+				if Size(intersection) = 1 then
 					# Define k, p, l such that dd(cubic1, cubic2) lies in Z_{kp,pl}
 					p := intersection[1];
 					if j1 = p then
@@ -201,7 +202,7 @@ InstallMethod(ApplyDistAndPeirceLaw, [IsDDElement], function(ddEl)
 						b := ConicAlgInv(b);
 					fi;
 
-				elif sharedIndices = 2 then
+				elif Size(intersection) = 2 then
 
 				fi;
 				# Remove zero summands (Peirce law)
