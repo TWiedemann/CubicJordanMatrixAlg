@@ -312,14 +312,18 @@ end);
 
 ## ---- Generators ----
 
-# i: Integer.
-# Output: A list of generic basic elements of Lie, involving indeterminates t_j, a_j
-# with j in [2*i+1, 2*i+2]
-LieGensAsModule := function(i)
-	local t1, a1, gens, cubicGens1, cubicGens2, root, cubic1, cubic2;
-	t1 := ComRingBasicIndet(2*i + 1);
-	a1 := ConicAlgBasicIndet(2*i + 1);
+# comIndetNum, conicIndetNum: Numbers of the indeterminates that should be used.
+# Output: A list of generic basic elements of Lie, involving indeterminates
+# t_comIndetNum, a_conicIndetNum, a_{conicIndetNum+1}.
+# Uses the formulas from [DMW, 5.20] (d_{a[ij],b[jk]} = TwistDiag[j]*d_{1[ii],ab[kk]})
+# to reduce the number of generators.
+LieGensAsModule := function(comIndetNum, conicIndetNum)
+	local t1, a1, a2, gens, root, i, j, gen;
+	t1 := ComRingBasicIndet(comIndetNum);
+	a1 := ConicAlgBasicIndet(conicIndetNum);
+	a2 := ConicAlgBasicIndet(conicIndetNum + 1);
 	gens := [LieXi, LieZeta];
+	# Generators outside DD
 	for root in F4Roots do
 		if F4RootG2Coord(root) <> [0, 0] then
 			if root in F4ShortRoots then
@@ -329,8 +333,47 @@ LieGensAsModule := function(i)
 			fi;
 		fi;
 	od;
-	cubicGens1 := CubicGensAsModule(2*i + 1);
-	cubicGens2 := CubicGensAsModule(2*i + 2);
+	# Generators in DD
+	# Generators of Z_{i \to j} for i <> j and of Z_{ii,ii}
+	for i in [1..3] do
+		for j in [1..3] do
+			if i = j then
+				gen := Liedd(CubicComEl(i, One(ComRing)), CubicComEl(i, t1));
+			else
+				gen := Liedd(CubicComEl(i, One(ComRing)), CubicAlgElMat(i, j, a1));
+			fi;
+			Add(gens, gen);
+		od;
+	od;
+	# Generators of Z_{ij,ji} for i <> j
+	for i in [1..3] do
+		for j in [i+1..3] do
+			Add(gens, Liedd(CubicAlgElMat(i, j, a1), CubicAlgElMat(j, i, a2)));
+		od;
+	od;
+	return gens;
+end;
+
+# (Probably not used)
+# As LieGensAsModule, but does not use the formulas from [DMW, 5.20].
+LieGensAsModuleUnsimplified := function(indetNum)
+	local t1, a1, gens, root, cubic1, cubic2, cubicGens1, cubicGens2;
+	t1 := ComRingBasicIndet(2*indetNum + 1);
+	a1 := ConicAlgBasicIndet(2*indetNum + 1);
+	gens := [LieXi, LieZeta];
+	# Generators outside DD
+	for root in F4Roots do
+		if F4RootG2Coord(root) <> [0, 0] then
+			if root in F4ShortRoots then
+				Add(gens, LieRootHomF4(root, a1));
+			else
+				Add(gens, LieRootHomF4(root, t1));
+			fi;
+		fi;
+	od;
+	# Generators in DD
+	cubicGens1 := CubicGensAsModule(2*indetNum + 1);
+	cubicGens2 := CubicGensAsModule(2*indetNum + 2);
 	for cubic1 in cubicGens1 do
 		for cubic2 in cubicGens2 do
 			Add(gens, Liedd(cubic1, cubic2));
@@ -338,4 +381,3 @@ LieGensAsModule := function(i)
 	od;
 	return gens;
 end;
-
