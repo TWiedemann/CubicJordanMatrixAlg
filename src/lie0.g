@@ -87,16 +87,16 @@ L0Spec := rec(
 			coeff := summand[1]; # in ComRing
 			cubic1 := summand[2];
 			cubic2 := summand[3];
-			cubicPos := cubicPos + JordanD(cubic1, cubic2, b.cubicPos);
-			cubicNeg := cubicNeg - JordanD(cubic2, cubic1, b.cubicNeg);
+			cubicPos := cubicPos + coeff*JordanD(cubic1, cubic2, b.cubicPos);
+			cubicNeg := cubicNeg - coeff*JordanD(cubic2, cubic1, b.cubicNeg);
 		od;
 		# [a.cubicPos + b.cubicNeg, b.dd]
 		for summand in DDCoeffList(b.dd) do
 			coeff := summand[1]; # in ComRing
 			cubic1 := summand[2];
 			cubic2 := summand[3];
-			cubicPos := cubicPos - JordanD(cubic1, cubic2, a.cubicPos);
-			cubicNeg := cubicNeg + JordanD(cubic2, cubic1, a.cubicNeg);
+			cubicPos := cubicPos - coeff*JordanD(cubic1, cubic2, a.cubicPos);
+			cubicNeg := cubicNeg + coeff*JordanD(cubic2, cubic1, a.cubicNeg);
 		od;
 		# Every other pair of summands has zero bracket: xi and zeta centralise DD+xi+zeta
 		# and xi centralises L0 ([DMW, 3.7]).
