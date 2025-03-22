@@ -304,7 +304,7 @@ InstallMethod(L0AsEndo, [IsL0Element, IsInt], function(L0El, i)
 				c2 := summand[3]; # in Cubic'
 				newLam := newLam - coeff*lam*CubicBiTr(c, c2);
 				newB := newB + coeff*(JordanD(c, c2, b) - CubicBiTr(c, c2)*b);
-				newB2 := newB2 - coeff*(JordanD(c2, c, b2) + CubicBiTr(c, c2)*b2);
+				newB2 := newB2 + coeff*(-JordanD(c2, c, b2) + CubicBiTr(c, c2)*b2);
 				newMu := newMu + coeff*(mu*CubicBiTr(c, c2));
 			od;
 			result := BrownElFromTuple(newLam, newB, newB2, newMu);
