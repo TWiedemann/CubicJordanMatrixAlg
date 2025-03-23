@@ -87,3 +87,21 @@ InstallMethod(GrpRootHomF4, [IsList, IsRingElement], function(root, a)
 	fi;
 	return F4Exp(LieRootHomF4(root, a));
 end);
+
+# InstallMethod(GrpRootHomF4, [IsList, IsRingElement], function(root, a)
+
+# 	if not root in F4Roots then
+# 		Error("Root not in F4");
+# 		return fail;
+# 	fi;
+# 	return LieEndo(function(lieEl)
+
+# 		xCoeff := LiePart(lieEl, -2);
+# 		brownNeg := LiePart(lieEl, -1);
+# 		zero := LiePart(lieEl, 0);
+# 		brownPos := LiePart(lieEl, 1);
+# 		yCoeff := LiePart(lieEl, 2);
+# 	end);
+# 	if root = [-2, 0, 0, 0] then
+# 		return 
+# end);

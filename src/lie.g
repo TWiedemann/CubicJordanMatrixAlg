@@ -276,7 +276,7 @@ end);
 DeclareOperation("LieRootHomF4", [IsList, IsRingElement]);
 
 InstallMethod(LieRootHomF4, [IsList, IsRingElement], function(root, a)
-	local sum;
+	local sum, G2Root;
 	if root in F4LongRoots then
 		ReqComRingEl(a);
 	elif root in F4ShortRoots then
@@ -285,30 +285,37 @@ InstallMethod(LieRootHomF4, [IsList, IsRingElement], function(root, a)
 		Error("Argument must be a root in F4");
 		return fail;
 	fi;
+	G2Root := F4RootG2Coord(root);
 	# L_{-2}
-	if root = [-2, 0, 0, 0] then
+	if G2Root[1] = -2 then
 		return a * LieX;
 	# L_{-1}
-	elif root[1] = -1 then
+	elif G2Root[1] = -1 then
 		return BrownNegToLieEmb(BrownRootHomF4(root, a));
 	# L_0
-	elif root[1] = 0 then
-		sum := Sum(root{[2..4]});
-		if sum = 2 then
-			return CubicPosToLieEmb(CubicRootHomF4(root, a));
-		elif sum = -2 then
-			return CubicNegToLieEmb(CubicRootHomF4(root, a));
-		else # sum = 0
-			return DDToLieEmb(DDRootHomA2(root{[2..4]}, a));
-		fi;
+	elif G2Root = [0, 1] then
+		return CubicPosToLieEmb(CubicRootHomF4(root, a));
+	elif G2Root = [0, -1] then
+		return CubicNegToLieEmb(CubicRootHomF4(root, a));
+	elif G2Root = [0,0] then
+		return DDToLieEmb(DDRootHomA2(root{[2..4]}, a));
 	# L_1
-	elif root[1] = 1 then
+	elif G2Root[1] = 1 then
 		return BrownPosToLieEmb(BrownRootHomF4(root, a));
 	# L_2
-	elif root = [2, 0, 0, 0] then
+	elif G2Root[1] = 2 then
 		return a * LieY;
 	fi;
 end);
+
+# DeclareOperation("LiePartG2", [IsLieElement, IsList]);
+# InstallMethod(LiePartG2, [IsLieElement, IsList])
+
+# DeclareOperation("LiePartF4", [IsLieElement, IsList]);
+
+# InstallMethod(LiePartF4, [IsLieElement, IsList], function(lieEl, root)
+
+# end);
 
 ## ---- Generators ----
 
