@@ -37,7 +37,34 @@ end;
 
 ConicAlgIndetNames := _ConicAlgIndetNames();
 
+# mRep: External rep of an element of ConicAlgMag.
+# Output: The external rep of the conjugate of this element.
+ConicAlgMagInvOnRep := function(mRep)
+	local replaceByList, replaceList;
+	mRep := reverseNonassocList(mRep);
+	replaceList := [1..ConicAlg_rank];
+	replaceByList := [ConicAlg_rank+1..2*ConicAlg_rank];
+	return ReplaceInNonassocList(mRep, replaceList, replaceByList);
+end;
+
 ## ComRing indeterminates
+
+# a, b, c: External reps of elements of ConicAlgMag
+# Output: 
+ComRingTraceIndetName := function(a, b, c)
+
+	aInv := ConicAlgMagInvOnRep(a);
+	bInv := ConicAlgMagInvOnRep(b);
+	cInv := ConicAlgMagInvOnRep(c);
+	if a in [b, c] or aInv in [b, c] or c in [b, bInv] then
+		return fail;
+	else
+		candidates := [
+			[a, b, c], [b, c, a], [c, a, b],
+			[cInv, bInv, aInv], [aInv, cInv, bInv], [bInv, aInv, cInv]
+		];
+		min := Minimum(candidates);
+end;
 
 # i: Integer.
 # Output: Name of the i-th indeterminate of ComRing.
@@ -54,6 +81,7 @@ ComRingNormIndetName := function(i)
 		return fail;
 	fi;
 end;
+
 
 _ConicAlgInvOnIndexList := function(list)
 	local result, i;
@@ -293,15 +321,18 @@ end;
 
 ## Functions on the rings
 
+# m: Element of ConicAlgMag.
+# Output: Conjugate of m.
 ConicAlgMagInv := function(m)
-	local replaceList, replaceByList;
-	if not m in ConicAlgMag then
-		return fail;
-	fi;
-	m := reverseInMagma(m);
-	replaceList := Concatenation(ConicAlgMagBasicIndets, ConicAlgMagInvIndets);
-	replaceByList := Concatenation(ConicAlgMagInvIndets, ConicAlgMagBasicIndets);
-	return replaceInMagma(ConicAlgMag, m, replaceList, replaceByList);
+	return ObjByExtRep(FamilyObj(One(ConicAlgMag)), ConicAlgMagInvOnRep(ExtRepOfObj(m)));
+	# local replaceList, replaceByList;
+	# if not m in ConicAlgMag then
+	# 	return fail;
+	# fi;
+	# m := reverseInMagma(m);
+	# replaceList := Concatenation(ConicAlgMagBasicIndets, ConicAlgMagInvIndets);
+	# replaceByList := Concatenation(ConicAlgMagInvIndets, ConicAlgMagBasicIndets);
+	# return replaceInMagma(ConicAlgMag, m, replaceList, replaceByList);
 end;
 
 ConicAlgInv := function(a)
@@ -329,17 +360,17 @@ ConicAlgFunctionalFromMagFunctional := function(magFunc)
 end;
 
 
-ConicAlgMagTrOnRep := function(mRep)
-	local assocRep;
-	assocRep := assocRepFromNonAssocRep(mRep);
-	if IsEmpty(assocRep) then
-		return 2*One(ComRing); # Tr(1) = 2
-	elif Length(assocRep) = 1 and assocRep[1] in [ConicAlg_rank+1..2*ConicAlg_rank] then
-		return ComRingTraceIndet([ assocRep[1] - ConicAlg_rank ]); # Tr(a') = Tr(a)
-	else
-		return ComRingTraceIndet(assocRep);
-	fi;
-end;
+# ConicAlgMagTrOnRep := function(mRep)
+# 	local assocRep;
+# 	assocRep := assocRepFromNonAssocRep(mRep);
+# 	if IsEmpty(assocRep) then
+# 		return 2*One(ComRing); # Tr(1) = 2
+# 	elif Length(assocRep) = 1 and assocRep[1] in [ConicAlg_rank+1..2*ConicAlg_rank] then
+# 		return ComRingTraceIndet([ assocRep[1] - ConicAlg_rank ]); # Tr(a') = Tr(a)
+# 	else
+# 		return ComRingTraceIndet(assocRep);
+# 	fi;
+# end;
 
 # We have tr(a_i a_i') = 2*n(a_i). The list _ConicAlgTrExceptions stores the
 # elements a_1*a_1', a_1'*a_1, a_2*a_2', ... of ConicAlgMag and _ConicAlgTrExceptionTraces stores

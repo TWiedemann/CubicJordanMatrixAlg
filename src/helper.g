@@ -23,6 +23,14 @@ end;
 
 ### Functions on lists
 
+# maxLength, maxIndex: Integers at least 1.
+# Output: List of all lists [ a, b, c ] such that a, b, c are external reps of
+# magma elements (with entries at most maxIndex) such that a*b*c has length
+# at most maxLength.
+AllTrReps := function(maxLength, maxIndex)
+
+end;
+
 # rep: External representation of an element of a free magma. I.e. either an integer or a list [ rep1, rep2 ] where rep1, rep2 are external representations.
 # Output: The corresponding associative list.
 # Example: 0 -> [ ], i -> [ i ], [ [ 1, 2 ], 3 ] -> [ 1, 2, 3 ]
@@ -49,6 +57,30 @@ reverseNonassocList := function(list)
 		fi;
 	else
 		return list;
+	fi;
+end;
+
+# list: External representation of an element of a free magma.
+# replaceList, replaceByList: Lists of integers of the same length.
+# Output: The list obtained from list by replacing each entry of the form
+# replaceList[k] by replaceByList[k]
+ReplaceInNonassocList := function(list, replaceList, replaceByList)
+	local l, a, k;
+	l := Length(list);
+	if l = 0 then
+		return list;
+	elif l = 1 then
+		a := list[1];
+		k := Position(replaceList, a);
+		if k = fail then
+			return list;
+		else
+			return [ replaceByList[k] ];
+		fi;
+	elif l = 2 then
+		return List(list, x -> ReplaceInNonassocList(x, replaceList, replaceByList));
+	else
+		return fail;
 	fi;
 end;
 
