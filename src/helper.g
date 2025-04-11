@@ -66,22 +66,32 @@ end;
 # replaceList[k] by replaceByList[k]
 ReplaceInNonassocList := function(list, replaceList, replaceByList)
 	local l, a, k;
-	l := Length(list);
-	if l = 0 then
-		return list;
-	elif l = 1 then
-		a := list[1];
-		k := Position(replaceList, a);
+	if not IsList(list) then
+		k := Position(replaceList, list);
 		if k = fail then
 			return list;
 		else
-			return [ replaceByList[k] ];
+			return replaceByList[k];
 		fi;
-	elif l = 2 then
-		return List(list, x -> ReplaceInNonassocList(x, replaceList, replaceByList));
 	else
-		return fail;
+		return List(list, x -> ReplaceInNonassocList(x, replaceList, replaceByList));
 	fi;
+	# l := Length(list);
+	# if l = 0 then # Should not be possible for an external rep
+	# 	return list;
+	# elif l = 1 then
+	# 	a := list[1];
+	# 	k := Position(replaceList, a);
+	# 	if k = fail then
+	# 		return list;
+	# 	else
+	# 		return [ replaceByList[k] ];
+	# 	fi;
+	# elif l = 2 then
+		
+	# else
+	# 	return fail;
+	# fi;
 end;
 
 # list: A list.
