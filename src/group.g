@@ -88,11 +88,16 @@ InstallMethod(GrpRootHomF4, [IsList, IsRingElement], function(root, a)
 	return F4Exp(LieRootHomF4(root, a));
 end);
 
+DeclareOperation("GrpWeylF4", [IsList, IsRingElement, IsRingElement]);
+InstallMethod(GrpWeylF4, [IsList, IsRingElement, IsRingElement], function(root, a, b)
+	local inv;
+	inv := GrpRootHomF4(-root, b);
+	return inv * GrpRootHomF4(root, a) * inv;
+end);
+
 DeclareOperation("GrpWeylF4", [IsList, IsRingElement]);
 InstallMethod(GrpWeylF4, [IsList, IsRingElement], function(root, a)
-	local inv;
-	inv := GrpRootHomF4(-root, -a^-1);
-	return inv * GrpRootHomF4(root, a) * inv;
+	return GrpWeylF4(root, a, a); # For (some) long roots, we need a, a. For short roots, this is not yet clear.
 end);
 
 DeclareOperation("GrpWeylOneF4", [IsList]);
