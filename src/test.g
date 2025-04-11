@@ -25,7 +25,7 @@ InstallMethod(TestEquality, [IsLieElement, IsLieElement, IsBool], function(lieEl
 end);
 
 
-# Tests equality of two elements in the Lie algebra.
+# Tests equality of two endomorphisms of the Lie algebra.
 # If the output is true, they are equal.
 # Otherwise they may or may not be equal.
 # If two integers comIndetNum and conicIndetNum are provided, they are used
@@ -45,6 +45,9 @@ InstallMethod(TestEquality, [IsLieEndo, IsLieEndo, IsBool, IsInt, IsInt],
 		for gen in gens do
 			if not TestEquality(lieEndo1(gen), lieEndo2(gen), print) then
 				isEqual := false;
+				if print then
+					Print("for ", gen, "\n");
+				fi;
 			fi;
 		od;
 		return isEqual;
@@ -148,13 +151,9 @@ TestGrpRootHoms := function()
 	return isHom;
 end;
 
-# root: Root in F4.
-# Returns true if GrpWeylOneF4(root) can be proven to be a Weyl element,
-# otherwise false.
-TestWeyl := function(root)
-	local w, wInv, root2, a, x, twistList, t, isWeyl, b, y;
-	w := GrpWeylOneF4(root);
-	wInv := GrpWeylOneInvF4(root);
+# Returns true if w is a root-Weyl element. The inverse wInv of w has to be supplied.
+IsWeyl := function(root, w, wInv)
+	local root2, a, x, twistList, t, isWeyl, b, y;
 	for root2 in F4Roots do
 		if root2 in F4ShortRoots then
 			a := ConicAlgBasicIndet(1);
@@ -172,13 +171,24 @@ TestWeyl := function(root)
 				isWeyl := true;
 				break;
 			fi;
-			if not isWeyl then
-				Print("Not a Weyl element on root group ", root2, "\n");
-				return false;
-			fi;
 		od;
+		if not isWeyl then
+			Print("Not a Weyl element on root group ", root2, "\n");
+			return false;
+		fi;
 	od;
 	return true;
+end;
+
+# root: Root in F4.
+# Returns true if GrpWeylOneF4(root) can be proven to be a Weyl element,
+# otherwise false.
+# Uses indeterminates a_1, t_1, a_{ConicAlg_rank}, t_{ComRing_rank}
+TestWeyl := function(root)
+	local w, wInv;
+	w := GrpWeylOneF4(root);
+	wInv := GrpWeylOneInvF4(root);
+	return IsWeyl(root, w, wInv);
 end;
 
 # Uses indeterminates t_1, t_2, a_1, ..., a_4
