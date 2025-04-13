@@ -191,6 +191,20 @@ TestWeyl := function(root)
 	return IsWeyl(root, w, wInv);
 end;
 
+TestLongWeyl := function()
+	local root;
+	for root in F4LongRoots do
+		Print(root, ": ", TestWeyl(root), "\n");
+	od;
+end;
+
+TestLongWeylBackwards := function()
+	local root;
+	for root in Reversed(F4LongRoots) do
+		Print(root, ": ", TestWeyl(root), "\n");
+	od;
+end;
+
 # Uses indeterminates t_1, t_2, a_1, ..., a_4
 DeclareOperation("LieEndoIsAuto", [IsLieEndo]);
 InstallMethod(LieEndoIsAuto, [IsLieEndo], function(f)
