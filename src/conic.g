@@ -1,3 +1,5 @@
+skip_tests := false; # If true, tests whether elements lie in ComRing or ConicAlg are skipped
+
 ## Definition of ConicAlg
 
 ConicAlg := FreeMagmaRing(ComRing, ConicAlgMag);
@@ -20,6 +22,9 @@ DeclareOperation("ReqConicAlgEl", [IsRingElement]);
 DeclareOperation("ReqConicAlgEl", [IsList]);
 
 InstallMethod(ReqComRingEl, [IsRingElement], function(a)
+	if skip_tests then
+		return true;
+	fi;
 	if not IsRationalFunction(a) then
 		Display(a);
 		Error("Invalid input: Must be in ComRing.");
@@ -38,6 +43,9 @@ InstallMethod(ReqComRingEl, [IsList], function(list)
 end);
 
 InstallMethod(ReqConicAlgEl, [IsRingElement], function(a)
+	if skip_tests then
+		return true;
+	fi;
 	if not a in ConicAlg then
 		Display(a);
 		Error("Invalid input: Must be in ConicAlg.");
