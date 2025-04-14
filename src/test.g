@@ -25,44 +25,53 @@ InstallMethod(TestEquality, [IsLieElement, IsLieElement, IsBool], function(lieEl
 end);
 
 
-# Tests equality of two endomorphisms of the Lie algebra.
-# If the output is true, they are equal.
-# Otherwise they may or may not be equal.
+# Tests equality of two endomorphisms f, g of the Lie algebra.
+# If they can be proven to be equal, the output is true.
+# Otherwise the output is a list of lists [a, b] where a is an element of the Lie
+# algebra and b = f(a) - g(a).
 # If two integers comIndetNum and conicIndetNum are provided, they are used
 # as the indeterminates numbers for the generators of Lie in the test.
 # If only one integer is provided, it is used for both indeterminates numbers.
 # If no integer is provided, we use ConicAlg_rank and ComRing_rank.
-# If print = true, additional information is printed for the parts which are not equal.
-DeclareOperation("TestEquality", [IsLieEndo, IsLieEndo, IsBool, IsInt, IsInt]);
-DeclareOperation("TestEquality", [IsLieEndo, IsLieEndo, IsBool, IsInt]);
-DeclareOperation("TestEquality", [IsLieEndo, IsLieEndo, IsBool]);
+DeclareOperation("TestEquality", [IsLieEndo, IsLieEndo, IsInt, IsInt]);
+DeclareOperation("TestEquality", [IsLieEndo, IsLieEndo, IsInt]);
+DeclareOperation("TestEquality", [IsLieEndo, IsLieEndo]);
 
-InstallMethod(TestEquality, [IsLieEndo, IsLieEndo, IsBool, IsInt, IsInt],
-	function(lieEndo1, lieEndo2, print, comIndetNum, conicIndetNum)
-		local gens, gen, isEqual;
+InstallMethod(TestEquality, [IsLieEndo, IsLieEndo, IsInt, IsInt],
+	function(lieEndo1, lieEndo2, comIndetNum, conicIndetNum)
+		local gens, gen, test, errorList;
 		gens := LieGensAsLie(comIndetNum, conicIndetNum);
-		isEqual := true;
+		errorList := [];
 		for gen in gens do
-			if not TestEquality(lieEndo1(gen), lieEndo2(gen), print) then
-				isEqual := false;
-				if print then
-					Print("for ", gen, "\n");
-				fi;
+			test := ApplyDistAndPeirceLaw(lieEndo1(gen) - lieEndo2(gen));
+			if not IsZero(test) then
+				Add(errorList, [gen, test]);
 			fi;
+			# if not TestEquality(lieEndo1(gen), lieEndo2(gen), print) then
+			# 	isEqual := false;
+			# 	if print then
+			# 		Print("for ", gen, "\n");
+			# 	fi;
+			# fi;
 		od;
-		return isEqual;
+		if IsEmpty(errorList) then
+			return true;
+		else
+			return errorList;
+		fi;
+		# return isEqual;
 	end
 );
 
-InstallMethod(TestEquality, [IsLieEndo, IsLieEndo, IsBool, IsInt], 
-	function(lieEndo1, lieEndo2, print, indetNum)
-		return TestEquality(lieEndo1,lieEndo2, print, indetNum, indetNum);
+InstallMethod(TestEquality, [IsLieEndo, IsLieEndo, IsInt], 
+	function(lieEndo1, lieEndo2, indetNum)
+		return TestEquality(lieEndo1,lieEndo2, indetNum, indetNum);
 	end
 );
 
-InstallMethod(TestEquality, [IsLieEndo, IsLieEndo, IsBool], 
-	function(lieEndo1, lieEndo2, print)
-		return TestEquality(lieEndo1,lieEndo2, print, ComRing_rank, ConicAlg_rank);
+InstallMethod(TestEquality, [IsLieEndo, IsLieEndo], 
+	function(lieEndo1, lieEndo2)
+		return TestEquality(lieEndo1,lieEndo2, ComRing_rank, ConicAlg_rank);
 	end
 );
 
@@ -151,40 +160,52 @@ TestGrpRootHoms := function()
 	return isHom;
 end;
 
-# Returns true if w is a root-Weyl element. The inverse wInv of w has to be supplied.
-IsWeyl := function(root, w, wInv)
-	local root2, a, x, twistList, t, isWeyl, b, y;
-	for root2 in F4Roots do
-		if root2 in F4ShortRoots then
+# w, wInv: Elements of LieEndo. It is assumed that wInv = w^-1.
+# Output: true if w can be proven to be a root-Weyl element.
+# Otherwise the output is a list consisting of lists [baseRoot, errorList] where
+# baseRoot is a root and errorList is the list of Lie algebra elements which have to
+# be proven to be zero.
+TestWeyl := function(root, w, wInv)
+	local baseRoot, baseRootErrorList, isWeylOnBaseRoot, errorList, a, x, twistList, t, b, y, test;
+	errorList := [];
+	for baseRoot in F4Roots do
+		if baseRoot in F4ShortRoots then
 			a := ConicAlgBasicIndet(1);
-			x := GrpRootHomF4(root2, a);
+			x := GrpRootHomF4(baseRoot, a);
 			twistList := [a, -a, ConicAlgInv(a), -ConicAlgInv(a)];
 		else
 			t := ComRingBasicIndet(1);
-			x := GrpRootHomF4(root2, t);
+			x := GrpRootHomF4(baseRoot, t);
 			twistList := [t, -t];
 		fi;
-		isWeyl := false;
+		isWeylOnBaseRoot := false;
+		baseRootErrorList := fail;
 		for b in twistList do
-			y := GrpRootHomF4(F4Refl(root, root2), b);
-			if TestEquality(wInv*x*w, y, false) then
-				isWeyl := true;
+			y := GrpRootHomF4(F4Refl(root, baseRoot), b);
+			test := TestEquality(wInv*x*w, y);
+			if test = true then
+				isWeylOnBaseRoot := true;
 				break;
+			elif baseRootErrorList = fail or Length(test) < Length(baseRootErrorList) then
+				baseRootErrorList := test;
 			fi;
 		od;
-		if not isWeyl then
-			Print("Not a Weyl element on root group ", root2, "\n");
-			return false;
+		if not isWeylOnBaseRoot then
+			Add(errorList, [baseRoot, List(baseRootErrorList, x -> x[2])]);
 		fi;
 	od;
-	return true;
+	if IsEmpty(errorList) then
+		return true;
+	else
+		return errorList;
+	fi;
 end;
 
 # root: Root in F4.
 # Returns true if GrpWeylOneF4(root) can be proven to be a Weyl element,
 # otherwise false.
 # Uses indeterminates a_1, t_1, a_{ConicAlg_rank}, t_{ComRing_rank}
-TestWeyl := function(root)
+TestWeylOne := function(root)
 	local w, wInv;
 	w := GrpWeylOneF4(root);
 	wInv := GrpWeylOneInvF4(root);
@@ -202,6 +223,26 @@ TestLongWeylBackwards := function()
 	local root;
 	for root in Reversed(F4LongRoots) do
 		Print(root, ": ", TestWeyl(root), "\n");
+	od;
+end;
+
+TestLongWeylMinus := function()
+	local list, root, w, wInv;
+	list := Difference(F4LongRoots, [[-1, -1, -1, -1], [1, 1, 1, 1], [2, 0, 0, 0], [-2, 0, 0, 0]]); # Remove roots for which I know that w(1,1) is Weyl
+	for root in list do
+		w := GrpWeylF4(root, One(ComRing), -One(ComRing));
+		wInv := GrpWeylF4(root, -One(ComRing), One(ComRing));
+		Print(root, ": ", IsWeyl(root, w, wInv), "\n");
+	od;
+end;
+
+TestLongWeylMinusBackwards := function()
+	local list, root, w, wInv;
+	list := Difference(F4LongRoots, [[-1, -1, -1, -1], [1, 1, 1, 1], [2, 0, 0, 0], [-2, 0, 0, 0]]); # Remove roots for which I know that w(1,1) is Weyl
+	for root in Reversed(list) do
+		w := GrpWeylF4(root, One(ComRing), -One(ComRing));
+		wInv := GrpWeylF4(root, -One(ComRing), One(ComRing));
+		Print(root, ": ", IsWeyl(root, w, wInv), "\n");
 	od;
 end;
 
