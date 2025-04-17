@@ -165,6 +165,7 @@ end;
 # Otherwise the output is a list consisting of lists [baseRoot, errorList] where
 # baseRoot is a root and errorList is the list of Lie algebra elements which have to
 # be proven to be zero.
+# Uses indeterminates a_1, t_1, a_{ConicAlg_rank}, t_{ComRing_rank}
 TestWeyl := function(root, w, wInv)
 	local baseRoot, baseRootErrorList, isWeylOnBaseRoot, errorList, a, x, twistList, t, b, y, test;
 	errorList := [];
@@ -209,7 +210,7 @@ TestWeylOne := function(root)
 	local w, wInv;
 	w := GrpWeylOneF4(root);
 	wInv := GrpWeylOneInvF4(root);
-	return IsWeyl(root, w, wInv);
+	return TestWeyl(root, w, wInv);
 end;
 
 TestLongWeyl := function()
@@ -232,7 +233,7 @@ TestLongWeylMinus := function()
 	for root in list do
 		w := GrpWeylF4(root, One(ComRing), -One(ComRing));
 		wInv := GrpWeylF4(root, -One(ComRing), One(ComRing));
-		Print(root, ": ", IsWeyl(root, w, wInv), "\n");
+		Print(root, ": ", TestWeyl(root, w, wInv), "\n");
 	od;
 end;
 
@@ -242,7 +243,7 @@ TestLongWeylMinusBackwards := function()
 	for root in Reversed(list) do
 		w := GrpWeylF4(root, One(ComRing), -One(ComRing));
 		wInv := GrpWeylF4(root, -One(ComRing), One(ComRing));
-		Print(root, ": ", IsWeyl(root, w, wInv), "\n");
+		Print(root, ": ", TestWeyl(root, w, wInv), "\n");
 	od;
 end;
 
