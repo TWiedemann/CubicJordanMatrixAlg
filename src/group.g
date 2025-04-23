@@ -100,6 +100,20 @@ InstallMethod(GrpWeylF4, [IsList, IsRingElement], function(root, a)
 	return GrpWeylF4(root, a, a); # For (some) long roots, we need a, a. For short roots, this is not yet clear.
 end);
 
+DeclareOperation("GrpStandardWeylF4", [IsList]);
+InstallMethod(GrpStandardWeylF4, [IsList], function(root)
+	local exceptions;
+	if not root in F4LongRoots then
+		return fail;
+	fi;
+	exceptions := [[1, 1, 1, -1], [1, 1, -1, 1], [1, -1, 1, 1], [-1, 1, 1, 1]];
+	if root in exceptions or -root in exceptions then
+		return GrpWeylF4(root, One(ComRing), -One(ComRing));
+	else
+		return GrpWeylF4(root, One(ComRing), One(ComRing));
+	fi;
+end);
+
 DeclareOperation("GrpWeylOneF4", [IsList]);
 InstallMethod(GrpWeylOneF4, [IsList], function(root)
 	if root in F4LongRoots then
