@@ -214,38 +214,57 @@ TestWeylOne := function(root)
 end;
 
 TestLongWeyl := function()
-	local root;
+	local root, alreadyDone, testResult;
+	alreadyDone := [];
+	testResult := [];
 	for root in F4LongRoots do
-		Print(root, ": ", TestWeyl(root), "\n");
+		if not -root in alreadyDone then
+			Add(alreadyDone, root);
+			Display(Length(alreadyDone));
+			Add(testResult, [root, TestWeylOne(root)]);
+		fi;
 	od;
-end;
-
-TestLongWeylBackwards := function()
-	local root;
-	for root in Reversed(F4LongRoots) do
-		Print(root, ": ", TestWeyl(root), "\n");
-	od;
+	return testResult;
 end;
 
 TestLongWeylMinus := function()
-	local list, root, w, wInv;
-	list := Difference(F4LongRoots, [[-1, -1, -1, -1], [1, 1, 1, 1], [2, 0, 0, 0], [-2, 0, 0, 0]]); # Remove roots for which I know that w(1,1) is Weyl
-	for root in list do
+	local testResult, root, w, wInv;
+	testResult := [];
+	for root in [[1,1,1,-1], [1,1,-1,1], [1,-1,1,1], [1,-1,-1,-1]] do
+		Display(root);
 		w := GrpWeylF4(root, One(ComRing), -One(ComRing));
 		wInv := GrpWeylF4(root, -One(ComRing), One(ComRing));
-		Print(root, ": ", TestWeyl(root, w, wInv), "\n");
+		Add(testResult, [root, TestWeyl(root, w, wInv)]);
 	od;
+	return testResult;
 end;
 
-TestLongWeylMinusBackwards := function()
-	local list, root, w, wInv;
-	list := Difference(F4LongRoots, [[-1, -1, -1, -1], [1, 1, 1, 1], [2, 0, 0, 0], [-2, 0, 0, 0]]); # Remove roots for which I know that w(1,1) is Weyl
-	for root in Reversed(list) do
-		w := GrpWeylF4(root, One(ComRing), -One(ComRing));
-		wInv := GrpWeylF4(root, -One(ComRing), One(ComRing));
-		Print(root, ": ", TestWeyl(root, w, wInv), "\n");
-	od;
-end;
+# TestLongWeylBackwards := function()
+# 	local root;
+# 	for root in Reversed(F4LongRoots) do
+# 		Print(root, ": ", TestWeyl(root), "\n");
+# 	od;
+# end;
+
+# TestLongWeylMinus := function()
+# 	local list, root, w, wInv;
+# 	list := Difference(F4LongRoots, [[-1, -1, -1, -1], [1, 1, 1, 1], [2, 0, 0, 0], [-2, 0, 0, 0]]); # Remove roots for which I know that w(1,1) is Weyl
+# 	for root in list do
+# 		w := GrpWeylF4(root, One(ComRing), -One(ComRing));
+# 		wInv := GrpWeylF4(root, -One(ComRing), One(ComRing));
+# 		Print(root, ": ", TestWeyl(root, w, wInv), "\n");
+# 	od;
+# end;
+
+# TestLongWeylMinusBackwards := function()
+# 	local list, root, w, wInv;
+# 	list := Difference(F4LongRoots, [[-1, -1, -1, -1], [1, 1, 1, 1], [2, 0, 0, 0], [-2, 0, 0, 0]]); # Remove roots for which I know that w(1,1) is Weyl
+# 	for root in Reversed(list) do
+# 		w := GrpWeylF4(root, One(ComRing), -One(ComRing));
+# 		wInv := GrpWeylF4(root, -One(ComRing), One(ComRing));
+# 		Print(root, ": ", TestWeyl(root, w, wInv), "\n");
+# 	od;
+# end;
 
 # Uses indeterminates t_1, t_2, a_1, ..., a_4
 DeclareOperation("LieEndoIsAuto", [IsLieEndo]);
@@ -277,3 +296,21 @@ InstallMethod(LieEndoIsAuto, [IsLieEndo], function(f)
 	od;
 	return isAuto;
 end);
+
+TestGrpRootHomIsAutoLongFromList := function(list)
+	local result, root, x, isAuto, i;
+	result := [];
+	for i in list do
+		root := F4LongRoots[i];
+		Display(root);
+		x := GrpRootHomF4(root, ComRingBasicIndet(3));
+		isAuto := LieEndoIsAuto(x);
+		Display(isAuto);
+		Add(result, [root, isAuto]);
+	od;
+	return result;
+end;
+
+TestGrpRootHomIsAutoLong := function()
+	return TestGrpRootHomIsAutoLongFromList([1..Length(F4LongRoots)]);
+end;
