@@ -314,3 +314,36 @@ end;
 TestGrpRootHomIsAutoLong := function()
 	return TestGrpRootHomIsAutoLongFromList([1..Length(F4LongRoots)]);
 end;
+
+PrintLieComRel := function()
+	local i, j, root1, root2, root3, a1, a2, a3, count;
+	count := 0;
+	for i in [1..Length(F4Roots)] do
+		root1 := F4Roots[i];
+		if root1 in F4ShortRoots then
+			a1 := ConicAlgBasicIndet(1);
+		else
+			a1 := ComRingBasicIndet(1);
+		fi;
+		for j in [i+1..Length(F4Roots)] do
+			root2 := F4Roots[j];
+			if root2 in F4ShortRoots then
+				a2 := ConicAlgBasicIndet(2);
+			else
+				a2 := ComRingBasicIndet(2);
+			fi;
+			root3 := root1 + root2;
+			if root3 in F4ShortRoots then
+				a3 := ConicAlgBasicIndet(1);
+			elif root3 in F4LongRoots then
+				a3 := ComRingBasicIndet(1);
+			else
+				continue;
+			fi;
+			count := count+1;
+			Print(root1, " * ", root2, ": ", LieRootHomF4(root1, a1) * LieRootHomF4(root2, a2), "\n");
+			Print(root3, ": ", LieRootHomF4(root3, a3), "\n\n");
+		od;
+	od;
+	Display(count);
+end;
