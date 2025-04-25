@@ -34,7 +34,7 @@ ConicAlgIndetNames := _ConicAlgIndetNames();
 # Output: The external rep of the conjugate of this element.
 ConicAlgMagInvOnRep := function(mRep)
 	local replaceByList, replaceList;
-	mRep := reverseNonassocList(mRep);
+	mRep := ReverseNonassocList(mRep);
 	replaceList := [1..2*ConicAlg_rank];
 	replaceByList := Concatenation([ConicAlg_rank+1..2*ConicAlg_rank], [1..ConicAlg_rank]);
 	return ReplaceInNonassocList(mRep, replaceList, replaceByList);
