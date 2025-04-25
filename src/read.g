@@ -1,4 +1,4 @@
-mode := "wsl"; # If true, the absolute paths to the files on my Windows PC are used
+mode := "unix";
 
 myFilePath := function(s)
 	if mode = "windows" then
@@ -16,6 +16,22 @@ myUnbind := function(s)
 		UnbindGlobal(s);
 	fi;
 end;
+
+### ----- Global variables -----
+BaseRing := Rationals;
+# ComRing contains indeterminates t_1, ..., t_{ComRing_rank}, g_1, ..., g_3 and
+# the norms and traces of elements of ConicAlg
+ComRing_rank := 6;
+# ConicAlg contains indeterminates a_1, ... a_{ConicAlg_rank} (and their conjugations)
+ConicAlg_rank := 5;
+# Let t = Trace_MaxLength. For all k <= t and all i_1, ..., i_k in [ 1..ConicAlg_rank ],
+# an indeterminate which represents tr(a_{i_1} ... a_{i_t}) will be created.
+# If longer products are needed during the runtime, then an error message is printed.
+Trace_MaxLength := 3;
+# Dictionary with precomputed values for all traces. Will be initalised later.
+_TrDict := fail;
+skip_tests := false; # If true, tests whether elements lie in ComRing or ConicAlg are skipped
+### ----------
 
 # Reread("F4-5Grading.g");
 Reread(myFilePath("F4-roots.g"));

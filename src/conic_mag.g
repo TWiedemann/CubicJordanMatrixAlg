@@ -1,5 +1,3 @@
-# ConicAlg contains indeterminates a_1, ... a_{ConicAlg_rank} (and their conjugations)
-ConicAlg_rank := 5;
 
 ## ConicAlg indeterminates
 

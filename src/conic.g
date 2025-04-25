@@ -1,4 +1,3 @@
-skip_tests := false; # If true, tests whether elements lie in ComRing or ConicAlg are skipped
 
 ## Definition of ConicAlg
 
