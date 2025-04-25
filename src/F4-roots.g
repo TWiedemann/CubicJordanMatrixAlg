@@ -108,3 +108,28 @@ F4RootG2Coord := function(root)
 		fi;
 	fi;
 end;
+
+# root: in F4
+# Returns list of all pairs [ root1, root2 ] s.t. root1 + root2 = root and
+# root1 appears in F4Roots before root2
+F4SumDecomp := function(root)
+	local result, i, j, root1, root2;
+	result := [];
+	for i in [1..Length(F4Roots)] do
+		root1 := F4Roots[i];
+		for j in [i+1..Length(F4Roots)] do
+			root2 := F4Roots[j];
+			if root1 + root2 = root then
+				Add(result, [root1, root2]);
+			fi;
+		od;
+	od;
+	return result;
+end;
+
+PrintF4SumDecomp := function(root)
+	local entry;
+	for entry in F4SumDecomp(root) do
+		Print(entry[1], " * ", entry[2], "\n");
+	od;
+end;
