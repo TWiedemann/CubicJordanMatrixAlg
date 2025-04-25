@@ -1,6 +1,8 @@
 CubicInL0SymStringPos := "ad^+"; # c in Cubic is printed as ad^+_c
 CubicInL0SymStringNeg := "ad^-"; # c in Cubic' is printed as ad^-_c
 
+L0ZeroString := "0_{L_0}";
+
 # rep: Internal representation of an element of L0
 # Output: A string representing this element
 L0RepToString := function(rep)

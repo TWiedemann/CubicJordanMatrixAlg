@@ -29,7 +29,7 @@ DDSanitizeRep := function(rep)
 	od;
 end;
 
-L0ZeroString := "0_{L_0}";
+DDZeroString := "0_{DD}";
 DDSymString := "\dd";
 
 DDRepToString := function(a)
@@ -42,7 +42,7 @@ DDRepToString := function(a)
 		fi;
 		Add(stringList, s);
 	od;
-	return StringSum(stringList, "+", L0ZeroString);
+	return StringSum(stringList, "+", DDZeroString);
 end;
 
 DDSpec := rec(
@@ -320,9 +320,24 @@ InstallMethod(DDRootHomA2, [IsList, IsRingElement], function(root, a)
     i := Position(root, 1);
     j := Position(root, -1);
     l := Position(root, 0);
-	lambda := ComRingGamIndet(i)^-1 * ComRingGamIndet(j)^-1 * ComRingGamIndet(l);
-	if not [i, j, l] in CycPerm then
-		lambda := lambda^-1;
+	if root = [1, -1, 0] then
+		lambda := ComRingGamIndet(1)^-1 * ComRingGamIndet(2)^-1 * ComRingGamIndet(3);
+	elif root = [-1, 1, 0] then
+		lambda := ComRingGamIndet(3)^-1;
+	elif root = [1, 0, -1] then
+		lambda := ComRingGamIndet(2)^-1;
+	elif root = [-1, 0, 1] then
+		lambda := ComRingGamIndet(1)^-1 * ComRingGamIndet(2) * ComRingGamIndet(3)^-1;
+	elif root = [0, 1, -1] then
+		lambda := ComRingGamIndet(1) * ComRingGamIndet(2)^-1 * ComRingGamIndet(3)^-1;
+	elif root = [0, -1, 1] then
+		lambda := ComRingGamIndet(1)^-1;
+	else
+		return fail;
 	fi;
+	# lambda := ComRingGamIndet(i)^-1 * ComRingGamIndet(j)^-1 * ComRingGamIndet(l);
+	# if not [i, j, l] in CycPerm then
+	# 	lambda := lambda^-1;
+	# fi;
     return dd(CubicComEl(i, One(ComRing)), lambda*CubicAlgElMat(i, j, a)); # TODO: Is this correct?
 end);
