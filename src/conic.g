@@ -6,10 +6,8 @@ ConicAlg := FreeMagmaRing(ComRing, ConicAlgMag);
 ConicAlgMagToAlg := x -> ImageElm(Embedding(ConicAlgMag, ConicAlg), x);
 ConicAlgElFam := FamilyObj(Zero(ConicAlg));
 
-
 embConicAlgMag := x -> ImageElm(Embedding(ConicAlgMag, ConicAlg), x);
 ConicAlgIndets := List(ConicAlgMagIndets, embConicAlgMag);
-
 
 ConicAlgBasicIndets := ConicAlgIndets{[1..ConicAlg_rank]};
 ConicAlgInvIndets := ConicAlgIndets{[ConicAlg_rank+1..2*ConicAlg_rank]};
@@ -104,6 +102,8 @@ ConicAlgNormLin := function(a, b)
 	return ConicAlgTr(ConicAlgInv(a)*b);
 end;
 
+# a: Element of ConicAlg.
+# Output: Its norm, an element of ComRing.
 ConicAlgNorm := function(a)
 	local coeffList, result, i, j, magmaEl, magmaEl2, coeff, coeff2;
 	ReqConicAlgEl(a);

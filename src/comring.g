@@ -5,7 +5,7 @@ ComRing_rank := 6;
 # Let t = Trace_MaxLength. For all k <= t and all i_1, ..., i_k in [ 1..ConicAlg_rank ],
 # an indeterminate which represents tr(a_{i_1} ... a_{i_t}) will be created.
 # If longer products are needed during the runtime, then an error message is printed.
-Trace_MaxLength := 5;
+Trace_MaxLength := 3;
 # Dictionary with precomputed values for all traces. Will be initalised later.
 _TrDict := fail;
 
@@ -37,14 +37,17 @@ ComRingGamIndetName := function(i)
 	fi;
 end;
 
+# ai \in ComRing
 ComRingBasicIndet := function(i)
 	return Indeterminate(BaseRing, ComRingBasicIndetName(i));
 end;
 
+# n(ai) \in ComRing
 ComRingNormIndet := function(i)
 	return Indeterminate(BaseRing, ComRingNormIndetName(i));
 end;
 
+# gi \in ComRing
 ComRingGamIndet := function(i)
 	return Indeterminate(BaseRing, ComRingGamIndetName(i));
 end;
@@ -52,6 +55,7 @@ end;
 # --- Norm on ConicAlgMag ---
 
 # mRep: ExtRepOfObj of an element of ConicAlgMag
+# Output: Norm of this element (as an element of ComRing)
 ConicAlgMagNormOnRep := function(mRep)
 	if mRep = 0 then # n(1_ConicAlg) = 1_ComRing
 		return One(PolynomialRing(BaseRing));
@@ -66,6 +70,8 @@ ConicAlgMagNormOnRep := function(mRep)
 	fi;
 end;
 
+# m: Element of ConicAlgMag
+# Output: norm of m (\in ComRing)
 ConicAlgMagNorm := function(m)
 	return ConicAlgMagNormOnRep(ExtRepOfObj(m));
 end;
@@ -76,9 +82,10 @@ end;
 
 # a, b, c: External reps of elements of ConicAlgMag.
 # Output: If one of the elements (repr. by) a,b,c is the conjugate of another, the output
-# is a list [ x, y] where x is (the rep of) such an element and y is (the rep of)
+# is a list [ x, y] where x is the rep of such an element and y is the rep of
 # the remaining (third) element.
 # Otherwise the output is fail.
+# Example: _PullNorm([1, 2], [3], [5, 4]) is [[1, 2], [3]] or [[5,4], [3]] if 1' = 4 and 2' = 5
 _PullNorm := function(a, b, c)
     local list, i, j, k;
 	list := [a,b,c];
@@ -107,7 +114,7 @@ _ConicAlgMagTrCandidates := function(a, b, c)
 end;
 
 # mRep: External rep of an element of ConicAlgMag
-# Output: The trace of the corresponding element.
+# Output: The trace of the corresponding element. No caching of results.
 ConicAlgMagTrOnRep := function(mRep)
 	local indetName, varName, inv, left, right, candidates, list, min, StringFromRep;
 	indetName := "tr(";
@@ -164,28 +171,33 @@ ConicAlgMagTrOnRep := function(mRep)
 	return Indeterminate(BaseRing, indetName);
 end;
 
+# magEl: Element of ConicAlgMag
+# Output: Its trace (an element of ComRing). No caching.
 _ConicAlgMagTrUncached := function(magEl)
 	return ConicAlgMagTrOnRep(ExtRepOfObj(magEl));
 end;
 
+# Same as _ConicAlgMagTrUncached, but returns the precomputed, cached result.
 ConicAlgMagTr := function(magEl)
 	return LookupDictionary(_TrDict, magEl);
 end;
+
+_ComRingGamIndetNum := []; # Contains the indeterminate number of gamma_i at position i
 
 # Initialises the dictionary with precomputed trace values.
 # Returns the maximal indeterminate number that appears in ComRing
 _InitTrDict := function()
 	local maxIndetNum, magEl, magEls, trace, polyRep, monomial, i, j;
-	# Initialise all the other indeterminates of ComRing so that they occupy the
-	# first indeterminate indices
+	# Initialise all the other indeterminates of ComRing in the desired order
+	for i in [1..3] do
+		ComRingGamIndet(i);
+		_ComRingGamIndetNum[i] := i;
+	od;
 	for i in [1..ComRing_rank] do
 		ComRingBasicIndet(i);
 	od;
 	for i in [1..ConicAlg_rank] do
 		ComRingNormIndet(i);
-	od;
-	for i in [1..3] do
-		ComRingGamIndet(i);
 	od;
 	# Initialise dictionary
 	maxIndetNum := 0;
@@ -210,3 +222,17 @@ end;
 
 _ComRingNumIndets := _InitTrDict();
 ComRing := FunctionField(BaseRing, _ComRingNumIndets);
+
+# Function that cancels gamma_i if possible. GAP does not automatically
+# recognise that e.g. (g1*g2)/(g1*g3) can be simplified to g2/g3.
+# ComRingCancelGam := function(t)
+#
+# 	fam := FamilyObj(t);
+# 	numRep := ExtRepNumeratorRatFun(t)
+# 	denRep := ExtRepNumeratorRatFun(t);
+# 	# We only cancel if the denominator is a monomial
+# 	if Length(denRep) <> 2 then
+# 		return t;
+# 	fi;
+# 	denMonoRep := denRep[1];
+# end;
