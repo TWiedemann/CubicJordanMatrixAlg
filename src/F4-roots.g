@@ -47,6 +47,25 @@ F4ShortRoots := _F4ShortRoots();
 F4LongRoots := _F4LongRoots();
 F4Roots := Concatenation(F4ShortRoots, F4LongRoots);
 F4RootsZero := Concatenation(F4Roots, [[0,0,0,0]]);
+F4SimpleRoots := [[1,1,-1,-1], [-2, 0, 0, 0], [1, -1, 0, 0], [0, 1, 1, 0]]; # Dynkin diagram: 1-2>3-4
+F4SimpleRootsBas := Basis(F4Vec, F4SimpleRoots); # Simple roots as a vector space basis in GAP
+
+# root: Root in F4
+# Output: List a of coefficients w.r.t. F4SimpleRoots. Thus root = a*F4SimpleRoots.
+F4RootBasisCoeffs := function(root)
+	return Coefficients(F4SimpleRootsBas, root);
+end;
+
+F4RootFromBasisCoeffs := function(coeffs)
+	return coeffs * F4SimpleRoots;
+end;
+
+F4PosRoots := Filtered(F4Roots, root -> Sum(F4RootBasisCoeffs(root)) > 0);
+F4NegRoots := Difference(F4Roots, F4PosRoots);
+F4PosShortRoots := Intersection(F4PosRoots, F4ShortRoots);
+F4PosLongRoots := Intersection(F4PosRoots, F4LongRoots);
+F4NegShortRoots := Intersection(F4NegRoots, F4ShortRoots);
+F4NegLongRoots := Intersection(F4NegRoots, F4LongRoots);
 
 A2Roots := [[1,-1,0], [1,0,-1], [0,1,-1], [0,-1,1], [-1,0,1], [-1,1,0]];
 
