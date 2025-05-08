@@ -23,11 +23,14 @@ BaseRing := Rationals;
 # the norms and traces of elements of ConicAlg
 ComRing_rank := 6;
 # ConicAlg contains indeterminates a_1, ... a_{ConicAlg_rank} (and their conjugations)
-ConicAlg_rank := 5;
-# Let t = Trace_MaxLength. For all k <= t and all i_1, ..., i_k in [ 1..ConicAlg_rank ],
+ConicAlg_rank := 2;
+# Let t = Trace_MaxLength. For all k <= t, all i_1, ..., i_k in [ 1..ConicAlg_rank ]
+# and all possible ways to choose brackets,
 # an indeterminate which represents tr(a_{i_1} ... a_{i_t}) will be created.
+# Some of these indeterminates are the same because there are identities such as
+# tr(xy) = tr(yx) or tr((xy)z) = tr(x(yz)).
 # If longer products are needed during the runtime, then an error message is printed.
-Trace_MaxLength := 3;
+Trace_MaxLength := 5;
 # Dictionary with precomputed values for all traces. Will be initalised later.
 _TrDict := fail;
 skip_tests := false; # If true, tests whether elements lie in ComRing or ConicAlg are skipped
