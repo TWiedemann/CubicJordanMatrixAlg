@@ -47,19 +47,12 @@ InstallMethod(TestEquality, [IsLieEndo, IsLieEndo, IsInt, IsInt],
 			if not IsZero(test) then
 				Add(errorList, [gen, test]);
 			fi;
-			# if not TestEquality(lieEndo1(gen), lieEndo2(gen), print) then
-			# 	isEqual := false;
-			# 	if print then
-			# 		Print("for ", gen, "\n");
-			# 	fi;
-			# fi;
 		od;
 		if IsEmpty(errorList) then
 			return true;
 		else
 			return errorList;
 		fi;
-		# return isEqual;
 	end
 );
 
@@ -213,16 +206,35 @@ TestWeylOne := function(root)
 	return TestWeyl(root, w, wInv);
 end;
 
+# root: Root in F4.
+# Returns true if GrpWeylF4(root, one, -one) can be proven to be a Weyl element,
+# otherwise false.
+# Uses indeterminates a_1, t_1, a_{ConicAlg_rank}, t_{ComRing_rank}
+TestWeylStandard := function(root)
+	local w, wInv;
+	w := GrpStandardWeylF4(root);
+	wInv := GrpStandardWeylInvF4(root);
+	return TestWeyl(root, w, wInv);
+end;
+
 TestLongWeyl := function()
-	local root, alreadyDone, testResult;
-	alreadyDone := [];
+	local root, testResult, i;
 	testResult := [];
-	for root in F4LongRoots do
-		if not -root in alreadyDone then
-			Add(alreadyDone, root);
-			Display(Length(alreadyDone));
-			Add(testResult, [root, TestWeylOne(root)]);
-		fi;
+	for i in [1..Length(F4PosLongRoots)] do
+		root := F4PosLongRoots[i];
+		Print(i, "/", Length(F4PosLongRoots), "\n");
+		Add(testResult, [root, TestWeylStandard(root)]);
+	od;
+	return testResult;
+end;
+
+TestShortWeyl := function()
+	local root, testResult, i;
+	testResult := [];
+	for i in [1..Length(F4PosShortRoots)] do
+		root := F4PosShortRoots[i];
+		Print(i, "/", Length(F4PosShortRoots), "\n");
+		Add(testResult, [root, TestWeylStandard(root)]);
 	od;
 	return testResult;
 end;
@@ -265,6 +277,31 @@ end;
 # 		Print(root, ": ", TestWeyl(root, w, wInv), "\n");
 # 	od;
 # end;
+
+GrpRootHomComm := function(root1, root2, param1, param2)
+	return GrpRootHomF4(root1, -param1) * GrpRootHomF4(root2, -param2)
+		* GrpRootHomF4(root1, param1) * GrpRootHomF4(root2, param2);
+end;
+
+TestLieH := function(root)
+	local a, one, x, h;
+	if root in F4ShortRoots then
+		a := ConicAlgBasicIndet(1);
+		one := One(ConicAlg);
+	else
+		a := ComRingBasicIndet(1);
+		one := One(ComRing);
+	fi;
+	x := LieRootHomF4(root, a);
+	h := LieRootHomF4(root, one) * LieRootHomF4(-root, one);
+	return [ApplyDistAndPeirceLaw(h*x), ApplyDistAndPeirceLaw(2*x)];
+end;
+
+TestLieHBool := function(root)
+	local test;
+	test := TestLieH(root);
+	return test[1] = test[2];
+end;
 
 # Uses indeterminates t_1, t_2, a_1, ..., a_4
 DeclareOperation("LieEndoIsAuto", [IsLieEndo]);
