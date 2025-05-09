@@ -238,14 +238,23 @@ end);
 
 InstallMethod(String, [IsLieElement], x -> LieRepToString(UnderlyingElement(x)));
 
+# The zero element is displayed as O_l. For every other element, we display the
+# 5 parts of lieEl separately, except for the parts which are zero.
 InstallMethod(Display, [IsLieElement], function(lieEl)
-	local i;
-	for i in [-2..2] do
-		if i >= 0 then
-			Print(" ");
-		fi;
-		Print(String(i), " part: ", String(LiePart(lieEl, i)), "\n");
-	od;
+	local i, part;
+	if IsZero(lieEl) then
+		Print(String(lieEl));
+	else
+		for i in [-2..2] do
+			part := LiePart(lieEl, i);
+			if not IsZero(part) then
+				if i >= 0 then
+					Print(" ");
+				fi;
+				Print(String(i), " part: ", String(part), "\n");
+			fi;
+		od;
+	fi;
 end);
 
 ## Scalar multiplication ComRing x Lie -> Lie
