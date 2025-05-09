@@ -195,16 +195,6 @@ TestWeyl := function(root, w, wInv)
 	fi;
 end;
 
-# root: Root in F4.
-# Returns true if GrpWeylOneF4(root) can be proven to be a Weyl element,
-# otherwise false.
-# Uses indeterminates a_1, t_1, a_{ConicAlg_rank}, t_{ComRing_rank}
-TestWeylOne := function(root)
-	local w, wInv;
-	w := GrpWeylOneF4(root);
-	wInv := GrpWeylOneInvF4(root);
-	return TestWeyl(root, w, wInv);
-end;
 
 # root: Root in F4.
 # Returns true if GrpWeylF4(root, one, -one) can be proven to be a Weyl element,
@@ -238,45 +228,6 @@ TestShortWeyl := function()
 	od;
 	return testResult;
 end;
-
-TestLongWeylMinus := function()
-	local testResult, root, w, wInv;
-	testResult := [];
-	for root in [[1,1,1,-1], [1,1,-1,1], [1,-1,1,1], [1,-1,-1,-1]] do
-		Display(root);
-		w := GrpWeylF4(root, One(ComRing), -One(ComRing));
-		wInv := GrpWeylF4(root, -One(ComRing), One(ComRing));
-		Add(testResult, [root, TestWeyl(root, w, wInv)]);
-	od;
-	return testResult;
-end;
-
-# TestLongWeylBackwards := function()
-# 	local root;
-# 	for root in Reversed(F4LongRoots) do
-# 		Print(root, ": ", TestWeyl(root), "\n");
-# 	od;
-# end;
-
-# TestLongWeylMinus := function()
-# 	local list, root, w, wInv;
-# 	list := Difference(F4LongRoots, [[-1, -1, -1, -1], [1, 1, 1, 1], [2, 0, 0, 0], [-2, 0, 0, 0]]); # Remove roots for which I know that w(1,1) is Weyl
-# 	for root in list do
-# 		w := GrpWeylF4(root, One(ComRing), -One(ComRing));
-# 		wInv := GrpWeylF4(root, -One(ComRing), One(ComRing));
-# 		Print(root, ": ", TestWeyl(root, w, wInv), "\n");
-# 	od;
-# end;
-
-# TestLongWeylMinusBackwards := function()
-# 	local list, root, w, wInv;
-# 	list := Difference(F4LongRoots, [[-1, -1, -1, -1], [1, 1, 1, 1], [2, 0, 0, 0], [-2, 0, 0, 0]]); # Remove roots for which I know that w(1,1) is Weyl
-# 	for root in Reversed(list) do
-# 		w := GrpWeylF4(root, One(ComRing), -One(ComRing));
-# 		wInv := GrpWeylF4(root, -One(ComRing), One(ComRing));
-# 		Print(root, ": ", TestWeyl(root, w, wInv), "\n");
-# 	od;
-# end;
 
 GrpRootHomComm := function(root1, root2, param1, param2)
 	return GrpRootHomF4(root1, -param1) * GrpRootHomF4(root2, -param2)
@@ -331,6 +282,112 @@ TestChevH := function()
 		fi;
 	od;
 	return true;
+end;
+
+# relations: A list of lists [g1, g2] where g1, g2 are automorphisms of Lie
+# Prints all relations which have to be proven by hand to verify that g1 = g2 for
+# all [g1, g2] \in relations.
+# Uses indeterminates t_(ComRing_rank), a_(ConicAlg_rank).
+TestRelations := function(relations)
+	local rel, test, error;
+	for rel in relations do
+		test := TestEquality(rel[1], rel[2]);
+		if test <> true then
+			for error in test do
+				# error[1] contains the Lie algebra generator on which rel[1] and rel[2]
+				# differ, which is not interesting
+				Display("Error term:");
+				Display(error[2]);
+			od;
+		fi;
+	od;
+end;
+
+# relations: A list of lists [l1, l2] where l1 and l2 are lists containing elements
+# from [-4, -3, -2, -1, 1, 2, 3, 4] or elements from LieEndo
+# The function calls TestRelations on the list weylRelations which is obtained from relations
+# by replacing any list [g1, g2, ...] by the automorphism g1 * g2 * ...
+# If gi is a positive integer, it is interpreted as w_gi. If it is a negative integer,
+# it is interpreted as w_(-gi)^-1. Here wj = GrpStandardWeyl(F4SimpleRoots[j]).
+# Uses indeterminates t_1, a_1.
+TestWeylRelations := function(relations)
+	local w, wInv, i, weylRelations;
+	w := [];
+	wInv := [];
+	for i in [1..Length(F4SimpleRoots)] do
+		w[i] := GrpStandardWeylF4(F4SimpleRoots[i]);
+		wInv[i] := GrpStandardWeylInvF4(F4SimpleRoots[i]);
+	od;
+	weylRelations := List(relations, x -> List(x, function(list)
+		local auto, i;
+		auto := GrpOne;
+		for i in list do
+			if not IsInt(i) then
+				auto := auto * i;
+			elif i>0 then
+				auto := auto * w[i];
+			else
+				auto := auto * wInv[-i];
+			fi;
+		od;
+		return auto;
+	end));
+	TestRelations(weylRelations);
+end;
+
+# Prints all relations which have to be proven by hand to verify the braid relations for
+# the standard Weyl elements w.r.t. F4SimpleRoots.
+# Uses indeterminates a_1, t_1
+TestBraidRel := function()
+	TestWeylRelations([
+		[[1, 2, 1], [2, 1, 2]], [[1, 3], [3, 1]], [[1, 4], [4, 1]],
+		[[2, 3, 2, 3], [3, 2, 3, 2]], [[2, 4], [4, 2]],
+		[[3, 4, 3], [4, 3, 4]]
+	]);
+end;
+
+# Denote by wi the standard Weyl element for F4SimpleRoots[i]
+# This function prints all relations which have to be proven by hand to verify the
+# following assertions:
+# wi^(wj^2) = wi^-1, wj^(wi^1) = wj^-1 for (i, j) \in {(1,2), (3,4)}
+# w2^(w3^2) = w2, w3^(w2^2) = w3^-1
+# Note that for i, j with |i-j| > 1, we know from the braid relations that
+# wi^(wj^2) = wi.
+# Uses indeterminates t_1, a_1.
+TestWeylSquareOnWeyl := function()
+	TestWeylRelations([
+		[[-1, -1, 2, 1, 1], [-2]], [[-2, -2, 1, 2, 2], [-1]],
+		[[-3, -3, 4, 3, 3], [-4]], [[-4, -4, 3, 4, 4], [-3]],
+		[[-2, -2, 3, 2, 2], [-3]], [[-3, -3, 2, 3, 3], [2]]
+	]);
+end;
+
+# Denote by wi the standard Weyl element for F4SimpleRoots[i] by d2, d3 the simple
+# roots of index 2 and 3, respectively.
+# This function prints all relations which have to be proven by hand to verify the
+# following assertions:
+# GrpRootHomF4(d2, t1)^(w1^2) = GrpRootHomF4(d2, -t1)
+# GrpRootHomF4(d2, t1)^(w2^2) = GrpRootHomF4(d2, t1)
+# GrpRootHomF4(d2, t1)^(w3^2) = GrpRootHomF4(d2, t1)
+# GrpRootHomF4(d3, a1)^(w2^2) = GrpRootHomF4(d3, -a1)
+# GrpRootHomF4(d3, a1)^(w2^2) = GrpRootHomF4(d3, a1)
+# GrpRootHomF4(d3, a1)^(w2^2) = GrpRootHomF4(d3, -a1)
+# In particular, w1^2, ..., w4^2 normalise the root groups U_d2 and U_d3
+# Uses indeterminates t_1, a_1, t_(ComRing_rank), a_(ConicAlg_rank).
+TestNormalise := function()
+	local a, t, hom2, hom3;
+	a := ConicAlgBasicIndet(1);
+	t := ComRingBasicIndet(1);
+	hom2 := x -> GrpRootHomF4(F4SimpleRoots[2], x);
+	hom3 := x -> GrpRootHomF4(F4SimpleRoots[3], x);
+	TestWeylRelations([
+		[[-1, -1, hom2(t), 1, 1], [hom2(-t)]],
+		[[-2, -2, hom2(t), 2, 2], [hom2(t)]],
+		[[-3, -3, hom2(t), 3, 3], [hom2(t)]],
+		[[-2, -2, hom3(a), 2, 2], [hom3(-a)]],
+		[[-3, -3, hom3(a), 3, 3], [hom3(a)]],
+		[[-4, -4, hom3(a), 4, 4], [hom3(-a)]]
+	]);
 end;
 
 # Uses indeterminates t_1, t_2, a_1, ..., a_4
