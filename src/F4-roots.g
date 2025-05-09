@@ -78,6 +78,23 @@ F4Refl := function(a, b)
 	return b - F4CartanInt(b, a)*a;
 end;
 
+# a: A root in F4.
+# Output: List of all roots in F4 which are orthogonal to a.
+F4OrthoRoots := function(a)
+	local result, b;
+	result := [];
+	for b in F4Roots do
+		if a*b = 0 then
+			Add(result, b);
+		fi;
+	od;
+	return result;
+end;
+
+F4PosOrthoRoots := function(a)
+	return Intersection(F4PosRoots, F4OrthoRoots(a));
+end;
+
 # root: Element of F4Roots or [0,0,0,0]
 # Output: The corresponding root in G2
 F4RootG2Coord := function(root)
