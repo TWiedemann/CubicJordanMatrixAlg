@@ -50,7 +50,9 @@ DDSpec := rec(
 	Zero := a -> [],
 	Addition := function(a, b)
 		local sum;
-		sum := Concatenation(a,b);
+		# We have to copy a and b: Otherwise DDSanitizeRep(sum) will change
+		# a and b as well, which would be horrible
+		sum := Concatenation(StructuralCopy(a),StructuralCopy(b));
 		if SanitizeImmediately then
 			DDSanitizeRep(sum);
 		fi;
