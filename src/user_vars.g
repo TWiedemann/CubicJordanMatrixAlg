@@ -1,9 +1,12 @@
+## Elements of ConicAlg
 a1 := ConicAlgBasicIndet(1);
 a2 := ConicAlgBasicIndet(2);
 # a3 := ConicAlgBasicIndet(3);
 # a4 := ConicAlgBasicIndet(4);
 # a5 := ConicAlgBasicIndet(5);
 # a6 := ConicAlgBasicIndet(6);
+
+## Elements of Comring
 t1 := ComRingBasicIndet(1);
 t2 := ComRingBasicIndet(2);
 t3 := ComRingBasicIndet(3);
@@ -13,7 +16,19 @@ t5 := ComRingBasicIndet(5);
 g1 := ComRingGamIndet(1);
 g2 := ComRingGamIndet(2);
 g3 := ComRingGamIndet(3);
+
+## Elements of Cubic
 cubicGen1 := CubicGenericEl(0);
 # cubicGen2 := CubicGenericEl(1);
 c1 := CubicComEl(1, t1);
 c2 := CubicAlgEl(2, a1);
+
+## Weyl elements
+w1 := GrpStandardWeylF4(F4SimpleRoots[1]);
+w1Inv := GrpStandardWeylInvF4(F4SimpleRoots[1]);
+w2 := GrpStandardWeylF4(F4SimpleRoots[2]);
+w2Inv := GrpStandardWeylInvF4(F4SimpleRoots[2]);
+w3 := GrpStandardWeylF4(F4SimpleRoots[3]);
+w3Inv := GrpStandardWeylInvF4(F4SimpleRoots[3]);
+w4 := GrpStandardWeylF4(F4SimpleRoots[4]);
+w4Inv := GrpStandardWeylInvF4(F4SimpleRoots[4]);
