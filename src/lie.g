@@ -333,6 +333,12 @@ ChevBasEl := function(root)
 	return LieRootHomF4(root, one);
 end;
 
+# root: Root in F4.
+# Output: The element h_root of the Chevalley basis.
+ChevHEl := function(root)
+	return ChevBasEl(root) * ChevBasEl(-root);
+end;
+
 # root1, root2: Roots in F4
 # Output: Integer c (as an element of Comring) s.t. [ x_root1, x_root2 ] = c x_{root1+root2}.
 # Here x_a = ChevBasEl(a) and the output is 0 if root1+root2 is not a root.
