@@ -175,7 +175,7 @@ TestWeyl := function(root, w, wInv)
 		isWeylOnBaseRoot := false;
 		baseRootErrorList := fail;
 		for b in twistList do
-			y := GrpRootHomF4(F4Refl(root, baseRoot), b);
+			y := GrpRootHomF4(F4Refl(baseRoot, root), b);
 			test := TestEquality(wInv*x*w, y);
 			if test = true then
 				isWeylOnBaseRoot := true;
@@ -289,15 +289,19 @@ end;
 # all [g1, g2] \in relations.
 # Uses indeterminates t_(ComRing_rank), a_(ConicAlg_rank).
 TestRelations := function(relations)
-	local rel, test, error;
+	local rel, test, error, part, i;
 	for rel in relations do
 		test := TestEquality(rel[1], rel[2]);
 		if test <> true then
 			for error in test do
 				# error[1] contains the Lie algebra generator on which rel[1] and rel[2]
 				# differ, which is not interesting
-				Display("Error term:");
-				Display(error[2]);
+				for i in [-2..2] do
+					part := LiePart(error[2], i);
+					if not IsZero(part) then
+						Display(part);
+					fi;
+				od;
 			od;
 		fi;
 	od;
@@ -374,7 +378,7 @@ end;
 # GrpRootHomF4(d3, a1)^(w2^2) = GrpRootHomF4(d3, -a1)
 # In particular, w1^2, ..., w4^2 normalise the root groups U_d2 and U_d3
 # Uses indeterminates t_1, a_1, t_(ComRing_rank), a_(ConicAlg_rank).
-TestNormalise := function()
+TestWeylSquareNormalise := function()
 	local a, t, hom2, hom3;
 	a := ConicAlgBasicIndet(1);
 	t := ComRingBasicIndet(1);
@@ -387,6 +391,23 @@ TestNormalise := function()
 		[[-2, -2, hom3(a), 2, 2], [hom3(-a)]],
 		[[-3, -3, hom3(a), 3, 3], [hom3(a)]],
 		[[-4, -4, hom3(a), 4, 4], [hom3(-a)]]
+	]);
+end;
+
+# Denote by wi the standard Weyl element for F4SimpleRoots[i] by d2, d3 the simple
+# roots of index 2 and 3, respectively.-
+# This function prints all relations which have to be proven by hand to verify the
+# following assertions:
+TestStabNormalise := function()
+	local a, t, hom2, hom3, stab21, stab22;
+	a := ConicAlgBasicIndet(1);
+	t := ComRingBasicIndet(1);
+	hom2 := x -> GrpRootHomF4(F4SimpleRoots[2], x);
+	hom3 := x -> GrpRootHomF4(F4SimpleRoots[3], x);
+	stab21 := [-1, -2, -3, 4, 3, 2, 1];
+	stab22 := [3, 2, 1, 4, 3, 2, 1, 3, 2, 4, 3];
+	TestWeylRelations([
+		[Concatenation(-stab21, [hom2(t)], stab21), [hom2(t)]] # TODO: Finish
 	]);
 end;
 

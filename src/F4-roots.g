@@ -73,9 +73,18 @@ F4CartanInt := function(a, b)
 	return 2 * (a*b) / (b*b);
 end;
 
-# Returns \sigma_a(b), the reflection along a applied to b
-F4Refl := function(a, b)
-	return b - F4CartanInt(b, a)*a;
+# Returns argRoot^{\sigma_reflRoot}, the reflection along reflRoot applied to argRoot
+F4Refl := function(argRoot, reflRoot)
+	return argRoot - F4CartanInt(argRoot, reflRoot)*reflRoot;
+end;
+
+F4ReflProd := function(argRoot, reflRootList)
+	local result, reflRoot;
+	result := argRoot;
+	for reflRoot in reflRootList do
+		result := F4Refl(result, reflRoot);
+	od;
+	return result;
 end;
 
 # a: A root in F4.
