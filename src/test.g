@@ -24,25 +24,17 @@ InstallMethod(TestEquality, [IsLieElement, IsLieElement, IsBool], function(lieEl
 	return isEqual;
 end);
 
-
-# Tests equality of two endomorphisms f, g of the Lie algebra.
-# If they can be proven to be equal, the output is true.
-# Otherwise the output is a list of lists [a, b] where a is an element of the Lie
-# algebra and b = f(a) - g(a).
-# If two integers comIndetNum and conicIndetNum are provided, they are used
-# as the indeterminates numbers for the generators of Lie in the test.
-# If only one integer is provided, it is used for both indeterminates numbers.
-# If no integer is provided, we use ConicAlg_rank and ComRing_rank.
-DeclareOperation("TestEquality", [IsLieEndo, IsLieEndo, IsInt, IsInt]);
-DeclareOperation("TestEquality", [IsLieEndo, IsLieEndo, IsInt]);
-DeclareOperation("TestEquality", [IsLieEndo, IsLieEndo]);
-
-InstallMethod(TestEquality, [IsLieEndo, IsLieEndo, IsInt, IsInt],
-	function(lieEndo1, lieEndo2, comIndetNum, conicIndetNum)
-		local gens, gen, test, errorList;
-		gens := LieGensAsLie(comIndetNum, conicIndetNum);
+# lieEndo1, lieEndo2: Elements of LieEndo
+# genList: List of elements of Lie
+# Output: true if lieEndo1 and lieEndo2 agree on all elements of genList.
+# Otherwise the output is the list of all lists [a, b] where a is an element of genList
+# algebra and b = lieEndo1(a) - lieEndo2(a) <> 0.
+DeclareOperation("TestEqualityOnGenList", [IsLieEndo, IsLieEndo, IsList]);
+InstallMethod(TestEqualityOnGenList, [IsLieEndo, IsLieEndo, IsList], 
+	function(lieEndo1, lieEndo2, genList)
+		local gen, test, errorList;
 		errorList := [];
-		for gen in gens do
+		for gen in genList do
 			test := ApplyDistAndPeirceLaw(lieEndo1(gen) - lieEndo2(gen));
 			if not IsZero(test) then
 				Add(errorList, [gen, test]);
@@ -56,15 +48,59 @@ InstallMethod(TestEquality, [IsLieEndo, IsLieEndo, IsInt, IsInt],
 	end
 );
 
+# TestEquality(f, g, comIndetNum, conicIndetNum) calls
+# TestEqualityOnGenList(f, g, LieGensAsLie(comIndetNum, conicIndetNum)).
+# If only one integer n is provided, then TestEquality(f, g, n, n) is called.
+# If no integer is provided, then TestEquality(f, g, ComRing_rank, ConicAlg_rank)
+# is called.
+# Uses indeterminates t_comIndetNum and a_conicIndetNum
+DeclareOperation("TestEquality", [IsLieEndo, IsLieEndo, IsInt, IsInt]);
+DeclareOperation("TestEquality", [IsLieEndo, IsLieEndo, IsInt]);
+DeclareOperation("TestEquality", [IsLieEndo, IsLieEndo]);
+
+InstallMethod(TestEquality, [IsLieEndo, IsLieEndo, IsInt, IsInt],
+	function(lieEndo1, lieEndo2, comIndetNum, conicIndetNum)
+		local genList;
+		genList := LieGensAsLie(comIndetNum, conicIndetNum);
+		return TestEqualityOnGenList(lieEndo1, lieEndo2, genList);
+	end
+);
+
 InstallMethod(TestEquality, [IsLieEndo, IsLieEndo, IsInt], 
 	function(lieEndo1, lieEndo2, indetNum)
-		return TestEquality(lieEndo1,lieEndo2, indetNum, indetNum);
+		return TestEquality(lieEndo1, lieEndo2, indetNum, indetNum);
 	end
 );
 
 InstallMethod(TestEquality, [IsLieEndo, IsLieEndo], 
 	function(lieEndo1, lieEndo2)
-		return TestEquality(lieEndo1,lieEndo2, ComRing_rank, ConicAlg_rank);
+		return TestEquality(lieEndo1, lieEndo2, ComRing_rank, ConicAlg_rank);
+	end
+);
+
+# Like TestEquality, but uses LieGensAsModule in place of LieGensAsLie.
+# Uses indeterminates t_comIndetNum, a_conicIndetNum AND a_{conicIndetNum+1}
+DeclareOperation("TestEqualityOnModuleGens", [IsLieEndo, IsLieEndo, IsInt, IsInt]);
+DeclareOperation("TestEqualityOnModuleGens", [IsLieEndo, IsLieEndo, IsInt]);
+DeclareOperation("TestEqualityOnModuleGens", [IsLieEndo, IsLieEndo]);
+
+InstallMethod(TestEqualityOnModuleGens, [IsLieEndo, IsLieEndo, IsInt, IsInt],
+	function(lieEndo1, lieEndo2, comIndetNum, conicIndetNum)
+		local genList;
+		genList := LieGensAsModule(comIndetNum, conicIndetNum);
+		return TestEqualityOnGenList(lieEndo1, lieEndo2, genList);
+	end
+);
+
+InstallMethod(TestEqualityOnModuleGens, [IsLieEndo, IsLieEndo, IsInt], 
+	function(lieEndo1, lieEndo2, indetNum)
+		return TestEqualityOnModuleGens(lieEndo1, lieEndo2, indetNum, indetNum);
+	end
+);
+
+InstallMethod(TestEqualityOnModuleGens, [IsLieEndo, IsLieEndo], 
+	function(lieEndo1, lieEndo2)
+		return TestEqualityOnModuleGens(lieEndo1, lieEndo2, ComRing_rank, ConicAlg_rank-1);
 	end
 );
 
@@ -395,20 +431,49 @@ TestWeylSquareNormalise := function()
 end;
 
 # Denote by wi the standard Weyl element for F4SimpleRoots[i] by d2, d3 the simple
-# roots of index 2 and 3, respectively.-
+# roots of index 2 and 3, respectively.
 # This function prints all relations which have to be proven by hand to verify the
 # following assertions:
+# - U_d2 is centralised by the following elements:
+# -- w4
+# -- w4^{w3*w2*w1}
+# -- w([1,2,3,2,1,4,3,2,1,3,2,4,3,2,1])
+# - U_d3 is centralised by the following elements:
+# -- w1
+# -- w2^{w3*w4}
+# - w([4,3,2,1,3,2,3,4,3,2,1,3,2,3,4]) acts on U_d3 as ConicAlgInv.
 TestStabNormalise := function()
-	local a, t, hom2, hom3, stab21, stab22;
+	local a, t, hom2, hom3, stab21, stab22, stab23, stab31, stab32, stab33;
 	a := ConicAlgBasicIndet(1);
 	t := ComRingBasicIndet(1);
 	hom2 := x -> GrpRootHomF4(F4SimpleRoots[2], x);
 	hom3 := x -> GrpRootHomF4(F4SimpleRoots[3], x);
-	stab21 := [-1, -2, -3, 4, 3, 2, 1];
-	stab22 := [3, 2, 1, 4, 3, 2, 1, 3, 2, 4, 3];
+	# Reduced representations of generators of stabilizer of d2
+	stab21 := [4]; # \sigma([0,1,1,0])
+	stab22 := [-1, -2, -3, 4, 3, 2, 1]; # \sigma([0,-1,0,1])
+	stab23 := [1,2,3,2,1,4,3,2,1,3,2,4,3,2,1]; # \sigma([0,0,0,-2])
+	# Reduced representations of generators of stabilizer of d3
+	stab31 := [1]; # \sigma([-1,-1,1,1])
+	stab32 := [-4,-3,2,3,4]; # \sigma([0,0,-2,0])
+	stab33 := [4,3,2,1,3,2,3,4,3,2,1,3,2,3,4]; # \sigma([0,0,1,-1])
 	TestWeylRelations([
-		[Concatenation(-stab21, [hom2(t)], stab21), [hom2(t)]] # TODO: Finish
+		[Concatenation(-Reversed(stab21), [hom2(t)], stab21), [hom2(t)]],
+		[Concatenation(-Reversed(stab22), [hom2(t)], stab22), [hom2(t)]],
+		[Concatenation(-Reversed(stab23), [hom2(t)], stab23), [hom2(t)]],
+		[Concatenation(-Reversed(stab31), [hom3(a)], stab31), [hom3(a)]],
+		[Concatenation(-Reversed(stab32), [hom3(a)], stab32), [hom3(a)]],
+		[Concatenation(-Reversed(stab33), [hom3(a)], stab33), [hom3(ConicAlgInv(a))]]
 	]);
+end;
+
+TestGrpRootHomExp := function(root)
+	local a;
+	if root in F4ShortRoots then
+		a := ConicAlgBasicIndet(1);
+	elif root in F4LongRoots then
+		a := ComRingBasicIndet(1);
+	fi;
+	return TestEqualityOnModuleGens(GrpRootHomF4(root, a), GrpRootHomF4NonDiv(root, a));
 end;
 
 # Uses indeterminates t_1, t_2, a_1, ..., a_4

@@ -124,7 +124,7 @@ F4RootG2Coord := function(root)
 	fi;
 	# L_2
 	if root = [2, 0, 0, 0] then
-		return [2, -1];
+		return [2, 1];
 	# L_{-2}
 	elif root = [-2, 0, 0, 0] then
 		return [-2, -1];
