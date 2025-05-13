@@ -25,7 +25,7 @@ InstallMethod(TestEquality, [IsLieElement, IsLieElement, IsBool], function(lieEl
 end);
 
 
-# Tests equality of two endomorphisms f, g of the Lie algebra.
+# Tests equality of two endomorphisms f, g of the Lie algebra on
 # If they can be proven to be equal, the output is true.
 # Otherwise the output is a list of lists [a, b] where a is an element of the Lie
 # algebra and b = f(a) - g(a).
@@ -395,19 +395,38 @@ TestWeylSquareNormalise := function()
 end;
 
 # Denote by wi the standard Weyl element for F4SimpleRoots[i] by d2, d3 the simple
-# roots of index 2 and 3, respectively.-
+# roots of index 2 and 3, respectively.
 # This function prints all relations which have to be proven by hand to verify the
 # following assertions:
+# - U_d2 is centralised by the following elements:
+# -- w4
+# -- w4^{w3*w2*w1}
+# -- w([1,2,3,2,1,4,3,2,1,3,2,4,3,2,1])
+# - U_d3 is centralised by the following elements:
+# -- w1
+# -- w2^{w3*w4}
+# - w([4,3,2,1,3,2,3,4,3,2,1,3,2,3,4]) acts on U_d3 as ConicAlgInv.
 TestStabNormalise := function()
-	local a, t, hom2, hom3, stab21, stab22;
+	local a, t, hom2, hom3, stab21, stab22, stab23, stab31, stab32, stab33;
 	a := ConicAlgBasicIndet(1);
 	t := ComRingBasicIndet(1);
 	hom2 := x -> GrpRootHomF4(F4SimpleRoots[2], x);
 	hom3 := x -> GrpRootHomF4(F4SimpleRoots[3], x);
-	stab21 := [-1, -2, -3, 4, 3, 2, 1];
-	stab22 := [3, 2, 1, 4, 3, 2, 1, 3, 2, 4, 3];
+	# Reduced representations of generators of stabilizer of d2
+	stab21 := [4]; # \sigma([0,1,1,0])
+	stab22 := [-1, -2, -3, 4, 3, 2, 1]; # \sigma([0,-1,0,1])
+	stab23 := [1,2,3,2,1,4,3,2,1,3,2,4,3,2,1]; # \sigma([0,0,0,-2])
+	# Reduced representations of generators of stabilizer of d3
+	stab31 := [1]; # \sigma([-1,-1,1,1])
+	stab32 := [-4,-3,2,3,4]; # \sigma([0,0,-2,0])
+	stab33 := [4,3,2,1,3,2,3,4,3,2,1,3,2,3,4]; # \sigma([0,0,1,-1])
 	TestWeylRelations([
-		[Concatenation(-stab21, [hom2(t)], stab21), [hom2(t)]] # TODO: Finish
+		[Concatenation(-Reversed(stab21), [hom2(t)], stab21), [hom2(t)]],
+		[Concatenation(-Reversed(stab22), [hom2(t)], stab22), [hom2(t)]],
+		[Concatenation(-Reversed(stab23), [hom2(t)], stab23), [hom2(t)]],
+		[Concatenation(-Reversed(stab31), [hom3(a)], stab31), [hom3(a)]],
+		[Concatenation(-Reversed(stab32), [hom3(a)], stab32), [hom3(a)]],
+		[Concatenation(-Reversed(stab33), [hom3(a)], stab33), [hom3(ConicAlgInv(a))]]
 	]);
 end;
 
