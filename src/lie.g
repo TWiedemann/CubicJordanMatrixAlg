@@ -257,7 +257,7 @@ InstallMethod(String, [IsLieElement], x -> LieRepToString(UnderlyingElement(x)))
 InstallMethod(Display, [IsLieElement], function(lieEl)
 	local i, part;
 	if IsZero(lieEl) then
-		Print(String(lieEl));
+		Print(String(lieEl), "\n");
 	else
 		for i in [-2..2] do
 			part := LiePart(lieEl, i);
