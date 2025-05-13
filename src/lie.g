@@ -171,6 +171,8 @@ DeclareOperation("DDToLieEmb", [IsDDElement]);
 DeclareOperation("L0ToLieEmb", [IsL0Element]);
 DeclareOperation("BrownPosToLieEmb", [IsBrownElement]);
 DeclareOperation("BrownNegToLieEmb", [IsBrownElement]);
+DeclareOperation("LieBrownPosElFromTuple", [IsRingElement, IsCubicElement, IsCubicElement, IsRingElement]);
+DeclareOperation("LieBrownNegElFromTuple", [IsRingElement, IsCubicElement, IsCubicElement, IsRingElement]);
 DeclareOperation("CubicPosToLieEmb", [IsCubicElement]);
 DeclareOperation("CubicNegToLieEmb", [IsCubicElement]);
 
@@ -187,6 +189,18 @@ end);
 InstallMethod(BrownNegToLieEmb, [IsBrownElement], function(brownEl)
 	return LieElFromTuple(Zero(ComRing), brownEl, L0Zero, BrownZero, Zero(ComRing));
 end);
+
+InstallMethod(LieBrownPosElFromTuple, [IsRingElement, IsCubicElement, IsCubicElement, IsRingElement], 
+	function(a, b, c, d)
+		return BrownPosToLieEmb(BrownElFromTuple(a, b, c, d));
+	end
+);
+
+InstallMethod(LieBrownNegElFromTuple, [IsRingElement, IsCubicElement, IsCubicElement, IsRingElement], 
+	function(a, b, c, d)
+		return BrownNegToLieEmb(BrownElFromTuple(a, b, c, d));
+	end
+);
 
 InstallMethod(CubicPosToLieEmb, [IsCubicElement], function(cubicEl)
 	return L0ToLieEmb(CubicPosToL0Emb(cubicEl));
