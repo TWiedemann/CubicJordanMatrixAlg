@@ -89,7 +89,7 @@ end;
 
 F4ReflProdEqual := function(rootList1, rootList2)
 	local root;
-	for root in F4roots do
+	for root in F4Roots do
 		if F4ReflProd(root, rootList1) <> F4ReflProd(root, rootList2) then
 			return false;
 		fi;
