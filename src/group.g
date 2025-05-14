@@ -376,6 +376,82 @@ InstallMethod(GrpRootHomF4NonDiv, [IsList, IsRingElement], function(root, a)
 			fi;
 			result := result + lieXCoeff*nextSummand;
 			return result;
+		elif rootG2 = [0, 1] then
+			aLie := LieRootHomF4(root, a);
+			aCubic := L0CubicPosCoeff(LiePart(aLie, 0)); # aLie = ad_{aCubic}^+
+			## Action on L_2 + L_{-2} + xi + Cubic is id
+			## Action on L_1 + L_{-1}
+			for sign in [1, -1] do
+				if sign = 1 then
+					brown := liePos1;
+					LieBrownElFromTuple := LieBrownPosElFromTuple;
+				else
+					brown := lieNeg1;
+					LieBrownElFromTuple := LieBrownNegElFromTuple;
+				fi;
+				lam := BrownElComPart(brown, 1);
+				b := BrownElCubicPart(brown, 1);
+				b2 := BrownElCubicPart(brown, 2);
+				mu := BrownElComPart(brown, 2);
+				result := result + LieBrownElFromTuple(
+					Zero(ComRing),
+					lam*aCubic,
+					CubicCross(aCubic, b) + lam*CubicAdj(aCubic),
+					CubicBiTr(aCubic, b2) + CubicBiTr(b, CubicAdj(aCubic)) + lam*CubicNorm(aCubic)
+				);
+			od;
+			## Action on zeta
+			result := result - aLie;
+			## Action on DD
+			for list in lieDDCoeffList do
+				# list represents scalar*d_{c, c2}
+				scalar := list[1];
+				c := list[2];
+				c2 := list[3];
+				result := result - JordanD(c, c2, aCubic);
+			od;
+			## Action on Cubic'
+			c2 := lieCubicNeg;
+			result := result - Liedd(a, c2) + CubicPosToLieEmb(JordanU(a, c2));
+			return result;
+		elif rootG2 = [0, -1] then
+			aLie := LieRootHomF4(root, a);
+			aCubic2 := L0CubicNegCoeff(LiePart(aLie, 0)); # aLie = ad_{aCubic}^+
+			## Action on L_2 + L_{-2} +zeta + Cubic' is id
+			## Action on L_1 + L_{-1}
+			for sign in [1, -1] do
+				if sign = 1 then
+					brown := liePos1;
+					LieBrownElFromTuple := LieBrownPosElFromTuple;
+				else
+					brown := lieNeg1;
+					LieBrownElFromTuple := LieBrownNegElFromTuple;
+				fi;
+				lam := BrownElComPart(brown, 1);
+				b := BrownElCubicPart(brown, 1);
+				b2 := BrownElCubicPart(brown, 2);
+				mu := BrownElComPart(brown, 2);
+				result := result + LieBrownElFromTuple(
+					-CubicBiTr(b, aCubic2) + CubicBiTr(CubicAdj(aCubic2), b2) - mu*CubicNorm(aCubic2),
+					CubicCross(aCubic2, b2) + mu*CubicAdj(aCubic2),
+					mu*aCubic2,
+					Zero(ComRing)
+				);
+			od;
+			## Action on zeta
+			result := result + aLie;
+			## Action on DD
+			for list in lieDDCoeffList do
+				# list represents scalar*d_{c, c2}
+				scalar := list[1];
+				c := list[2];
+				c2 := list[3];
+				result := result + JordanD(c2, c, aCubic2);
+			od;
+			## Action on Cubic
+			c := lieCubicPos;
+			result := result + Liedd(c, aCubic2) - CubicNegToLieEmb(JordanU(aCubic2, c));
+			return result;
 		# Old version using section 4
 		# elif rootG2 = [1, 0] then
 		# 	# Use name "b" instead of "a", as in the paper
@@ -503,21 +579,3 @@ InstallMethod(GrpWeylOneInvF4, [IsList], function(root)
 		return fail;
 	fi;
 end);
-
-# InstallMethod(GrpRootHomF4, [IsList, IsRingElement], function(root, a)
-
-# 	if not root in F4Roots then
-# 		Error("Root not in F4");
-# 		return fail;
-# 	fi;
-# 	return LieEndo(function(lieEl)
-
-# 		xCoeff := LiePart(lieEl, -2);
-# 		brownNeg := LiePart(lieEl, -1);
-# 		zero := LiePart(lieEl, 0);
-# 		brownPos := LiePart(lieEl, 1);
-# 		yCoeff := LiePart(lieEl, 2);
-# 	end);
-# 	if root = [-2, 0, 0, 0] then
-# 		return 
-# end);
