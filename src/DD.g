@@ -347,3 +347,15 @@ InstallMethod(DDRootHomA2, [IsList, IsRingElement], function(root, a)
 	# fi;
     return dd(CubicComEl(i, One(ComRing)), lambda*CubicAlgElMat(i, j, a)); # TODO: Is this correct?
 end);
+
+## Simplifier
+DeclareOperation("WithoutTraces", [IsDDElement]);
+InstallMethod(WithoutTraces, [IsDDElement], function(dd)
+	local coeffList, newCoeffList, list;
+	coeffList := DDCoeffList(dd);
+	newCoeffList := [];
+	for list in coeffList do
+		Add(newCoeffList, [list[1], WithoutTraces(list[2]), WithoutTraces(list[3])]);
+	od;
+	return ApplyDistAndPeirceLaw(DDElFromCoeffList(newCoeffList));
+end);

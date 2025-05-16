@@ -342,3 +342,12 @@ InstallMethod(ApplyDistAndPeirceLaw, [IsL0Element], function(L0el)
 	rep.dd := ApplyDistAndPeirceLaw(rep.dd);
 	return L0(rep);
 end);
+
+DeclareOperation("WithoutTraces", [IsL0Element]);
+InstallMethod(WithoutTraces, [IsL0Element], function(l0El)
+	return Sum([
+		CubicPosToL0Emb(WithoutTraces(L0CubicPosCoeff(l0El))),
+		CubicNegToL0Emb(WithoutTraces(L0CubicNegCoeff(l0El))),
+		DDToL0Emb(WithoutTraces(L0DDCoeff(l0El)))
+	]);
+end);

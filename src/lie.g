@@ -294,6 +294,18 @@ InstallMethod(ApplyDistAndPeirceLaw, [IsLieElement], function(lieEl)
 	return Lie(rep);
 end);
 
+# Apply WithoutTraces to all ConicAlg-components
+DeclareOperation("WithoutTraces", [IsLieElement]);
+InstallMethod(WithoutTraces, [IsLieElement], function(lieEl)
+	return LieElFromTuple(
+		LiePart(lieEl, -2),
+		WithoutTraces(LiePart(lieEl, -1)),
+		WithoutTraces(LiePart(lieEl, 0)),
+		WithoutTraces(LiePart(lieEl, 1)),
+		LiePart(lieEl, 2)
+	);
+end);
+
 ### Root homomorphisms
 
 DeclareOperation("LieRootHomF4", [IsList, IsRingElement]);
@@ -385,15 +397,6 @@ ChevStrucConst := function(root1, root2)
 	od;
 	return fail;
 end;
-
-# DeclareOperation("LiePartG2", [IsLieElement, IsList]);
-# InstallMethod(LiePartG2, [IsLieElement, IsList])
-
-# DeclareOperation("LiePartF4", [IsLieElement, IsList]);
-
-# InstallMethod(LiePartF4, [IsLieElement, IsList], function(lieEl, root)
-
-# end);
 
 ## ---- Generators ----
 

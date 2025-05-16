@@ -5,8 +5,8 @@ ConicAlg := FreeMagmaRing(ComRing, ConicAlgMag);
 ConicAlgMagToAlg := x -> ImageElm(Embedding(ConicAlgMag, ConicAlg), x);
 ConicAlgElFam := FamilyObj(Zero(ConicAlg));
 
-embConicAlgMag := x -> ImageElm(Embedding(ConicAlgMag, ConicAlg), x);
-ConicAlgIndets := List(ConicAlgMagIndets, embConicAlgMag);
+ConicAlgMagEmb := x -> ImageElm(Embedding(ConicAlgMag, ConicAlg), x);
+ConicAlgIndets := List(ConicAlgMagIndets, ConicAlgMagEmb);
 
 ConicAlgBasicIndets := ConicAlgIndets{[1..ConicAlg_rank]};
 ConicAlgInvIndets := ConicAlgIndets{[ConicAlg_rank+1..2*ConicAlg_rank]};
@@ -120,3 +120,52 @@ ConicAlgNorm := function(a)
 	od;
 	return result;
 end;
+
+# Initialises the lists _ComRingTraceIndets and _ConicAlgTraces
+_InitTraceIndets := function()
+	local i, infoList, type, info, a, aInv;
+	_ComRingTraceIndets := [];
+	_ConicAlgTraces := [];
+	for i in [1..Length(_ComRingIndetInfo)] do
+		infoList := _ComRingIndetInfo[i];
+		type := infoList[1];
+		info := infoList[2];
+		if type = "tr" then
+			Add(_ComRingTraceIndets, Indeterminate(BaseRing, i));
+			a := ConicAlgMagEmb(info); # \in ConicAlg
+			aInv := ConicAlgMagEmb(ConicAlgMagInv(a));
+			Add(_ConicAlgTraces, a+ConicAlgInv(a));
+		fi;
+	od;
+end;
+
+_InitTraceIndets();
+
+### Simplifier
+
+# a: Element of ComRing.
+# Output: The element obtained from a by replacing each occurence of tr(a) by a+a'.
+# In particular, the output lies in ConicAlg.
+DeclareOperation("WithoutTraces", [IsRationalFunction]);
+InstallMethod(WithoutTraces, [IsRationalFunction], function(a)
+	local coeffList, result, i, magEl, comEl;
+	ReqComRingEl(a);
+	return Value(a, _ComRingTraceIndets, _ConicAlgTraces, One(ConicAlg));
+end);
+
+# a: Element of ConicAlg.
+# Output: The element obtained from a by applying WithoutTraces to all ComRing-coefficients.
+# The output lies in ConicAlg.
+DeclareOperation("WithoutTraces", [IsElementOfFreeMagmaRing]);
+InstallMethod(WithoutTraces, [IsElementOfFreeMagmaRing], function(a)
+	local coeffList, result, i, magEl, comEl;
+	ReqConicAlgEl(a);
+	coeffList := CoefficientsAndMagmaElements(a);
+	result := Zero(ConicAlg);
+	for i in [1..Length(coeffList)/2] do
+		magEl := coeffList[2*i - 1];
+		comEl := coeffList[2*i];
+		result := result + WithoutTraces(comEl) * ConicAlgMagEmb(magEl);
+	od;
+	return result;
+end);

@@ -39,7 +39,12 @@ _TrDict := fail;
 # and info is additional information: For t_i and g_i, info is i. For n(x) and tr(x),
 # info is x (as an element of ConicAlgMag)
 _ComRingIndetInfo := fail;
-skip_tests := false; # If true, tests whether elements lie in ComRing or ConicAlg are skipped
+# List of all indeterminates tr(a) and list of the "corresponding" elements a+a' in ConicAlg.
+# Used by WithoutTraces().
+_ComRingTraceIndets := fail;
+_ConicAlgTraces := fail;
+# If true, the tests which check whether elements lie in ComRing or ConicAlg are skipped
+skip_tests := false;
 ### ----------
 
 # Reread("F4-5Grading.g");

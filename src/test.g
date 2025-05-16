@@ -14,7 +14,7 @@ InstallMethod(TestEquality, [IsLieElement, IsLieElement, IsBool], function(lieEl
 		if i = 0 then
 			part := ApplyDistAndPeirceLaw(part);
 		fi;
-		if not IsZero(part) then
+		if not IsZero(part) and not IsZero(WithoutTraces(part)) then
 			isEqual := false;
 			if print then
 				Print(String(i), " part: ", part, "\n");
@@ -36,7 +36,7 @@ InstallMethod(TestEqualityOnGenList, [IsLieEndo, IsLieEndo, IsList],
 		errorList := [];
 		for gen in genList do
 			test := ApplyDistAndPeirceLaw(lieEndo1(gen) - lieEndo2(gen));
-			if not IsZero(test) then
+			if not IsZero(test) and not IsZero(WithoutTraces(test)) then
 				Add(errorList, [gen, test]);
 			fi;
 		od;
@@ -590,3 +590,17 @@ TestComRingIndetInfo := function()
 	od;
 	return true;
 end;
+
+# Does not work because e.g. ConicAlgMatTr(a1*a1') = 2*n(a1)
+# TestWithoutTraces := function()
+# 	local magEls, magEl, test1, test2;
+# 	magEls := Concatenation(_AllConicAlgMagEls(Trace_MaxLength));
+# 	for magEl in magEls do
+# 		test1 := WithoutTraces(ConicAlgMagTr(magEl));
+# 		test2 := ConicAlgMagEmb(magEl) + ConicAlgMagEmb(ConicAlgMagInv(magEl));
+# 		if test1 <> test2 then
+# 			return magEl;
+# 		fi;
+# 	od;
+# 	return true;
+# end;
