@@ -128,6 +128,10 @@ InstallMethod(dd, [IsCubicElement, IsCubicElement], function(cubicEl1, cubicEl2)
 	fi;
 end);
 
+DeclareOperation("DDElFromCoeffList", [IsList]);
+InstallMethod(DDElFromCoeffList, [IsList], function(coeffList)
+	return DD(coeffList);
+end);
 
 # Scalar multiplication ComRing x DD -> DD
 InstallOtherMethod(\*, "for ComRingElement and DDElement", [IsRingElement, IsDDElement], 2, function(comEl, ddEl)
