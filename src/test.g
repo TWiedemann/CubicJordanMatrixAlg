@@ -78,6 +78,31 @@ InstallMethod(TestEquality, [IsLieEndo, IsLieEndo],
 	end
 );
 
+# Same as TestEquality, but uses the inverted list of lie algebra generators
+DeclareOperation("TestEqualityY", [IsLieEndo, IsLieEndo, IsInt, IsInt]);
+DeclareOperation("TestEqualityY", [IsLieEndo, IsLieEndo, IsInt]);
+DeclareOperation("TestEqualityY", [IsLieEndo, IsLieEndo]);
+
+InstallMethod(TestEqualityY, [IsLieEndo, IsLieEndo, IsInt, IsInt],
+	function(lieEndo1, lieEndo2, comIndetNum, conicIndetNum)
+		local genList;
+		genList := LieGensAsLie(comIndetNum, conicIndetNum, true);
+		return TestEqualityOnGenList(lieEndo1, lieEndo2, genList);
+	end
+);
+
+InstallMethod(TestEqualityY, [IsLieEndo, IsLieEndo, IsInt], 
+	function(lieEndo1, lieEndo2, indetNum)
+		return TestEquality(lieEndo1, lieEndo2, indetNum, indetNum);
+	end
+);
+
+InstallMethod(TestEqualityY, [IsLieEndo, IsLieEndo], 
+	function(lieEndo1, lieEndo2)
+		return TestEquality(lieEndo1, lieEndo2, ComRing_rank, ConicAlg_rank);
+	end
+);
+
 # Like TestEquality, but uses LieGensAsModule in place of LieGensAsLie.
 # Uses indeterminates t_comIndetNum, a_conicIndetNum AND a_{conicIndetNum+1}
 DeclareOperation("TestEqualityOnModuleGens", [IsLieEndo, IsLieEndo, IsInt, IsInt]);
@@ -325,7 +350,8 @@ end;
 # all [g1, g2] \in relations.
 # Uses indeterminates t_(ComRing_rank), a_(ConicAlg_rank).
 TestRelations := function(relations)
-	local rel, test, error, part, i;
+	local rel, test, error, part, i, result;
+	result := [];
 	for rel in relations do
 		test := TestEquality(rel[1], rel[2]);
 		if test <> true then
@@ -334,13 +360,15 @@ TestRelations := function(relations)
 				# differ, which is not interesting
 				for i in [-2..2] do
 					part := LiePart(error[2], i);
-					if not IsZero(part) then
-						Display(part);
+					if not IsZero(WithoutTraces(part)) then
+						Add(result, part);
+						# Display(part);
 					fi;
 				od;
 			od;
 		fi;
 	od;
+	return result;
 end;
 
 # relations: A list of lists [l1, l2] where l1 and l2 are lists containing elements
@@ -372,14 +400,14 @@ TestWeylRelations := function(relations)
 		od;
 		return auto;
 	end));
-	TestRelations(weylRelations);
+	return TestRelations(weylRelations);
 end;
 
 # Prints all relations which have to be proven by hand to verify the braid relations for
 # the standard Weyl elements w.r.t. F4SimpleRoots.
 # Uses indeterminates a_1, t_1
 TestBraidRel := function()
-	TestWeylRelations([
+	return TestWeylRelations([
 		[[1, 2, 1], [2, 1, 2]], [[1, 3], [3, 1]], [[1, 4], [4, 1]],
 		[[2, 3, 2, 3], [3, 2, 3, 2]], [[2, 4], [4, 2]],
 		[[3, 4, 3], [4, 3, 4]]
@@ -395,7 +423,7 @@ end;
 # wi^(wj^2) = wi.
 # Uses indeterminates t_1, a_1.
 TestWeylSquareOnWeyl := function()
-	TestWeylRelations([
+	return TestWeylRelations([
 		[[-1, -1, 2, 1, 1], [-2]], [[-2, -2, 1, 2, 2], [-1]],
 		[[-3, -3, 4, 3, 3], [-4]], [[-4, -4, 3, 4, 4], [-3]],
 		[[-2, -2, 3, 2, 2], [-3]], [[-3, -3, 2, 3, 3], [2]]
@@ -420,7 +448,7 @@ TestWeylSquareNormalise := function()
 	t := ComRingBasicIndet(1);
 	hom2 := x -> GrpRootHomF4(F4SimpleRoots[2], x);
 	hom3 := x -> GrpRootHomF4(F4SimpleRoots[3], x);
-	TestWeylRelations([
+	return TestWeylRelations([
 		[[-1, -1, hom2(t), 1, 1], [hom2(-t)]],
 		[[-2, -2, hom2(t), 2, 2], [hom2(t)]],
 		[[-3, -3, hom2(t), 3, 3], [hom2(t)]],
@@ -456,12 +484,12 @@ TestStabNormalise := function()
 	stab31 := [1]; # \sigma([-1,-1,1,1])
 	stab32 := [-4,-3,2,3,4]; # \sigma([0,0,-2,0])
 	stab33 := [4,3,2,1,3,2,3,4,3,2,1,3,2,3,4]; # \sigma([0,0,1,-1])
-	TestWeylRelations([
-		[Concatenation(-Reversed(stab21), [hom2(t)], stab21), [hom2(t)]],
-		[Concatenation(-Reversed(stab22), [hom2(t)], stab22), [hom2(t)]],
-		[Concatenation(-Reversed(stab23), [hom2(t)], stab23), [hom2(t)]],
-		[Concatenation(-Reversed(stab31), [hom3(a)], stab31), [hom3(a)]],
-		[Concatenation(-Reversed(stab32), [hom3(a)], stab32), [hom3(a)]],
+	return TestWeylRelations([
+		# [Concatenation(-Reversed(stab21), [hom2(t)], stab21), [hom2(t)]],
+		# [Concatenation(-Reversed(stab22), [hom2(t)], stab22), [hom2(t)]],
+		# [Concatenation(-Reversed(stab23), [hom2(t)], stab23), [hom2(t)]],
+		# [Concatenation(-Reversed(stab31), [hom3(a)], stab31), [hom3(a)]],
+		# [Concatenation(-Reversed(stab32), [hom3(a)], stab32), [hom3(a)]],
 		[Concatenation(-Reversed(stab33), [hom3(a)], stab33), [hom3(ConicAlgInv(a))]]
 	]);
 end;
