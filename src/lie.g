@@ -401,22 +401,39 @@ end;
 ## ---- Generators ----
 
 # comIndetNum, conicIndetNum: Numbers of the indeterminates that should be used.
-# Output: A list of generic basic elements of Lie (as a Lie algebra), involving indeterminates
-# t_comIndetNum, a_conicIndetNum
-LieGensAsLie := function(comIndetNum, conicIndetNum)
-	local a, t, gens, root;
-	t := ComRingBasicIndet(comIndetNum);
-	a := ConicAlgBasicIndet(conicIndetNum);
-	gens := [LieX];
-	for root in Filtered(F4Roots, x -> F4RootG2Coord(x)[1] = 1) do
-		if root in F4ShortRoots then
-			Add(gens, LieRootHomF4(root, a));
+# Output: A list of generic basic elements of Lie (as a Lie algebra),
+# involving indeterminates t_comIndetNum, a_conicIndetNum
+# If the last (boolean) input variable is true, then the generator list contains
+# LieY and elements from L_{-1}. Otherwise (and by default) it contains LieX
+# and elements from L_1.
+DeclareOperation("LieGensAsLie", [IsInt, IsInt, IsBool]);
+DeclareOperation("LieGensAsLie", [IsInt, IsInt]);
+
+InstallMethod(LieGensAsLie, [IsInt, IsInt, IsBool],
+	function(comIndetNum, conicIndetNum, var)
+		local a, t, gens, root, coord;
+		t := ComRingBasicIndet(comIndetNum);
+		a := ConicAlgBasicIndet(conicIndetNum);
+		if var then
+			gens := [LieY];
+			coord := -1;
 		else
-			Add(gens, LieRootHomF4(root, t));
+			gens := [LieX];
+			coord := 1;
 		fi;
-	od;
-	return gens;
-end;
+		for root in Filtered(F4Roots, x -> F4RootG2Coord(x)[1] = coord) do
+			if root in F4ShortRoots then
+				Add(gens, LieRootHomF4(root, a));
+			else
+				Add(gens, LieRootHomF4(root, t));
+			fi;
+		od;
+		return gens;
+	end);
+
+InstallMethod(LieGensAsLie, [IsInt, IsInt], function(comIndetNum, conicIndetNum)
+	return LieGensAsLie(comIndetNum, conicIndetNum, false);
+end);
 
 # comIndetNum, conicIndetNum: Numbers of the indeterminates that should be used.
 # Output: A list of generic basic elements of Lie (as a module), involving indeterminates
