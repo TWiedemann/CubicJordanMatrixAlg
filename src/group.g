@@ -76,6 +76,17 @@ end);
 # For elements a of F4-root spaces, we know that ad_a^4 = 0.
 InstallMethod(F4Exp, [IsLieElement], a -> F4Exp(a, 3));
 
+## --- Simplifier ---
+
+DeclareOperation("ComRingCancel", [IsLieEndo]);
+InstallMethod(ComRingCancel, [IsLieEndo], function(lieEndo)
+	return LieEndo(
+		function(lieEl)
+			return ComRingCancel(lieEndo(lieEl));
+		end
+	);
+end);
+
 ## ------- Root homomorphisms ----
 
 # Explicit formulas for all roots except for those in the (0, 0)-part
@@ -456,6 +467,7 @@ end);
 
 DeclareOperation("GrpRootHomF4", [IsList, IsRingElement]);
 InstallMethod(GrpRootHomF4, [IsList, IsRingElement], function(root, a)
+	local g;
 	if root in F4LongRoots then
 		ReqComRingEl(a);
 	elif root in F4ShortRoots then
@@ -465,10 +477,14 @@ InstallMethod(GrpRootHomF4, [IsList, IsRingElement], function(root, a)
 		return fail;
 	fi;
 	if F4RootG2Coord(root) = [0,0] then
-		return GrpRootHomF4Div(root, a);
+		g := GrpRootHomF4Div(root, a);
 	else
-		return GrpRootHomF4NonDiv(root, a);
+		g := GrpRootHomF4NonDiv(root, a);
 	fi;
+	if _CancelImmediately then
+		g := ComRingCancel(g);
+	fi;
+	return g;
 end);
 
 DeclareOperation("GrpWeylF4", [IsList, IsRingElement, IsRingElement]);
