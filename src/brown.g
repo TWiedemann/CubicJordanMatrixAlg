@@ -134,29 +134,3 @@ InstallMethod(BrownRootHomF4, [IsList, IsRingElement], function(root, a)
 		return BrownElFromTuple(Zero(ComRing), CubicRootHomF4(root, a, 1), CubicZero, Zero(ComRing));
 	fi;
 end);
-
-## Simplifier
-
-# Apply WithoutTraces to all ConicAlg-components
-DeclareOperation("WithoutTraces", [IsBrownElement]);
-InstallMethod(WithoutTraces, [IsBrownElement], function(brownEl)
-	return BrownElFromTuple(
-		BrownElPart(brownEl, 1),
-		WithoutTraces(BrownElPart(brownEl, 2)),
-		WithoutTraces(BrownElPart(brownEl, 3)),
-		BrownElPart(brownEl, 4)
-	);
-end);
-
-# Applies Simplify to all components.
-DeclareOperation("Simplify", [IsBrownElement]);
-InstallMethod(Simplify, [IsBrownElement], function(brownEl)
-	local t, cub, i;
-	t := [];
-	cub := [];
-	for i in [1, 2] do
-		t[i] := Simplify(BrownElComPart(brownEl, i));
-		cub[i] := Simplify(BrownElCubicPart(brownEl, i));
-	od;
-	return BrownElFromTuple(t[1], cub[1], cub[2], t[2]);
-end);

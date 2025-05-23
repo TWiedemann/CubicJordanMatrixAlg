@@ -426,29 +426,3 @@ InstallMethod(CubicRootHomF4, [IsList, IsRingElement, IsInt], function(root, a, 
 		fi;
 	fi;
 end);
-
-## Simplifier
-
-# Apply WithoutTraces to all ConicAlg-components
-DeclareOperation("WithoutTraces", [IsCubicElement]);
-InstallMethod(WithoutTraces, [IsCubicElement], function(cubEl)
-	return CubicElFromTuple(
-		CubicElComCoeff(cubEl, 1), CubicElComCoeff(cubEl, 2), CubicElComCoeff(cubEl, 3),
-		WithoutTraces(CubicElAlgCoeff(cubEl, 1)),
-		WithoutTraces(CubicElAlgCoeff(cubEl, 2)),
-		WithoutTraces(CubicElAlgCoeff(cubEl, 3))
-	);
-end);
-
-# Applies Simplify to all components.
-DeclareOperation("Simplify", [IsCubicElement]);
-InstallMethod(Simplify, [IsCubicElement], function(cubEl)
-	local t, a, i;
-	t := [];
-	a := [];
-	for i in [1..3] do
-		t[i] := Simplify(CubicElComCoeff(cubEl, i));
-		a[i] := Simplify(CubicElAlgCoeff(cubEl, i));
-	od;
-	return CubicElFromTuple(t[1], t[2], t[3], a[1], a[2], a[3]);
-end);

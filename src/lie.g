@@ -282,42 +282,6 @@ InstallOtherMethod(\*, "for ComRingElement and LieElement", [IsRingElement, IsLi
 	));
 end);
 
-## ---- Simplifier ----
-
-# lieEl: Element of Lie.
-# Output: The same element with ApplyDistAndPeirceLaw applied to the DD-part.
-# Usually not needed because Simplify also applies ApplyDistAndPeirceLaw to the DD-part.
-DeclareOperation("ApplyDistAndPeirceLaw", [IsLieElement]);
-InstallMethod(ApplyDistAndPeirceLaw, [IsLieElement], function(lieEl)
-	local rep;
-	rep := StructuralCopy(UnderlyingElement(lieEl));
-	rep.zero := ApplyDistAndPeirceLaw(rep.zero);
-	return Lie(rep);
-end);
-
-# Apply WithoutTraces to all ConicAlg-components
-DeclareOperation("WithoutTraces", [IsLieElement]);
-InstallMethod(WithoutTraces, [IsLieElement], function(lieEl)
-	return LieElFromTuple(
-		LiePart(lieEl, -2),
-		WithoutTraces(LiePart(lieEl, -1)),
-		WithoutTraces(LiePart(lieEl, 0)),
-		WithoutTraces(LiePart(lieEl, 1)),
-		LiePart(lieEl, 2)
-	);
-end);
-
-# Applies Simplify to all components.
-DeclareOperation("Simplify", [IsLieElement]);
-InstallMethod(Simplify, [IsLieElement], function(lieEl)
-	local parts, i;
-	parts := [];
-	for i in [-2..2] do
-		Add(parts, Simplify(LiePart(lieEl, i)));
-	od;
-	return LieElFromTuple(parts[1], parts[2], parts[3], parts[4], parts[5]);
-end);
-
 ### Root homomorphisms
 
 DeclareOperation("LieRootHomF4", [IsList, IsRingElement]);
