@@ -19,7 +19,7 @@ DeclareOperation("ReqConicAlgEl", [IsRingElement]);
 DeclareOperation("ReqConicAlgEl", [IsList]);
 
 InstallMethod(ReqComRingEl, [IsRingElement], function(a)
-	if skip_tests then
+	if _SkipTests then
 		return true;
 	fi;
 	if not IsRationalFunction(a) then
@@ -40,7 +40,7 @@ InstallMethod(ReqComRingEl, [IsList], function(list)
 end);
 
 InstallMethod(ReqConicAlgEl, [IsRingElement], function(a)
-	if skip_tests then
+	if _SkipTests then
 		return true;
 	fi;
 	if not a in ConicAlg then
@@ -120,26 +120,6 @@ ConicAlgNorm := function(a)
 	od;
 	return result;
 end;
-
-# Initialises the lists _ComRingTraceIndets and _ConicAlgTraces
-_InitTraceIndets := function()
-	local i, infoList, type, info, a, aInv;
-	_ComRingTraceIndets := [];
-	_ConicAlgTraces := [];
-	for i in [1..Length(_ComRingIndetInfo)] do
-		infoList := _ComRingIndetInfo[i];
-		type := infoList[1];
-		info := infoList[2];
-		if type = "tr" then
-			Add(_ComRingTraceIndets, Indeterminate(BaseRing, i));
-			a := ConicAlgMagEmb(info); # \in ConicAlg
-			aInv := ConicAlgMagEmb(ConicAlgMagInv(a));
-			Add(_ConicAlgTraces, a+ConicAlgInv(a));
-		fi;
-	od;
-end;
-
-_InitTraceIndets();
 
 ### Simplifier
 

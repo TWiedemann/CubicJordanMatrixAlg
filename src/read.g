@@ -18,12 +18,17 @@ myUnbind := function(s)
 end;
 
 ### ----- Global variables -----
-BaseRing := Rationals;
+## ---- Bools ----
 # If _SanitizeImmediately = true, DDSanitizeRep is applied after several transformations which
 # may produce unsanitized (but correct) output
 _SanitizeImmediately := true;
 # If _CancelImmediately = true, ComRingCancel is applied after each Lie bracket
 _CancelImmediately := true; # Increases runtime by roughly 10%
+# If true, the tests which check whether elements lie in ComRing or ConicAlg are skipped
+_SkipTests := false;
+# If true, the values of ConicAlgMagTr are precomputed and cached.
+_CacheTrace := true;
+# ---- Ints ----
 # ComRing contains indeterminates t_1, ..., t_{ComRing_rank}, g_1, ..., g_3 and
 # the norms and traces of elements of ConicAlg
 ComRing_rank := 6;
@@ -36,6 +41,7 @@ ConicAlg_rank := 2;
 # tr(xy) = tr(yx) or tr((xy)z) = tr(x(yz)).
 # If longer products are needed during the runtime, then an error message is printed.
 Trace_MaxLength := 5;
+# ---- Precomputed information ----
 # Dictionary with precomputed values for all traces. Will be initalised later.
 _TrDict := fail;
 # List with information about the indeterminates of ComRing in the order in which they
@@ -48,8 +54,14 @@ _ComRingIndetInfo := fail;
 # Used by WithoutTraces().
 _ComRingTraceIndets := fail;
 _ConicAlgTraces := fail;
-# If true, the tests which check whether elements lie in ComRing or ConicAlg are skipped
-skip_tests := false;
+# _TrSubIndetList contains trace indeterminates which may be replaced by other terms
+# using the relation tr(xy') = tr(x)tr(y) - tr(xy). This relation may be used to replace
+# all appearances of a_i' in tr.
+# _TrSubValueList[i] is the term by which _TrSubIndetList[i] should be replaced.
+_TrSubIndetList := fail;
+_TrSubValueList := fail;
+# ---- Misc ----
+BaseRing := Rationals;
 ### ----------
 
 # Reread("F4-5Grading.g");
@@ -58,6 +70,7 @@ Reread(myFilePath("helper.g"));
 Reread(myFilePath("conic_mag.g"));
 Reread(myFilePath("comring.g"));
 Reread(myFilePath("conic.g"));
+Reread(myFilePath("init.g"));
 myUnbind("IsCubicElement");
 Reread(myFilePath("cubic.g"));
 myUnbind("IsBrownElement");

@@ -169,7 +169,11 @@ end;
 
 # Same as _ConicAlgMagTrUncached, but returns the precomputed, cached result.
 ConicAlgMagTr := function(magEl)
-	return LookupDictionary(_TrDict, magEl);
+	if _CacheTrace then
+		return LookupDictionary(_TrDict, ExtRepOfObj(magEl));
+	else
+		return _ConicAlgMagTrUncached(magEl);
+	fi;
 end;
 
 _ComRingGamIndetNum := []; # Contains the indeterminate number of gamma_i at position i
@@ -178,9 +182,12 @@ _ComRingGamIndetNum := []; # Contains the indeterminate number of gamma_i at pos
 # - the dictionary _TrDict with precomputed trace values.
 # - the list _ComRingIndetInfo
 # For a documentation, see read.g.
-# Returns the maximal indeterminate number that appears in ComRing
-_InitDicts := function()
-	local maxIndetNum, magEl, magEls, trace, polyRep, monomial, i, j;
+# Returns the maximal indeterminate number that appears in ComRing.
+# It is necessary to call _InitTrDict even if _CacheTrace = false to ensure that
+# the indeterminates are always initialised in the same order, which ensures
+# that they are always printed in the same order.
+_InitTrDict := function()
+	local maxIndetNum, magEl, magEls, magElsReps, magElRep, trace, polyRep, monomial, i, j;
 	_ComRingIndetInfo := [];
 	# Initialise all the other indeterminates of ComRing in the desired order
 	for i in [1..3] do
@@ -200,10 +207,13 @@ _InitDicts := function()
 	maxIndetNum := 3 + ComRing_rank + ConicAlg_rank;
 	magEls := Concatenation(_AllConicAlgMagEls(Trace_MaxLength));
 	magEls := Concatenation([One(ConicAlgMag)], magEls);
-	_TrDict := NewDictionary(magEls[1], true, magEls);
-	for magEl in magEls do
+	magElsReps := List(magEls, x -> ExtRepOfObj(x));
+	_TrDict := NewDictionary(magElsReps[1], true, magElsReps);
+	for i in [1..Length(magEls)] do
+		magEl := magEls[i];
+		magElRep := magElsReps[i];
 		trace := _ConicAlgMagTrUncached(magEl);
-		AddDictionary(_TrDict, magEl, trace);
+		AddDictionary(_TrDict, magElRep, trace);
 		## Update maxIndetNum
 		polyRep := ExtRepNumeratorRatFun(trace);
 		# Iterate through all monomials in trace
@@ -222,8 +232,10 @@ _InitDicts := function()
 	return maxIndetNum;
 end;
 
-_ComRingNumIndets := _InitDicts();
+_ComRingNumIndets := _InitTrDict();
 ComRing := FunctionField(BaseRing, _ComRingNumIndets);
+
+# ---- Simplifier ----
 
 # a: Element of a.
 # Output: The same element, but all coefficients are multiplied by the lcm of all
