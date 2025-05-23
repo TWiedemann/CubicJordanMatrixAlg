@@ -284,7 +284,7 @@ _ApplyDistAndPeirceLaw_OnSummands_int2 := function(i1, j1, a, i2, j2, b)
 end;
 
 # ddEl: Element of DD.
-# Output: An element of DD which (mathematically) represents the same element of DD,
+# Output: An element of L0 (not of DD!) which (mathematically) represents the same element,
 # but simplified:
 # 1. For each i <> j, there is at most one summands from Z_{i \to j}, and it is
 # of the form d_{1[ii], c[ij]} for some c in ConicAlg.
@@ -296,8 +296,8 @@ end;
 # with a <> 1 and b <> 1.
 # 4. Summands from Z_{ij,kl} with Intersection([i,j], [k,l]) = [] are removed.
 # See [DMW, 3.8, 5.2, 5.20] for the mathematical justification.
-DeclareOperation("ApplyDistAndPeirceLaw", [IsDDElement]);
-InstallMethod(ApplyDistAndPeirceLaw, [IsDDElement], function(ddEl)
+DeclareOperation("ApplyDistAndPeirceLaw", [IsDDElement, IsBool]);
+InstallMethod(ApplyDistAndPeirceLaw, [IsDDElement], function(ddEl, applyDDRels)
 	local resultZto, resultRemainCoeffList, resultCoeffList, ddSummand, ddCoeff,
 		cubic1, cubic2, cubSummandList1, cubSummandList2, i1, j1, a, i2, j2, b,
 		intersection, simp, i, j, coeffs, lCubic, rCubic, k, resultZShift, c;
@@ -332,11 +332,14 @@ InstallMethod(ApplyDistAndPeirceLaw, [IsDDElement], function(ddEl)
 				j2 := cubSummandList2[2];
 				b := cubSummandList2[3]; # in ComRing or ConicAlg
 				intersection := Intersection([i1,j1], [i2,j2]);
+                # Consider the summand ddCoeff*dd(a[i1,j1], b[i2,j2])
 				if Size(intersection) = 1 then
 					simp := _ApplyDistAndPeirceLaw_OnSummands_int1(i1, j1, a, i2, j2, ddCoeff*b);
 					i := simp[1];
 					j := simp[2];
-					resultZto[i][j] := resultZto[i][j] + simp[3];
+                    c := simp[3];
+                    # The summand equals dd(1[ii], c[ij])
+					resultZto[i][j] := resultZto[i][j] + c;
 				elif Size(intersection) = 2 then
 					simp := _ApplyDistAndPeirceLaw_OnSummands_int2(i1, j1, a, i2, j2, ddCoeff*b);
 					i := simp[1];
@@ -358,6 +361,16 @@ InstallMethod(ApplyDistAndPeirceLaw, [IsDDElement], function(ddEl)
 			od;
 		od;
 	od;
+
+    # Apply DD-relations
+    if applyDDRels then
+        # Replace dd(1[33], c[33]) by c*((2\zeta-\xi) - dd(1[11], 1[11]) - dd(1[22], 1[22]))
+        zetaCoeff := 2*resultZto[3][3];
+        xiCoeff := -resultZto[3][3];
+        resultZto[1][1] := resultZto[1][1] - resultZto[3][3];
+        resultZto[2][2] := resultZto[2][2] - resultZto[3][3];
+        resultZto[3][3] := Zero(ComRing);
+    fi;
 
 	# Finalise coefficient list of the result
 	resultCoeffList := [];
@@ -388,7 +401,7 @@ end);
 DeclareOperation("Simplify", [IsDDElement]);
 InstallMethod(Simplify, [IsDDElement], function(ddEl)
 	local coeffList, resultCoeffList, list;
-	ddEl := ApplyDistAndPeirceLaw(ddEl);
+	# ddEl := ApplyDistAndPeirceLaw(ddEl);
 	coeffList := DDCoeffList(ddEl);
 	resultCoeffList := [];
 	for list in coeffList do
