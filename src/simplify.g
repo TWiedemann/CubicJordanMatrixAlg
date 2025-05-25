@@ -359,12 +359,6 @@ InstallMethod(ApplyDistAndPeirceLaw, [IsDDElement, IsBool], function(ddEl, apply
 	xiCoeff := Zero(ComRing);
 	zetaCoeff := Zero(ComRing);
     if applyDDRels then
-        # Replace dd(1[33], c[33]) by c*((2\zeta-\xi) - dd(1[11], 1[11]) - dd(1[22], 1[22]))
-        zetaCoeff := 2*resultZto[3][3];
-        xiCoeff := -resultZto[3][3];
-        resultZto[1][1] := resultZto[1][1] - resultZto[3][3];
-        resultZto[2][2] := resultZto[2][2] - resultZto[3][3];
-        resultZto[3][3] := Zero(ComRing);
 		# Replace dd(1[ij],c*1[ji]) for c \in ComRing by
 		# c*g_i*g_j*(dd(1[ii],1[ii])+dd(1[jj],1[jj]))
 		for i in [1,2] do
@@ -378,6 +372,12 @@ InstallMethod(ApplyDistAndPeirceLaw, [IsDDElement, IsBool], function(ddEl, apply
 				resultZShift[i][j] := c;
 			od;
 		od;
+        # Replace dd(1[33], c[33]) by c*((2\zeta-\xi) - dd(1[11], 1[11]) - dd(1[22], 1[22]))
+        zetaCoeff := 2*resultZto[3][3];
+        xiCoeff := -resultZto[3][3];
+        resultZto[1][1] := resultZto[1][1] - resultZto[3][3];
+        resultZto[2][2] := resultZto[2][2] - resultZto[3][3];
+        resultZto[3][3] := Zero(ComRing);
     fi;
 
 	# Finalise coefficient list of the result
@@ -459,7 +459,7 @@ end);
 # Applies Simplify to all components and applies ApplyDistAndPeirceLaw to the DD-part.
 DeclareOperation("Simplify", [IsL0Element]);
 InstallMethod(Simplify, [IsL0Element], function(L0El)
-	local pos, neg, zeta, xi, dd;
+	local pos, neg, zeta, xi, dd, l0;
 	pos := L0CubicPosCoeff(L0El);
 	neg := L0CubicNegCoeff(L0El);
 	zeta := L0ZetaCoeff(L0El);
@@ -470,7 +470,7 @@ InstallMethod(Simplify, [IsL0Element], function(L0El)
 		CubicNegToL0Emb(Simplify(neg)),
 		Simplify(zeta + L0ZetaCoeff(l0)) * L0Zeta,
 		Simplify(xi + L0XiCoeff(l0)) * L0Xi,
-		Simplify(L0DDCoeff(l0))
+		DDToL0Emb(Simplify(L0DDCoeff(l0)))
 	]);
 end);
 
@@ -508,4 +508,15 @@ InstallMethod(Simplify, [IsLieElement], function(lieEl)
 		Add(parts, Simplify(LiePart(lieEl, i)));
 	od;
 	return LieElFromTuple(parts[1], parts[2], parts[3], parts[4], parts[5]);
+end);
+
+## -------- LieEndo --------
+
+DeclareOperation("Simplify", [IsLieEndo]);
+InstallMethod(Simplify, [IsLieEndo], function(lieEndo)
+	return LieEndo(
+		function(lieEl)
+			return Simplify(lieEndo(lieEl));
+		end
+	);
 end);

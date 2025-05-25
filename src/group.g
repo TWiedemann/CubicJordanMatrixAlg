@@ -52,8 +52,6 @@ InstallMethod(CallFuncList,
 DeclareOperation("F4Exp", [IsLieElement]);
 DeclareOperation("F4Exp", [IsLieElement, IsInt]);
 
-# TODO: Cut off more unnecessary computations
-
 # a: Element of Lie
 # n: Integer, n > 0
 # Output: \sum_{i=0}^n (1/i!) * ad_a^i (as an element of F4Group)
@@ -75,17 +73,6 @@ InstallMethod(F4Exp, [IsLieElement, IsInt], function(a, n)
 end);
 # For elements a of F4-root spaces, we know that ad_a^4 = 0.
 InstallMethod(F4Exp, [IsLieElement], a -> F4Exp(a, 3));
-
-## --- Simplifier ---
-
-DeclareOperation("Simplify", [IsLieEndo]);
-InstallMethod(Simplify, [IsLieEndo], function(lieEndo)
-	return LieEndo(
-		function(lieEl)
-			return Simplify(lieEndo(lieEl));
-		end
-	);
-end);
 
 ## ------- Root homomorphisms ----
 

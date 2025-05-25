@@ -62,6 +62,8 @@ _TrSubValueList := fail;
 BaseRing := Rationals;
 ### ----------
 
+
+
 # Reread("F4-5Grading.g");
 Reread(myFilePath("F4-roots.g"));
 Reread(myFilePath("helper.g"));
@@ -80,7 +82,10 @@ myUnbind("IsLieEndo");
 Reread(myFilePath("DD.g"));
 Reread(myFilePath("lie0.g"));
 Reread(myFilePath("lie.g"));
+Reread(myFilePath("lie_roothom.g"));
 myUnbind("IsF4GroupElement");
 Reread(myFilePath("group.g"));
+Reread(myFilePath("simplify.g"));
+Reread(myFilePath("chev.g"));
 Reread(myFilePath("test.g"));
 Read(myFilePath("user_vars.g"));

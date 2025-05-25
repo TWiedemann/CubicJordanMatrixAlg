@@ -146,39 +146,3 @@ InstallOtherMethod(\*, "for ComRingElement and DDElement", [IsRingElement, IsDDE
     od; 
 	return DD(resultRep);
 end);
-
-## ------- Root homomorphisms ----
-
-DeclareOperation("DDRootHomA2", [IsList, IsRingElement]);
-
-# root: A root in A_2.
-# a: An element of ConicAlg.
-# Output: The a-element in the root space of DD w.r.t root.
-InstallMethod(DDRootHomA2, [IsList, IsRingElement], function(root, a)
-    local i, j, l, lambda;
-    ReqConicAlgEl(a);
-    # The root space w.r.t. root is Z_{i \to j}
-    i := Position(root, 1);
-    j := Position(root, -1);
-    l := Position(root, 0);
-	if root = [1, -1, 0] then
-		lambda := ComRingGamIndet(1)^-1 * ComRingGamIndet(2)^-1 * ComRingGamIndet(3);
-	elif root = [-1, 1, 0] then
-		lambda := ComRingGamIndet(3)^-1;
-	elif root = [1, 0, -1] then
-		lambda := ComRingGamIndet(2)^-1;
-	elif root = [-1, 0, 1] then
-		lambda := ComRingGamIndet(1)^-1 * ComRingGamIndet(2) * ComRingGamIndet(3)^-1;
-	elif root = [0, 1, -1] then
-		lambda := ComRingGamIndet(1) * ComRingGamIndet(2)^-1 * ComRingGamIndet(3)^-1;
-	elif root = [0, -1, 1] then
-		lambda := ComRingGamIndet(1)^-1;
-	else
-		return fail;
-	fi;
-	# lambda := ComRingGamIndet(i)^-1 * ComRingGamIndet(j)^-1 * ComRingGamIndet(l);
-	# if not [i, j, l] in CycPerm then
-	# 	lambda := lambda^-1;
-	# fi;
-    return dd(CubicComEl(i, One(ComRing)), lambda*CubicAlgElMat(i, j, a)); # TODO: Is this correct?
-end);
