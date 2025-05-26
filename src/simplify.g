@@ -286,16 +286,18 @@ end;
 # If applyDDRels = true, then by applying certain relations in L0, we achieve that
 # the output has the following additional properties:
 # - it has no summand of the form d_{1[33],t[33]}.
-# - it has not summand of the form d_{a[ij],a'[ji]}.
+# - it has no summand of the form d_{a[ij],a'[ji]}.
+# - it has no pair of summands of the form c1*d(a[ij],b[ji])+c2*d(b'[ij],a'[ji]).
 # - in all summands of the form d_{1[ij],a[ji]} with a \in ConicAlg,
 # a has no summand of the form t*1 for t \in ComRing.
 # See [DMW, 3.8, 5.2, 5.20] for the mathematical justification.
 DeclareOperation("ApplyDistAndPeirceLaw", [IsDDElement, IsBool]);
 InstallMethod(ApplyDistAndPeirceLaw, [IsDDElement, IsBool], function(ddEl, applyDDRels)
-	local resultZto, resultRemainCoeffList, resultCoeffList, ddSummand, ddCoeff,
+	local resultZto, resultRemainSummandList, resultCoeffList, ddSummand, ddCoeff,
 		cubic1, cubic2, cubSummandList1, cubSummandList2, i1, j1, a, i2, j2, b,
 		intersection, simp, i, j, coeffs, lCubic, rCubic, k, resultZShift, c, t,
-		xiCoeff, zetaCoeff, list, lConic, rConic, add;
+		xiCoeff, zetaCoeff, list, list2, lConic, rConic, add, l, coeff, a2, b2,
+		length;
 	# resultZto[i][j] will store an element x of ConicAlg or of ComRing such that the result has a
 	# summand dd(1[ii], x[ij]) \in Z_{i \to j}
 	resultZto := [
@@ -309,10 +311,12 @@ InstallMethod(ApplyDistAndPeirceLaw, [IsDDElement, IsBool], function(ddEl, apply
 		[, Zero(ConicAlg), Zero(ConicAlg)],
 		[,, Zero(ConicAlg)]
 	];
-	# All remaining summands (as DDCoeffList). I.e., those that lie in Z_{ij,ji} for some i <> j
-	# and which cannot be expressed as dd(1[ij],b[ji])
-	resultRemainCoeffList := [];
-	# Simplify all summands in ddEl
+	# All remaining summands (i.e. those that lie in Z_{ij,ji} for some i <> j
+	# and which cannot be expressed as dd(1[ij],b[ji]) go to resultRemainSummandList.
+	# Each entry is a list [i, j, c, a, b] which represents c*d(a[ij],b[ji]).
+	resultRemainSummandList := [];
+
+	### Simplify all summands in ddEl
 	for ddSummand in DDCoeffList(ddEl) do
 		ddCoeff := ddSummand[1];
 		cubic1 := ddSummand[2];
@@ -348,19 +352,10 @@ InstallMethod(ApplyDistAndPeirceLaw, [IsDDElement, IsBool], function(ddEl, apply
 					else
 						resultZShift[i][j] := resultZShift[i][j] + ConicAlgInv(c);
 					fi;
+					# Every remaining term goes to resultRemainCoeffList
 					for k in [1..Length(coeffs)] do
-						if applyDDRels and lConic[k] = ConicAlgInv(rConic[k]) then
-							# Apply relation
-							# d(a[ij],a'[ji]) = g_i g_j n(a) (d(1[ii],1[ii]) + d(1[jj],1[jj]))
-							add := coeffs[k]*ComRingGamIndet(i)
-									*ComRingGamIndet(j)*ConicAlgNorm(lConic[k]);
-							resultZto[i][i] := resultZto[i][i] + add;
-							resultZto[j][j] := resultZto[j][j] + add;
-						else
-							lCubic := CubicAlgElMat(i, j, lConic[k]);
-							rCubic := CubicAlgElMat(j, i, rConic[k]);
-							Add(resultRemainCoeffList, [coeffs[k], lCubic, rCubic]);
-						fi;
+						Add(resultRemainSummandList,
+							[i, j, coeffs[k], lConic[k], rConic[k]]);
 					od;
 				fi;
 				# If intersection is empty, the summand is zero and we do nothing
@@ -368,12 +363,65 @@ InstallMethod(ApplyDistAndPeirceLaw, [IsDDElement, IsBool], function(ddEl, apply
 		od;
 	od;
 
-    # Apply DD-relations
+    ### Apply DD-relations
 	xiCoeff := Zero(ComRing);
 	zetaCoeff := Zero(ComRing);
     if applyDDRels then
-		# Replace dd(1[ij],c*1[ji]) for c \in ComRing by
-		# c*g_i*g_j*(dd(1[ii],1[ii])+dd(1[jj],1[jj]))
+		## Replace elements d(a[ij],a'[ji]) and d(a[ij],b[ji])+d(b'[ij],a'[ji])
+		length := Length(resultRemainSummandList);
+		# Go backwards because we may remove list elements in the loop
+		for k in [length, length-1..1] do
+			list := resultRemainSummandList[k];
+			i := list[1];
+			j := list[2];
+			coeff := list[3];
+			a := list[4];
+			b := list[5];
+
+			if coeff = Zero(ComRing) then
+				# The summand has already been removed in an earlier iteration
+				Remove(resultRemainSummandList, k);
+				continue;
+			fi;
+
+			if a = ConicAlgInv(b) then
+				# Apply relation
+				# d(a[ij],a'[ji]) = g_i g_j n(a) (d(1[ii],1[ii]) + d(1[jj],1[jj]))
+				add := coeff*ComRingGamIndet(i)
+						*ComRingGamIndet(j)*ConicAlgNorm(a);
+				resultZto[i][i] := resultZto[i][i] + add;
+				resultZto[j][j] := resultZto[j][j] + add;
+				Remove(resultRemainSummandList, k);
+				continue;
+			fi;
+			# Look for a second summand [i, j, coeff2, a2, b2]
+			# to apply the relation
+			# d(a[ij],b[ji])+d(b'[ij],a'[ji])
+			# = g_i g_j tr(ab) (d(1[ii],1[ii]) + d(1[jj],1[jj]))
+			for l in [k-1,k-2..1] do
+				list2 := resultRemainSummandList[l];
+				if list2[1] = i and list2[2] = j then
+					a2 := list2[4];
+					b2 := list2[5];
+					if a2 = ConicAlgInv(b) and b2 = ConicAlgInv(a) then
+						# Replace coeff*(d(a[ij],b[ji])+d(b'[ij],a'[ji]))
+						add := coeff*ComRingGamIndet(i)*ComRingGamIndet(j)
+							*ConicAlgTr(a*b);
+						resultZto[i][i] := resultZto[i][i] + add;
+						resultZto[j][j] := resultZto[j][j] + add;
+						# The k-summand vanishes, the l-summand is reduced.
+						# If list2[3] = coeff, then this summand will be removed
+						# in a later iteration.
+						Remove(resultRemainSummandList, k);
+						list2[3] := list2[3] - coeff;
+						break;
+					fi;
+				fi;
+			od;
+		od;
+
+		## Replace dd(1[ij],c*1[ji]) for c \in ComRing by
+		## c*g_i*g_j*(dd(1[ii],1[ii])+dd(1[jj],1[jj]))
 		for i in [1,2] do
 			for j in [i+1..3] do
 				list := ConicAlgSplitOne(resultZShift[i][j]);
@@ -385,15 +433,18 @@ InstallMethod(ApplyDistAndPeirceLaw, [IsDDElement, IsBool], function(ddEl, apply
 				resultZShift[i][j] := c;
 			od;
 		od;
-        # Replace dd(1[33], c[33]) by c*((2\zeta-\xi) - dd(1[11], 1[11]) - dd(1[22], 1[22]))
-        zetaCoeff := 2*resultZto[3][3];
-        xiCoeff := -resultZto[3][3];
+
+        ## Replace dd(1[33], c[33]) by c*((2\zeta-\xi) - dd(1[11], 1[11]) - dd(1[22], 1[22]))
+        zetaCoeff := zetaCoeff + 2*resultZto[3][3];
+        xiCoeff := xiCoeff - resultZto[3][3];
         resultZto[1][1] := resultZto[1][1] - resultZto[3][3];
         resultZto[2][2] := resultZto[2][2] - resultZto[3][3];
         resultZto[3][3] := Zero(ComRing);
     fi;
 
-	# Finalise coefficient list of the result
+	### Finalise coefficient list of the result
+
+	## Transform resultZto and resultZShift into DD-coefficient lists
 	resultCoeffList := [];
 	for i in [1..3] do
 		for j in [1..3] do
@@ -409,8 +460,20 @@ InstallMethod(ApplyDistAndPeirceLaw, [IsDDElement, IsBool], function(ddEl, apply
 			fi;
 		od;
 	od;
-	resultCoeffList := Concatenation(resultCoeffList, resultRemainCoeffList);
 
+	## Transform remaining summands in resultRemainSummandList into coefficient list
+	for list in resultRemainSummandList do
+		i := list[1];
+		j := list[2];
+		coeff := list[3];
+		a := list[4];
+		b := list[5];
+		cubic1 := CubicAlgElMat(i, j, a);
+		cubic2 := CubicAlgElMat(j, i, b);
+		Add(resultCoeffList, [coeff, cubic1, cubic2]);
+	od;
+
+	## Sanitize
 	if _SanitizeImmediately then
 		DDSanitizeRep(resultCoeffList);
 	fi;
