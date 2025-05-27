@@ -70,6 +70,85 @@ end);
 
 ## -------- ConicAlg --------
 
+# a: Element of ConicAlg.
+# Output: The same element, but with occurences of bc+b'c and cb+cb' replaced by
+# tr(b)c for b,c \in ConicAlg.
+DeclareOperation("MakeTraces", [IsElementOfFreeMagmaRing]);
+InstallMethod(MakeTraces, [IsElementOfFreeMagmaRing], function(a)
+	local magCoeffList, aCoeffs, aMags, aMagReps, resultMagList, resultCoeffList,
+			i, mag1, magRep1, coeff1, magRep1Inv, j, magRep2, lMagRep1, lMagRep1Inv,
+			rMagRep1, rMagRep1Inv, lMagRep2, rMagRep2, trace, mag;
+	magCoeffList := CoefficientsAndMagmaElements(a);
+	aCoeffs := magCoeffList{[2,4..Length(magCoeffList)]};
+	aMags := magCoeffList{[1,3..Length(magCoeffList)-1]};
+	aMagReps := List(aMags, ExtRepOfObj);
+	resultMagList := [];
+	resultCoeffList := [];
+	## Go through all pairs (coeff1*mag1, coeff2*mag2) of summands and try to merge
+	for i in [1..Length(aCoeffs)] do
+		mag1 := aMags[i];
+		magRep1 := aMagReps[i];
+		coeff1 := aCoeffs[i];
+		# mag1 is of the form a_k or a_k'
+		if IsInt(magRep1) then
+			magRep1Inv := ConicAlgMagInvOnRep(magRep1);
+			for j in [i+1..Length(aCoeffs)] do
+				magRep2 := aMagReps[j];
+				if magRep2 = magRep1Inv then
+					# Create new summand coeff1*tr(magRep1)*One(ConicAlg)
+					Add(resultMagList, One(ConicAlgMag));
+					Add(resultCoeffList, coeff1*ConicAlgMagTr(mag1));
+					# Subtract coeff1 from the coefficients of mag1 and mag2
+					aCoeffs[i] := Zero(ComRing);
+					aCoeffs[j] := aCoeffs[j] - coeff1;
+					break;
+				fi;
+			od;
+		# mag1 is a product
+		else
+			# Decompose mag1 = lMag1 * rMag1, magRep1 = [ lMagRep1, rMagRep1 ]
+			lMagRep1 := magRep1[1];
+			lMagRep1Inv := ConicAlgMagInvOnRep(lMagRep1);
+			rMagRep1 := magRep1[2];
+			rMagRep1Inv := ConicAlgMagInvOnRep(rMagRep1);
+			for j in [i+1..Length(aCoeffs)] do
+				magRep2 := aMagReps[j];
+				if not IsList(magRep2) then
+					# mag1 is a product and mag2 is not, then they cannot be merged
+					continue;
+				fi;
+				lMagRep2 := magRep2[1];
+				rMagRep2 := magRep2[2];
+				# If possible, define trace and mag so that mag1+mag2 equals
+				# trace*mag for trace in ComRing
+				trace := fail;
+				if lMagRep1 = lMagRep2 and rMagRep1Inv = rMagRep2 then
+					trace := ConicAlgMagTrOnRep(rMagRep1);
+					mag := ConicAlgMagElFromRep(lMagRep1);
+				elif rMagRep1 = rMagRep2 and lMagRep1Inv = lMagRep2 then
+					trace := ConicAlgMagTrOnRep(lMagRep1);
+					mag := ConicAlgMagElFromRep(rMagRep1);
+				fi;
+				if trace <> fail then
+					# Create new summand coeff1*trace*mag
+					Add(resultMagList, mag);
+					Add(resultCoeffList, coeff1*trace);
+					# Subtract coeff1 from the coefficients of mag1 and mag2
+					aCoeffs[i] := Zero(ComRing);
+					aCoeffs[j] := aCoeffs[j] - coeff1;
+					break;
+				fi;
+			od;
+		fi;
+		# Push coeff1*mag1 (or what remains of it) to the result
+		if not IsZero(aCoeffs[i]) then
+			Add(resultMagList, mag1);
+			Add(resultCoeffList, aCoeffs[i]);
+		fi;
+	od;
+	return ElementOfMagmaRing(FamilyObj(a), Zero(ComRing), resultCoeffList, resultMagList);
+end);
+
 # a: Element of ComRing.
 # Output: The element obtained from a by replacing each occurence of tr(a) by a+a'.
 # In particular, the output lies in ConicAlg.
@@ -98,10 +177,20 @@ InstallMethod(WithoutTraces, [IsElementOfFreeMagmaRing], function(a)
 end);
 
 # a: Element of ConicAlg.
-# Output: The same element but with Simplify applied to all ComRing-coefficients
+# Output: Mathematically he same element, but simplified: First apply
+# MakeTraces repeatedly until it no longer changes the input, and then
+# apply Simplify to all ComRing-coefficients.
 DeclareOperation("Simplify", [IsElementOfFreeMagmaRing]);
 InstallMethod(Simplify, [IsElementOfFreeMagmaRing], function(a)
-	local coeffMagList, resultCoeffList, resultMagList, i;
+	local coeffMagList, resultCoeffList, resultMagList, i, help, aNew;
+	# Apply MakeTraces until it no longer changes the result
+	aNew := MakeTraces(a);
+	while a <> aNew do
+		help := aNew;
+		aNew := MakeTraces(aNew);
+		a := help;
+	od;
+	# Apply Simplify to all ComRing-coefficients
 	coeffMagList := CoefficientsAndMagmaElements(a);
 	resultCoeffList := [];
 	resultMagList := [];
@@ -498,7 +587,6 @@ end);
 DeclareOperation("Simplify", [IsDDElement]);
 InstallMethod(Simplify, [IsDDElement], function(ddEl)
 	local coeffList, resultCoeffList, list;
-	# ddEl := ApplyDistAndPeirceLaw(ddEl, false);
 	coeffList := DDCoeffList(ddEl);
 	resultCoeffList := [];
 	for list in coeffList do
@@ -542,7 +630,15 @@ InstallMethod(Simplify, [IsL0Element], function(L0El)
 	neg := L0CubicNegCoeff(L0El);
 	zeta := L0ZetaCoeff(L0El);
 	xi := L0XiCoeff(L0El);
-	l0 := ApplyDistAndPeirceLaw(L0DDCoeff(L0El), true);
+	# To the DD-part, we apply Simplify, then ApplyDistAndPeirceLaw, then
+	# Simplify, then ApplyDistAndPeirceLaw and then Simplify.
+	# We have to apply Simplify to the DD-part before applying
+	# ApplyDistAndPeirceLaw because Simplify may produce summands in
+	# ComRing*One(ConicAlg) which were not visible beforehand (e.g. a1+a1').
+	l0 := ApplyDistAndPeirceLaw(Simplify(L0DDCoeff(L0El)), true);
+	zeta := zeta + L0ZetaCoeff(l0);
+	xi := xi + L0XiCoeff(l0);
+	l0 := ApplyDistAndPeirceLaw(Simplify(L0DDCoeff(l0)), true);
 	return Sum([
 		CubicPosToL0Emb(Simplify(pos)),
 		CubicNegToL0Emb(Simplify(neg)),
