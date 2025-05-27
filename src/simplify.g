@@ -89,32 +89,28 @@ InstallMethod(MakeTraces, [IsElementOfFreeMagmaRing], function(a)
 		mag1 := aMags[i];
 		magRep1 := aMagReps[i];
 		coeff1 := aCoeffs[i];
-		# mag1 is of the form a_k or a_k'
-		if IsInt(magRep1) then
-			magRep1Inv := ConicAlgMagInvOnRep(magRep1);
-			for j in [i+1..Length(aCoeffs)] do
-				magRep2 := aMagReps[j];
-				if magRep2 = magRep1Inv then
-					# Create new summand coeff1*tr(magRep1)*One(ConicAlg)
-					Add(resultMagList, One(ConicAlgMag));
-					Add(resultCoeffList, coeff1*ConicAlgMagTr(mag1));
-					# Subtract coeff1 from the coefficients of mag1 and mag2
-					aCoeffs[i] := Zero(ComRing);
-					aCoeffs[j] := aCoeffs[j] - coeff1;
-					break;
-				fi;
-			od;
-		# mag1 is a product
-		else
-			# Decompose mag1 = lMag1 * rMag1, magRep1 = [ lMagRep1, rMagRep1 ]
+		magRep1Inv := ConicAlgMagInvOnRep(magRep1);
+		if IsList(magRep1) then
 			lMagRep1 := magRep1[1];
 			lMagRep1Inv := ConicAlgMagInvOnRep(lMagRep1);
 			rMagRep1 := magRep1[2];
 			rMagRep1Inv := ConicAlgMagInvOnRep(rMagRep1);
-			for j in [i+1..Length(aCoeffs)] do
-				magRep2 := aMagReps[j];
+		fi;
+		# Look for second summand to merge with
+		for j in [i+1..Length(aCoeffs)] do
+			magRep2 := aMagReps[j];
+			if magRep2 = magRep1Inv then
+				# Create new summand coeff1*tr(magRep1)*One(ConicAlg)
+				Add(resultMagList, One(ConicAlgMag));
+				Add(resultCoeffList, coeff1*ConicAlgMagTrOnRep(magRep1));
+				# Subtract coeff1 from the coefficients of mag1 and mag2
+				aCoeffs[i] := Zero(ComRing);
+				aCoeffs[j] := aCoeffs[j] - coeff1;
+				break;
+			elif IsList(magRep1) then
+				# Decompose mag1 = lMag1 * rMag1, magRep1 = [ lMagRep1, rMagRep1 ]
 				if not IsList(magRep2) then
-					# mag1 is a product and mag2 is not, then they cannot be merged
+					# mag1 is a product and mag2 is not, hence they cannot be merged
 					continue;
 				fi;
 				lMagRep2 := magRep2[1];
@@ -138,8 +134,8 @@ InstallMethod(MakeTraces, [IsElementOfFreeMagmaRing], function(a)
 					aCoeffs[j] := aCoeffs[j] - coeff1;
 					break;
 				fi;
-			od;
-		fi;
+			fi;
+		od;
 		# Push coeff1*mag1 (or what remains of it) to the result
 		if not IsZero(aCoeffs[i]) then
 			Add(resultMagList, mag1);
