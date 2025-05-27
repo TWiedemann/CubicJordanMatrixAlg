@@ -105,7 +105,7 @@ end;
 
 # mRep: External rep of an element of ConicAlgMag
 # Output: The trace of the corresponding element. No caching of results.
-ConicAlgMagTrOnRep := function(mRep)
+_ConicAlgMagTrUncachedOnRep := function(mRep)
 	local indetName, varName, inv, left, right, candidates, list, min, StringFromRep;
 	indetName := "tr(";
 	inv := ConicAlgMagInvOnRep;
@@ -133,7 +133,7 @@ ConicAlgMagTrOnRep := function(mRep)
 			if IsList(left) then
 				list := _PullNorm(left[1], left[2], right);
 				if list <> fail then
-					return ConicAlgMagNormOnRep(list[1]) * ConicAlgMagTrOnRep(list[2]);
+					return ConicAlgMagNormOnRep(list[1]) * _ConicAlgMagTrUncachedOnRep(list[2]);
 				else
 					candidates := Concatenation(
 						candidates, _ConicAlgMagTrCandidates(left[1], left[2], right)
@@ -143,7 +143,7 @@ ConicAlgMagTrOnRep := function(mRep)
 			if IsList(right) then
 				list := _PullNorm(left, right[1], right[2]);
 				if list <> fail then
-					return ConicAlgMagNormOnRep(list[1]) * ConicAlgMagTrOnRep(list[2]);
+					return ConicAlgMagNormOnRep(list[1]) * _ConicAlgMagTrUncachedOnRep(list[2]);
 				else
 					candidates := Concatenation(
 						candidates, _ConicAlgMagTrCandidates(left, right[1], right[2])
@@ -164,16 +164,22 @@ end;
 # magEl: Element of ConicAlgMag
 # Output: Its trace (an element of ComRing). No caching.
 _ConicAlgMagTrUncached := function(magEl)
-	return ConicAlgMagTrOnRep(ExtRepOfObj(magEl));
+	return _ConicAlgMagTrUncachedOnRep(ExtRepOfObj(magEl));
+end;
+
+# rep: Representation of an element of ConicAlgMag
+# Output: Its trace (an element of ComRing).
+ConicAlgMagTrOnRep := function(rep)
+	if _CacheTrace then
+		return LookupDictionary(_TrDict, rep);
+	else
+		return _ConicAlgMagTrUncachedOnRep(rep);
+	fi;
 end;
 
 # Same as _ConicAlgMagTrUncached, but returns the precomputed, cached result.
 ConicAlgMagTr := function(magEl)
-	if _CacheTrace then
-		return LookupDictionary(_TrDict, ExtRepOfObj(magEl));
-	else
-		return _ConicAlgMagTrUncached(magEl);
-	fi;
+	return ConicAlgMagTrOnRep(ExtRepOfObj(magEl));
 end;
 
 _ComRingGamIndetNum := []; # Contains the indeterminate number of gamma_i at position i
