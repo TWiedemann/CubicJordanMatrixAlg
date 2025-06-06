@@ -126,6 +126,32 @@ InstallMethod(TestEqualityOnModuleGens, [IsLieEndo, IsLieEndo],
 	end
 );
 
+# relations: A list of lists [g1, g2] where g1, g2 are automorphisms of Lie
+# Returns a list of all relations which have to be proven by hand to verify that g1 = g2 for
+# all [g1, g2] \in relations.
+# Uses indeterminates t_(ComRing_rank), a_(ConicAlg_rank).
+TestRelations := function(relations)
+	local rel, test, error, part, i, result;
+	result := [];
+	for rel in relations do
+		test := TestEquality(rel[1], rel[2]);
+		if test <> true then
+			for error in test do
+				# error[1] contains the Lie algebra generator on which rel[1] and rel[2]
+				# differ, which is not interesting
+				for i in [-2..2] do
+					part := LiePart(error[2], i);
+					if not IsZero(WithoutTraces(part)) then
+						Add(result, part);
+						# Display(part);
+					fi;
+				od;
+			od;
+		fi;
+	od;
+	return result;
+end;
+
 # Tests of specific mathematical behaviour
 
 # Prints all terms that have to be proven to be zero to show that
@@ -290,9 +316,69 @@ TestShortWeyl := function()
 	return testResult;
 end;
 
-GrpRootHomComm := function(root1, root2, param1, param2)
-	return GrpRootHomF4(root1, -param1) * GrpRootHomF4(root2, -param2)
-		* GrpRootHomF4(root1, param1) * GrpRootHomF4(root2, param2);
+# Returns a list of relations which have to be verified by hand to prove that
+# the parities of GrpStandardWeylF4(F4SimpleRoots[i]) adhere to F4ParityList
+TestStandardWeylParity := function(i)
+	local d, w, wInv, errorList, error, j, baseRoot, a, x, b, y;
+	d := F4SimpleRoots[i];
+	w := GrpStandardWeylF4(d);
+	wInv := GrpStandardWeylInvF4(d);
+	errorList := [];
+	for j in [1..Length(F4Roots)] do
+		baseRoot := F4Roots[j];
+		if baseRoot in F4ShortRoots then
+			a := ConicAlgBasicIndet(1);
+		else
+			a := ComRingBasicIndet(1);
+		fi;
+		x := GrpRootHomF4(baseRoot, a);
+		b := a;
+		if F4ParityList[j][i][1] = -1 then
+			b := -b;
+		fi;
+		if F4ParityList[j][i][2] = -1 then
+			b := ConicAlgInv(b);
+		fi;
+		y := GrpRootHomF4(F4Refl(baseRoot, d), b);
+		error := TestRelations([[wInv*x*w, y]]);
+		if not IsEmpty(error) then
+			Print(baseRoot, ":\n");
+			Display(error);
+			errorList := Concatenation(errorList, error);
+		fi;
+	od;
+	return errorList;
+end;
+
+GrpRootHomCom := function(root1, a1, root2, a2)
+	local hom;
+	hom := GrpRootHomF4;
+	return hom(root1, -a1)*hom(root2, -a2)*hom(root1, a1)*hom(root2, a2);
+end;
+
+# Returns a list of all relations which have to be verified by hand to prove that
+# all desired commutator relations are satisfied.
+TestComRels := function()
+	local t1, t2, a1, a2, d1, d2, d3, d4, comm, test, rel;
+	t1 := ComRingBasicIndet(1);
+	t2 := ComRingBasicIndet(2);
+	a1 := ConicAlgBasicIndet(1);
+	a2 := ConicAlgBasicIndet(2);
+	d1 := F4SimpleRoots[1];
+	d2 := F4SimpleRoots[2];
+	d3 := F4SimpleRoots[3];
+	d4 := F4SimpleRoots[4];
+	return TestRelations([
+		# Commutator relation on [d1, d2]
+		[GrpRootHomCom(d1, t1, d2, t2), GrpRootHomF4(d1+d2, t1*t2)],
+		# Commutator relation on [d2, d3]
+		[GrpRootHomCom(d2, t1, d3, a1),
+			GrpRootHomF4(d2+d3, -t1*a1) * GrpRootHomF4(d2+2*d3, -t1*ConicAlgNorm(a1))],
+		# Commutator relation on [d2+d3, d3]
+		[GrpRootHomCom(d2+d3, a1, d3, a2), GrpRootHomF4(d2+2*d3, ConicAlgNormLin(a1, a2))],
+		# Commutator relation on [d3, d4]
+		[GrpRootHomCom(d3, a1, d4, a2), GrpRootHomF4(d3+d4, a1*a2)]
+	]);
 end;
 
 # Returns true if c(root1, root2) = -c(-root1, -root2) for all roots root1, root2 in F4
@@ -345,32 +431,6 @@ TestChevH := function()
 	return true;
 end;
 
-# relations: A list of lists [g1, g2] where g1, g2 are automorphisms of Lie
-# Returns a list of all relations which have to be proven by hand to verify that g1 = g2 for
-# all [g1, g2] \in relations.
-# Uses indeterminates t_(ComRing_rank), a_(ConicAlg_rank).
-TestRelations := function(relations)
-	local rel, test, error, part, i, result;
-	result := [];
-	for rel in relations do
-		test := TestEquality(rel[1], rel[2]);
-		if test <> true then
-			for error in test do
-				# error[1] contains the Lie algebra generator on which rel[1] and rel[2]
-				# differ, which is not interesting
-				for i in [-2..2] do
-					part := LiePart(error[2], i);
-					if not IsZero(WithoutTraces(part)) then
-						Add(result, part);
-						# Display(part);
-					fi;
-				od;
-			od;
-		fi;
-	od;
-	return result;
-end;
-
 # Tests whether GrpRootHomF4NonDiv and GrpRootHomF4Div coincide on root
 # Uses indeterminates a_1, a_{ConicAlg_rank-1}, a_{ConicAlg_rank}, t_1, t_{ComRing_rank}
 TestGrpRootHomExp := function(root)
@@ -395,37 +455,6 @@ TestAllGrpRootHomExp := function()
 		fi;
 	od;
 	return true;
-end;
-
-RootHomCom := function(root1, a1, root2, a2)
-	local hom;
-	hom := GrpRootHomF4;
-	return hom(root1, -a1)*hom(root2, -a2)*hom(root1, a1)*hom(root2, a2);
-end;
-
-# Returns a list of all relations which have to be verified by hand to prove that
-# all desired commutator relations are satisfied.
-TestComRels := function()
-	local t1, t2, a1, a2, d1, d2, d3, d4, comm, test, rel;
-	t1 := ComRingBasicIndet(1);
-	t2 := ComRingBasicIndet(2);
-	a1 := ConicAlgBasicIndet(1);
-	a2 := ConicAlgBasicIndet(2);
-	d1 := F4SimpleRoots[1];
-	d2 := F4SimpleRoots[2];
-	d3 := F4SimpleRoots[3];
-	d4 := F4SimpleRoots[4];
-	return TestRelations([
-		# Commutator relation on [d1, d2]
-		[RootHomCom(d1, t1, d2, t2), GrpRootHomF4(d1+d2, t1*t2)],
-		# Commutator relation on [d2, d3]
-		[RootHomCom(d2, t1, d3, a1),
-			GrpRootHomF4(d2+d3, -t1*a1) * GrpRootHomF4(d2+2*d3, -t1*ConicAlgNorm(a1))],
-		# Commutator relation on [d2+d3, d3]
-		[RootHomCom(d2+d3, a1, d3, a2), GrpRootHomF4(d2+2*d3, ConicAlgNormLin(a1, a2))],
-		# Commutator relation on [d3, d4]
-		[RootHomCom(d3, a1, d4, a2), GrpRootHomF4(d3+d4, a1*a2)]
-	]);
 end;
 
 # Uses indeterminates t_1, t_2, a_1, ..., a_4
