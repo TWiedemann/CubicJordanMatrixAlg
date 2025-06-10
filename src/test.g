@@ -301,7 +301,47 @@ WeylParityList := function(root, w, wInv)
 	return _WeylErrorAndParity(root, w, wInv)[1];
 end;
 
-
+# w, wInv: Elements of LieEndo. It is assumed that wInv = w^-1.
+# root: Element of F4. It is assumed that w is a Weyl element w.r.t. this root.
+# parList: A list with 48 entries of the form [+-1, +-1]
+# Output: true if w can be proven to be a root-Weyl element with parity list parList.
+# Otherwise the output is a list consisting of lists [baseRoot, errorList] where
+# baseRoot is a root and errorList is the list of Lie algebra elements which have to
+# be proven to be zero.
+# Uses indeterminates a_1, t_1, a_{ConicAlg_rank}, t_{ComRing_rank}
+TestWeylParity := function(root, w, wInv, parList)
+	local baseRoot, errors, a, x, b, y, test, i, par;
+	errors := [];
+	for i in [1..Length(F4Roots)] do
+		baseRoot := F4Roots[i];
+		par := parList[i];
+		if baseRoot in F4ShortRoots then
+			a := ConicAlgBasicIndet(1);
+			x := GrpRootHomF4(baseRoot, a);
+		else
+			a := ComRingBasicIndet(1);
+			x := GrpRootHomF4(baseRoot, a);
+		fi;
+		# b is a twisted by par
+		b := a;
+		if par[1] = -1 then
+			b := -b;
+		fi;
+		if par[2] = -1 then
+			b := ConicAlgInv(b);
+		fi;
+		y := GrpRootHomF4(F4Refl(baseRoot, root), b);
+		test := TestEquality(wInv*x*w, y);
+		if test <> true then
+			Add(errors, [baseRoot, List(test, x -> x[2])]);
+		fi;
+	od;
+	if IsEmpty(errors) then
+		return true;
+	else
+		return errors;
+	fi;
+end;
 
 # w, wInv: Elements of LieEndo. It is assumed that wInv = w^-1.
 # Output: true if w can be proven to be a root-Weyl element.

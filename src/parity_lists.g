@@ -1,3 +1,5 @@
+# F4SimpleRootParLists[i][j] is the parity of the standard Weyl element of F4SimpleRoots[i] on the
+# root group w.r.t. F4Roots[j]
 F4SimpleRootParLists := [
     # F4SimpleRoots[1]
     [
