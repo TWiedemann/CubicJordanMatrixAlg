@@ -2,98 +2,87 @@
 
 ## -------- Cubic --------
 
-DeclareOperation("CubicRootHomF4", [IsList, IsRingElement, IsInt]);
+DeclareOperation("CubicRootHomLong", [IsInt, IsRingElement, IsInt]);
 
-# root: An element [r1, r2, r3, r4] of F4 s.t. the [r1,r2,r3,r4]-space of Lie lies in Cubic or Cubic'
-# a: An element of ConicAlg or of Comring
-# sign: If sign = 1, the root hom on Cubic is computed. If sign = -1, the root hom on Cubic' is computed.
-# Output: An element c of Cubic which, embedded "appropriately" into Lie, is the a-element
-# of the [r1,r2,r3,r4]-space of Lie.
-InstallMethod(CubicRootHomF4, [IsList, IsRingElement, IsInt], function(root, a, sign)
-	local l, sum, comRingHom, conicAlgHom;
-	if not root in F4Roots then
-		Error("Argument is not a root");
-		return fail;
-	elif AbsoluteValue(root[1])= 2  or AbsoluteValue(Sum(root{[2..4]})) in [0, 3] then
-		Error("CubicRootHomF4 not defined for this root");
-		return fail;
-	elif not sign in [1, -1] then
-		Error("sign must be 1 or -1");
-		return fail;
+# l: Number in {1, 2, 3}
+# a: Element of ComRing
+# sign: 1 or -1
+# Output: If sign=1, the image of the root homomorphism in Cubic with image J_{ll}.
+# If sign=-1, he image of the root homomorphism in Cubic' with image J_{ll}'.
+InstallMethod(CubicRootHomLong, [IsInt, IsRingElement, IsInt], function(l, a, sign)
+	local i, j, lambda;
+	ReqComRingEl(a);
+	i := CycPerm[l][2];
+	j := CycPerm[l][3];
+	lambda := ComRingGamIndet(j) * ComRingGamIndet(i)^-1;
+	if sign = -1 then
+		lambda := lambda^-1;
 	fi;
-	comRingHom := function(l, a)
-		local i, j, lambda;
-		ReqComRingEl(a);
-		i := CycPerm[l][2];
-		j := CycPerm[l][3];
-		lambda := ComRingGamIndet(j) * ComRingGamIndet(i)^-1;
-		if sign = -1 then
-			lambda := lambda^-1;
-		fi;
-		# lambda := One(ComRing); # Revert to naive parametrisation
-		return CubicComEl(l, lambda * a); # TODO: Is this correct?
-	end;
-	conicAlgHom := function(l, a)
-		local i, j, lambda;
-		ReqConicAlgEl(a);
-		i := CycPerm[l][2];
-		j := CycPerm[l][3];
-		if sign = 1 then
-			lambda := ComRingGamIndet(j)^-1;
-		else
-			lambda := ComRingGamIndet(i)^-1;
-		fi;
-		# lambda := One(ComRing); # Revert to naive parametrisation
-		return CubicAlgEl(l, lambda * a); # TODO: Is this correct?
-	end;
-	if root[1] = 0 then
-		# L_0
-		l := PositionProperty(root{[2..4]}, x -> AbsoluteValue(x) = 2);
-		if l <> fail then
-			return comRingHom(l, a);
-		else
-			l := Position(root{[2..4]}, 0);
-			return conicAlgHom(l, a);
-		fi;
+	return CubicComEl(l, lambda * a);
+end);
+
+DeclareOperation("CubicRootHomShort", [IsInt, IsRingElement, IsInt]);
+
+# l: Number in {1, 2, 3}. Denote by (i,j,l) the corresponding cyclic perm. of (1,2,3).
+# a: Element of ComRing
+# sign: 1 or -1
+# Output: If sign=1, the image of the root homomorphism in Cubic with image J_{ij}.
+# If sign=-1, he image of the root homomorphism in Cubic' with image J_{ij}'.
+InstallMethod(CubicRootHomShort, [IsInt, IsRingElement, IsInt], function(l, a, sign)
+	local i, j, lambda;
+	ReqConicAlgEl(a);
+	i := CycPerm[l][2];
+	j := CycPerm[l][3];
+	if sign = 1 then
+		lambda := ComRingGamIndet(j)^-1;
 	else
-		# L_{+-1}
-		if 0 in root{[2..4]} then
-			l := PositionProperty(root{[2..4]}, x -> x <> 0); # First (and only) non-zero position of roots[2..4]
-			return conicAlgHom(l, a);
-		else
-			# l is the only position of root{[2..4]} whose entry appears only once
-			sum := Sum(root{[2..4]});
-			l := PositionProperty(root{[2..4]}, x -> x <> sum);
-			return comRingHom(l, a);
-		fi;
+		lambda := ComRingGamIndet(i)^-1;
 	fi;
+	return CubicAlgEl(l, lambda * a);
 end);
 
 ## -------- Brown --------
 
-DeclareOperation("BrownRootHomF4", [IsList, IsRingElement]);
+DeclareOperation("BrownRootHom", [IsList, IsRingElement]);
 
-# root: An element [r1, r2, r3, r4] of F4 with r1 = 1 or r1 = -1.
+# subroot: List [r2, r3, r4] of integers with [1, r2, r3, r4] \in F4
+# (equiv. [-1, r2, r3, r4] \in F4).
 # a: An element of ConicAlg or of Comring
 # Output: An element b of the Brown algebra such that BrownPosToLieEmb(b) is the a-element
 # of the [1, r2, r3, r4]-space of Lie and such that BrownNegToLieEmb(b) is the a-element
-# of the [-1, r2, r3, r4]-space of Lie. (Note that r1 is ignored)
-InstallMethod(BrownRootHomF4, [IsList, IsRingElement], function(root, a)
-	if not root in F4Roots then
-		Error("Argument is not a root");
-		return fail;
-	elif not root[1] in [1, -1] then
-		Error("BrownRootHomF4 not defined for this root");
+# of the [-1, r2, r3, r4]-space of Lie.
+InstallMethod(BrownRootHom, [IsList, IsRingElement], function(subroot, a)
+	local cub, l, sign;
+	if not Concatenation([1], subroot) in F4Roots then
+		Error("Invalid argument");
 		return fail;
 	fi;
-	if root{[2..4]} = [1,1,1] then
+	if subroot = [1,1,1] then
 		return BrownElFromTuple(Zero(ComRing), CubicZero, CubicZero, a);
-	elif root{[2..4]} = [-1, -1, -1] then
+	elif subroot = [-1, -1, -1] then
 		return BrownElFromTuple(a, CubicZero, CubicZero, Zero(ComRing));
-	elif Sum(root{[2..4]}) = 1 then
-		return BrownElFromTuple(Zero(ComRing), CubicZero, CubicRootHomF4(root, a, -1), Zero(ComRing));
+	elif Sum(subroot) = 1 then
+		l := Position(subroot, -1);
+		if l <> fail then
+			ReqComRingEl(a);
+			cub := CubicRootHomLong(l, a, -1);
+		else
+			ReqConicAlgEl(a);
+			l := Position(subroot, 1);
+			cub := CubicRootHomShort(l, a, -1);
+		fi;
+		return BrownElFromTuple(Zero(ComRing), CubicZero, cub, Zero(ComRing));
 	else
-		return BrownElFromTuple(Zero(ComRing), CubicRootHomF4(root, a, 1), CubicZero, Zero(ComRing));
+		l := Position(subroot, 1);
+		if l <> fail then
+			ReqComRingEl(a);
+			cub := CubicRootHomLong(l, a, 1);
+		else
+			ReqConicAlgEl(a);
+			l := Position(subroot, -1);
+			cub := CubicRootHomShort(l, a, 1);
+		fi;
+		return BrownElFromTuple(Zero(ComRing), cub, CubicZero, Zero(ComRing));
 	fi;
 end);
 
@@ -101,7 +90,7 @@ end);
 
 DeclareOperation("DDRootHomA2", [IsList, IsRingElement]);
 
-# root: A root in A_2.
+# root: A root in A_2 (e.g. [1, -1, 0]).
 # a: An element of ConicAlg.
 # Output: The a-element in the root space of DD w.r.t root.
 InstallMethod(DDRootHomA2, [IsList, IsRingElement], function(root, a)
@@ -126,11 +115,7 @@ InstallMethod(DDRootHomA2, [IsList, IsRingElement], function(root, a)
 	else
 		return fail;
 	fi;
-	# lambda := ComRingGamIndet(i)^-1 * ComRingGamIndet(j)^-1 * ComRingGamIndet(l);
-	# if not [i, j, l] in CycPerm then
-	# 	lambda := lambda^-1;
-	# fi;
-    return dd(CubicComEl(i, One(ComRing)), lambda*CubicAlgElMat(i, j, a)); # TODO: Is this correct?
+    return dd(CubicComEl(i, One(ComRing)), lambda*CubicAlgElMat(i, j, a));
 end);
 
 ## -------- Lie --------
@@ -138,7 +123,7 @@ end);
 DeclareOperation("LieRootHomF4", [IsList, IsRingElement]);
 
 InstallMethod(LieRootHomF4, [IsList, IsRingElement], function(root, a)
-	local sum, G2Root, minusSignRootsLong, minusSignRootsShort;
+	local sum, G2Root, minusSignRootsLong, minusSignRootsShort, cub, sign, l;
 	if root in F4LongRoots then
 		ReqComRingEl(a);
 	elif root in F4ShortRoots then
@@ -164,17 +149,29 @@ InstallMethod(LieRootHomF4, [IsList, IsRingElement], function(root, a)
 		return a * LieX;
 	# L_{-1}
 	elif G2Root[1] = -1 then
-		return BrownNegToLieEmb(BrownRootHomF4(root, a));
+		return BrownNegToLieEmb(BrownRootHom(root{[2..4]}, a));
 	# L_0
-	elif G2Root = [0, 1] then
-		return CubicPosToLieEmb(CubicRootHomF4(root, a, 1));
-	elif G2Root = [0, -1] then
-		return CubicNegToLieEmb(CubicRootHomF4(root, a, -1));
+	elif G2Root in [[0, 1], [0, -1]] then
+		sign := G2Root[2];
+		l := PositionProperty(root{[2..4]}, x -> AbsoluteValue(x) = 2);
+		if l <> fail then
+			ReqComRingEl(a);
+			cub := CubicRootHomLong(l, a, sign);
+		else
+			ReqConicAlgEl(a);
+			l := Position(root{[2..4]}, 0);
+			cub := CubicRootHomShort(l, a, sign);
+		fi;
+		if sign = 1 then
+			return CubicPosToLieEmb(cub);
+		else
+			return CubicNegToLieEmb(cub);
+		fi;
 	elif G2Root = [0,0] then
 		return DDToLieEmb(DDRootHomA2(root{[2..4]}, a));
 	# L_1
 	elif G2Root[1] = 1 then
-		return BrownPosToLieEmb(BrownRootHomF4(root, a));
+		return BrownPosToLieEmb(BrownRootHom(root{[2..4]}, a));
 	# L_2
 	elif G2Root[1] = 2 then
 		return a * LieY;
