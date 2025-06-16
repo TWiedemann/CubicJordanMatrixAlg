@@ -484,7 +484,7 @@ TestChevHOnRoot := function(root)
 		fi;
 		x := LieRootHomF4(alpha, a);
 		coeff := F4CartanInt(alpha, root) * One(ComRing);
-		if ApplyDistAndPeirceLaw(h*x - coeff*x) <> LieZero then
+		if Simplify(h*x - coeff*x) <> LieZero then
 			return false;
 		fi;
 	od;

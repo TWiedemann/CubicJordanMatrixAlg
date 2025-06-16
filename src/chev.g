@@ -37,7 +37,7 @@ ChevStrucConst := function(root1, root2)
 	comm := ChevBasEl(root1) * ChevBasEl(root2);
 	chevSum := ChevBasEl(sum);
 	for c in candidates do
-		if ApplyDistAndPeirceLaw(comm - c*chevSum, false) = LieZero then
+		if Simplify(comm - c*chevSum) = LieZero then
 			return c;
 		fi;
 	od;
