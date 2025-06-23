@@ -155,14 +155,14 @@ InstallMethod(GrpRootHomF4NonDiv, [IsList, IsRingElement], function(root, a)
 			result := Sum([
 				result,
 				-LieBrownPosElFromTuple(Zero(ComRing), lam*c, CubicCross(c,b), CubicBiTr(c, b2)),
-				(lam*CubicBiTr(c,b2) - CubicBiTr(c, CubicAdj(b)))*LieY
+				- CubicBiTr(c, CubicAdj(b))*LieY
 			]);
 			# Action on Cubic'
 			c2 := lieCubicNeg;
 			result := Sum([
 				result,
 				LieBrownPosElFromTuple(CubicBiTr(b,c2), CubicCross(c2,b2), mu*c2, Zero(ComRing)),
-				(mu*CubicBiTr(b, c2) - CubicBiTr(CubicAdj(b2), c2))*LieY
+				- CubicBiTr(CubicAdj(b2), c2)*LieY
 			]);
 			# Action on DD
 			for list in lieDDCoeffList do
@@ -177,12 +177,12 @@ InstallMethod(GrpRootHomF4NonDiv, [IsList, IsRingElement], function(root, a)
 						-JordanD(c, c2, b) + CubicBiTr(c, c2)*b,
 						JordanD(c2, c, b2) - CubicBiTr(c, c2)*b2,
 						-mu*CubicBiTr(c, c2)
-					),
-					scalar * Sum([
-						CubicBiTr(JordanD(c, c2, b), b2),
-						-CubicBiTr(b, b2)*CubicBiTr(c, c2),
-						lam*mu*CubicBiTr(c, c2)
-					]) * LieY
+					)
+					# scalar * Sum([
+					# 	CubicBiTr(JordanD(c, c2, b), b2),
+					# 	-CubicBiTr(b, b2)*CubicBiTr(c, c2),
+					# 	lam*mu*CubicBiTr(c, c2)
+					# ]) * LieY
 				]);
 			od;
 			## For the action on L_{-1} + L_{-2}, we need a case distinction on root
@@ -272,14 +272,14 @@ InstallMethod(GrpRootHomF4NonDiv, [IsList, IsRingElement], function(root, a)
 			result := Sum([
 				result,
 				-LieBrownNegElFromTuple(Zero(ComRing), lam*c, CubicCross(c,b), CubicBiTr(c, b2)),
-				(lam*CubicBiTr(c,b2) - CubicBiTr(c, CubicAdj(b)))*LieX
+				- CubicBiTr(c, CubicAdj(b))*LieX
 			]);
 			# Action on Cubic'
 			c2 := lieCubicNeg;
 			result := Sum([
 				result,
 				LieBrownNegElFromTuple(CubicBiTr(b,c2), CubicCross(c2,b2), mu*c2, Zero(ComRing)),
-				(mu*CubicBiTr(b, c2) - CubicBiTr(CubicAdj(b2), c2))*LieX
+				- CubicBiTr(CubicAdj(b2), c2)*LieX
 			]);
 			# Action on DD
 			for list in lieDDCoeffList do
@@ -294,12 +294,7 @@ InstallMethod(GrpRootHomF4NonDiv, [IsList, IsRingElement], function(root, a)
 						-JordanD(c, c2, b) + CubicBiTr(c, c2)*b,
 						JordanD(c2, c, b2) - CubicBiTr(c, c2)*b2,
 						-mu*CubicBiTr(c, c2)
-					),
-					scalar * Sum([
-						CubicBiTr(JordanD(c, c2, b), b2),
-						-CubicBiTr(b, b2)*CubicBiTr(c, c2),
-						lam*mu*CubicBiTr(c, c2)
-					]) * LieX
+					)
 				]);
 			od;
 			## For the action on L_1 + L_2, we need a case distinction on root
