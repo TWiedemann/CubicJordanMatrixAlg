@@ -185,67 +185,33 @@ InstallMethod(GrpRootHomF4NonDiv, [IsList, IsRingElement], function(root, a)
 					# ]) * LieY
 				]);
 			od;
-			## For the action on L_{-1} + L_{-2}, we need a case distinction on root
 			## Action on L_{-1}
 			nu := BrownElComPart(lieNeg1, 1);
 			c := BrownElCubicPart(lieNeg1, 1);
 			c2 := BrownElCubicPart(lieNeg1, 2);
 			rho := BrownElComPart(lieNeg1, 2);
-			if rootG2[2] = -1 then
-				nextSummand := Sum([
-					lam*CubicNegToLieEmb(c2) + rho*lam*(LieXi-LieZeta),
-					-LieBrownPosElFromTuple(rho*lam^2, CubicZero, CubicZero, Zero(ComRing))
-				]);
-			elif rootG2[2] = 0 then
-				nextSummand := Sum([
-					-CubicNegToLieEmb(CubicCross(c, b)) - CubicBiTr(b, c2)*(LieXi-LieZeta),
-					-Liedd(b, c2),
-					rho*CubicPosToLieEmb(b),
-					LieBrownPosElFromTuple(
-						-CubicBiTr(CubicAdj(b), c),
-						JordanU(b, c2),
-						-rho*CubicAdj(b),
-						Zero(ComRing)
-					),
-					-rho*CubicNorm(b)*LieY
-				]);
-			elif rootG2[2] = 1 then
-				nextSummand := Sum([
-					nu*CubicNegToLieEmb(b2) - CubicPosToLieEmb(CubicCross(c2, b2)),
-					CubicBiTr(c, b2)*LieZeta - Liedd(c, b2),
-					LieBrownPosElFromTuple(
-						Zero(ComRing),
-						nu*CubicAdj(b2),
-						-JordanU(b2, c),
-						CubicBiTr(c2, CubicAdj(b2))
-					),
-					-nu*CubicNorm(b2)*LieY
-				]);
-			else
-				nextSummand := Sum([
-					-nu*mu*LieZeta + mu*CubicPosToLieEmb(c),
-					LieBrownPosElFromTuple(Zero(ComRing), CubicZero, CubicZero, nu*mu^2)
-				]);
-			fi;
-			result := result + nextSummand;
+			result := Sum([
+				result,
+				CubicNegToLieEmb(lam*c2 - CubicCross(c, b) + nu*b2),
+				-Liedd(b, c2) - Liedd(c, b2),
+				(rho*lam - CubicBiTr(b, c2))*(LieXi - LieZeta),
+				(CubicBiTr(c, b2) - nu*mu)*LieZeta,
+				CubicPosToLieEmb(rho*b - CubicCross(c2, b2) + mu*c),
+				LieBrownPosElFromTuple(
+					-rho*lam^2 - CubicBiTr(CubicAdj(b), c),
+					JordanU(b, c2) + nu*CubicAdj(b2),
+					-rho*CubicAdj(b) - JordanU(b2, c),
+					CubicBiTr(c2, CubicAdj(b2)) + CubicNorm(b2) + nu*mu^2
+				),
+				(-rho*CubicNorm(b) - nu*CubicNorm(b2))*LieY
+			]);
 			## Action on L_{-2}
-			if rootG2[2] = -1 then
-				nextSummand := LieBrownNegElFromTuple(lam, CubicZero, CubicZero, Zero(ComRing));
-			elif rootG2[2] = 0 then
-				nextSummand := Sum([
-					LieBrownNegElFromTuple(Zero(ComRing), b, CubicZero, Zero(ComRing)),
-					-CubicNegToLieEmb(CubicAdj(b)),
-					-LieBrownPosElFromTuple(CubicNorm(b), CubicZero, CubicZero, Zero(ComRing))
-				]);
-			elif rootG2[2] = 1 then
-				nextSummand := Sum([
-					LieBrownNegElFromTuple(Zero(ComRing), CubicZero, b2, Zero(ComRing)),
-					-CubicPosToLieEmb(CubicAdj(b2)),
-					LieBrownNegElFromTuple(Zero(ComRing), CubicZero, CubicZero, CubicNorm(b2))
-				]);
-			else
-				nextSummand := LieBrownNegElFromTuple(Zero(ComRing), CubicZero, CubicZero, mu);
-			fi;
+			nextSummand := Sum([
+				LieBrownNegElFromTuple(lam, b, b2, mu),
+				CubicNegToLieEmb(-CubicAdj(b)),
+				CubicPosToLieEmb(-CubicAdj(b2)),
+				LieBrownPosElFromTuple(-CubicNorm(b), CubicZero, CubicZero, CubicNorm(b2))
+			]);
 			result := result + lieXCoeff*nextSummand;
 			return result;
 		elif rootG2[1] = -1 then
