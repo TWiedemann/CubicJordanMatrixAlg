@@ -178,11 +178,6 @@ InstallMethod(GrpRootHomF4NonDiv, [IsList, IsRingElement], function(root, a)
 						JordanD(c2, c, b2) - CubicBiTr(c, c2)*b2,
 						-mu*CubicBiTr(c, c2)
 					)
-					# scalar * Sum([
-					# 	CubicBiTr(JordanD(c, c2, b), b2),
-					# 	-CubicBiTr(b, b2)*CubicBiTr(c, c2),
-					# 	lam*mu*CubicBiTr(c, c2)
-					# ]) * LieY
 				]);
 			od;
 			## Action on L_{-1}
