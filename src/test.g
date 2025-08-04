@@ -243,6 +243,7 @@ end;
 # w, wInv: Elements of LieEndo. It is assumed that wInv = w^-1.
 # root: Element of F4. It is assumed that w is a Weyl element w.r.t. this root.
 # onRootList: List of roots on which conjugation by w is tested.
+# naive (optional): If true, then the naive root homomorphisms (i.e., no multiplication by gamma) are used.
 # Output: A list [pars, errors] where:
 # - pars is a list such that pars[i] is the parity of w on the root group with
 # respect to onRootList[i].
@@ -253,20 +254,25 @@ end;
 # is no guarantee that this is the correct sign, but it normally works and will
 # be tested by hand later.)
 # Uses indeterminates a_1, t_1, a_{ConicAlg_rank}, t_{ComRing_rank}
-_WeylErrorAndParity := function(root, onRootList, w, wInv)
+_WeylErrorAndParity := function(root, onRootList, w, wInv, naive...)
 	local baseRoot, baseRootErrorList, isWeylOnBaseRoot, errors, a, x, twistList,
 		t, b, y, test, i, pars, par, parList;
 	errors := [];
 	pars := [];
+	if Length(naive) = 0 then
+		naive := false;
+	else
+		naive := naive[1];
+	fi;
 	for baseRoot in onRootList do
 		if baseRoot in F4ShortRoots then
 			a := ConicAlgBasicIndet(1);
-			x := GrpRootHomF4(baseRoot, a);
+			x := GrpRootHomF4(baseRoot, a, naive);
 			twistList := [a, -a, ConicAlgInv(a), -ConicAlgInv(a)];
 			parList := [[1,1], [-1,1], [1,-1], [-1,-1]];
 		else
 			t := ComRingBasicIndet(1);
-			x := GrpRootHomF4(baseRoot, t);
+			x := GrpRootHomF4(baseRoot, t, naive);
 			twistList := [t, -t];
 			parList := [[1,1], [-1,1]];
 		fi;
@@ -275,7 +281,7 @@ _WeylErrorAndParity := function(root, onRootList, w, wInv)
 		par := fail;
 		for i in [1..Length(parList)] do
 			b := twistList[i];
-			y := GrpRootHomF4(F4Refl(baseRoot, root), b);
+			y := GrpRootHomF4(F4Refl(baseRoot, root), b, naive);
 			test := TestEquality(wInv*x*w, y);
 			if test = true then
 				isWeylOnBaseRoot := true;
@@ -310,6 +316,7 @@ end;
 # baseRoot is a root and errorList is the list of Lie algebra elements which have to
 # be proven to be zero.
 # Uses indeterminates a_1, t_1, a_{ConicAlg_rank}, t_{ComRing_rank}
+# Currently obsolete
 TestWeylParity := function(root, w, wInv, parList)
 	local baseRoot, errors, a, x, b, y, test, i, par;
 	errors := [];
@@ -345,8 +352,8 @@ TestWeylParity := function(root, w, wInv, parList)
 end;
 
 # Documentation: See TestWeyl, but with onRootList
-TestWeylOn := function(root, onRootList, w, wInv)
-	return _WeylErrorAndParity(root, onRootList, w, wInv)[2];
+TestWeylOn := function(root, onRootList, w, wInv, naive)
+	return _WeylErrorAndParity(root, onRootList, w, wInv, naive)[2];
 end;
 
 # w, wInv: Elements of LieEndo. It is assumed that wInv = w^-1.
@@ -355,8 +362,13 @@ end;
 # baseRoot is a root and errorList is the list of Lie algebra elements which have to
 # be proven to be zero.
 # Uses indeterminates a_1, t_1, a_{ConicAlg_rank}, t_{ComRing_rank}
-TestWeyl := function(root, w, wInv)
-	return TestWeylOn(root, F4Roots, w, wInv)[2];
+TestWeyl := function(root, w, wInv, naive...)
+	if Length(naive) = 0 then
+		naive := false;
+	else
+		naive := naive[1];
+	fi;
+	return TestWeylOn(root, F4Roots, w, wInv, naive);
 end;
 
 

@@ -115,6 +115,6 @@ end;
 #     Print(d, " = ", d2, "\n");
 # end;
 
-root := [1, -1, -1, 1];
-w := GrpWeylF4(root, g1*g2^-1*t2, g1^-1*g2*t3); # w(t2, t3) in naive parametrisation
-wInv := GrpWeylF4(root, -g1*g2^-1*t2, -g1^-1*g2*t3); # w(t2, t3)^-1 in naive parametrisation
+root := [1, 0, 0, -1];
+w := GrpWeylF4(root, a1, a2, true);
+wInv := GrpWeylF4(root, -a1, -a2, true);

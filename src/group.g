@@ -77,8 +77,13 @@ InstallMethod(F4Exp, [IsLieElement], a -> F4Exp(a, 3));
 ## ------- Root homomorphisms ----
 
 # Explicit formulas for all roots except for those in the (0, 0)-part
+DeclareOperation("GrpRootHomF4NonDiv", [IsList, IsRingElement, IsBool]);
 DeclareOperation("GrpRootHomF4NonDiv", [IsList, IsRingElement]);
-InstallMethod(GrpRootHomF4NonDiv, [IsList, IsRingElement], function(root, a)
+
+# a: Element of ComRing if root is long and element of ConicAlg otherwise
+# naive: If true, then no multiplication by gamma occurs
+# Output: Root group element corresponding to a
+InstallMethod(GrpRootHomF4NonDiv, [IsList, IsRingElement, IsBool], function(root, a, naive)
 	local rootG2, lieXCoeff, lieNeg1, lie0, lieDDCoeffList, lieXiCoeff, lieZetaCoeff,
 		liePos1, lieYCoeff, result, rho, b, bBrown, bLie, b2, c, c2, nu, scalar,
 		list, lieCubicNeg, lieCubicPos, aLie, aBrown, lam, mu, nextSummand,
@@ -108,7 +113,7 @@ InstallMethod(GrpRootHomF4NonDiv, [IsList, IsRingElement], function(root, a)
 		# Case distinction by root
 		if rootG2 = [-2, -1] then
 			# Define rho so that LieRootHomF4(root, a) = rho*x
-			rho := LiePart(LieRootHomF4(root, a), -2);
+			rho := LiePart(LieRootHomF4(root, a, naive), -2);
 			# Action on L_{-2} + L_{-1} + DD + Cubic + Cubic' is id
 			# Action on xi and zeta
 			result := result + 2*rho*lieXiCoeff*LieX;
@@ -120,7 +125,7 @@ InstallMethod(GrpRootHomF4NonDiv, [IsList, IsRingElement], function(root, a)
 			return result;
 		elif rootG2 = [2, 1] then
 			# Define rho so that LieRootHomF4(root, a) = rho*y
-			rho := LiePart(LieRootHomF4(root, a), 2);
+			rho := LiePart(LieRootHomF4(root, a, naive), 2);
 			# Action on L_{2} + L_{1} + DD + Cubic + Cubic' is id
 			# Action on xi and zeta
 			result := result - 2*rho*lieXiCoeff*LieY;
@@ -133,7 +138,7 @@ InstallMethod(GrpRootHomF4NonDiv, [IsList, IsRingElement], function(root, a)
 		# Uses section 6
 		elif rootG2[1] = 1 then
 			## Components of a
-			aLie := LieRootHomF4(root, a);
+			aLie := LieRootHomF4(root, a, naive);
 			aBrown := LiePart(aLie, 1); # aLie = aBrown_+
 			lam := BrownElComPart(aBrown, 1);
 			b := BrownElCubicPart(aBrown, 1);
@@ -211,7 +216,7 @@ InstallMethod(GrpRootHomF4NonDiv, [IsList, IsRingElement], function(root, a)
 			return result;
 		elif rootG2[1] = -1 then
 			## Components of a
-			aLie := LieRootHomF4(root, a);
+			aLie := LieRootHomF4(root, a, naive);
 			aBrown := LiePart(aLie, -1); # aLie = aBrown_-
 			lam := BrownElComPart(aBrown, 1);
 			b := BrownElCubicPart(aBrown, 1);
@@ -288,7 +293,7 @@ InstallMethod(GrpRootHomF4NonDiv, [IsList, IsRingElement], function(root, a)
 			result := result + lieYCoeff*nextSummand;
 			return result;
 		elif rootG2 = [0, 1] then
-			aLie := LieRootHomF4(root, a);
+			aLie := LieRootHomF4(root, a, naive);
 			aCubic := L0CubicPosCoeff(LiePart(aLie, 0)); # aLie = ad_{aCubic}^+
 			## Action on L_2 + L_{-2} + xi + Cubic is id
 			## Action on L_1 + L_{-1}
@@ -326,7 +331,7 @@ InstallMethod(GrpRootHomF4NonDiv, [IsList, IsRingElement], function(root, a)
 			result := result - Liedd(aCubic, c2) + CubicPosToLieEmb(JordanU(aCubic, c2));
 			return result;
 		elif rootG2 = [0, -1] then
-			aLie := LieRootHomF4(root, a);
+			aLie := LieRootHomF4(root, a, naive);
 			aCubic2 := L0CubicNegCoeff(LiePart(aLie, 0)); # aLie = ad_{aCubic}^+
 			## Action on L_2 + L_{-2} +zeta + Cubic' is id
 			## Action on L_1 + L_{-1}
@@ -369,19 +374,29 @@ InstallMethod(GrpRootHomF4NonDiv, [IsList, IsRingElement], function(root, a)
 	end);
 end);
 
+InstallMethod(GrpRootHomF4NonDiv, [IsList, IsRingElement], function(root, a)
+	return GrpRootHomF4NonDiv(root, a, false);
+end);
+
 DeclareOperation("GrpRootHomF4Div", [IsList, IsRingElement]);
 InstallMethod(GrpRootHomF4Div, [IsList, IsRingElement], function(root, a)
 	return F4Exp(LieRootHomF4(root, a));
 end);
 
+DeclareOperation("GrpRootHomF4", [IsList, IsRingElement, IsBool]);
 DeclareOperation("GrpRootHomF4", [IsList, IsRingElement]);
 # Install method for GrpRootHomF4 later because it uses GrpWeylF4
 
+DeclareOperation("GrpWeylF4", [IsList, IsRingElement, IsRingElement, IsBool]);
 DeclareOperation("GrpWeylF4", [IsList, IsRingElement, IsRingElement]);
-InstallMethod(GrpWeylF4, [IsList, IsRingElement, IsRingElement], function(root, a, b)
+InstallMethod(GrpWeylF4, [IsList, IsRingElement, IsRingElement, IsBool], function(root, a, b, naive)
 	local inv;
-	inv := GrpRootHomF4(-root, b);
-	return inv * GrpRootHomF4(root, a) * inv;
+	inv := GrpRootHomF4(-root, b, naive);
+	return inv * GrpRootHomF4(root, a, naive) * inv;
+end);
+
+InstallMethod(GrpWeylF4, [IsList, IsRingElement, IsRingElement], function(root, a, b)
+	return GrpWeylF4(root, a, b, false);
 end);
 
 DeclareOperation("GrpStandardWeylF4", [IsList]);
@@ -406,7 +421,10 @@ InstallMethod(GrpStandardWeylInvF4, [IsList], function(root)
 	return GrpWeylF4(root, -one, one);
 end);
 
-InstallMethod(GrpRootHomF4, [IsList, IsRingElement], function(root, a)
+# For naive = true, the root homomorphism for the (0, 0)-roots do not work.
+# This is not a bug but a mathematical issue: In the naive parametrisation,
+# it is not evident which elements are Weyl elements.
+InstallMethod(GrpRootHomF4, [IsList, IsRingElement, IsBool], function(root, a, naive)
 	local roothom, weyl, weylInv, d1, d4, minusRoots, invRoots;
 	if root in F4LongRoots then
 		ReqComRingEl(a);
@@ -417,25 +435,29 @@ InstallMethod(GrpRootHomF4, [IsList, IsRingElement], function(root, a)
 		return fail;
 	fi;
 	if F4RootG2Coord(root) = [0,0] then
-		roothom := GrpRootHomF4NonDiv;
+		roothom := rootArg -> GrpRootHomF4NonDiv(rootArg, a, naive);
 		weyl := GrpStandardWeylF4;
 		weylInv := GrpStandardWeylInvF4;
 		d1 := F4SimpleRoots[1];
 		d4 := F4SimpleRoots[4];
 		if root = [0, 1, -1, 0] then
-			return weylInv(d1) * roothom([-1, 0, 0, 1], a) * weyl(d1);
+			return weylInv(d1) * roothom([-1, 0, 0, 1]) * weyl(d1);
 		elif root = [0, -1, 1, 0] then
-			return weylInv(d1) * roothom([1, 0, 0, -1], a) * weyl(d1);
+			return weylInv(d1) * roothom([1, 0, 0, -1]) * weyl(d1);
 		elif root = [0, 1, 0, -1] then
-			return weylInv(d1) * roothom([-1, 0, 1, 0], a) * weyl(d1);
+			return weylInv(d1) * roothom([-1, 0, 1, 0]) * weyl(d1);
 		elif root = [0, -1, 0, 1] then
-			return weylInv(d1) * roothom([1, 0, -1, 0], a) * weyl(d1);
+			return weylInv(d1) * roothom([1, 0, -1, 0]) * weyl(d1);
 		elif root = [0, 0, 1, -1] then
-			return weylInv(d4) * roothom([0, -1, 0, -1], a) * weyl(d4);
+			return weylInv(d4) * roothom([0, -1, 0, -1]) * weyl(d4);
 		else
-			return weylInv(d4) * roothom([0, 1, 0, 1], a) * weyl(d4);
+			return weylInv(d4) * roothom([0, 1, 0, 1]) * weyl(d4);
 		fi;
 	else
-		return GrpRootHomF4NonDiv(root, a);
+		return GrpRootHomF4NonDiv(root, a, naive);
 	fi;
+end);
+
+InstallMethod(GrpRootHomF4, [IsList, IsRingElement], function(root, a)
+	return GrpRootHomF4(root, a, false);
 end);
