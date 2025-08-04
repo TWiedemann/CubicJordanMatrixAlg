@@ -242,9 +242,10 @@ end;
 
 # w, wInv: Elements of LieEndo. It is assumed that wInv = w^-1.
 # root: Element of F4. It is assumed that w is a Weyl element w.r.t. this root.
+# onRootList: List of roots on which conjugation by w is tested.
 # Output: A list [pars, errors] where:
 # - pars is a list such that pars[i] is the parity of w on the root group with
-# respect to F4Roots[i].
+# respect to onRootList[i].
 # - errors is either true or a list consisting of lists [baseRoot, errorList] where
 # baseRoot is a root and errorList is the list of Lie algebra elements which have to
 # be proven to be zero.
@@ -252,12 +253,12 @@ end;
 # is no guarantee that this is the correct sign, but it normally works and will
 # be tested by hand later.)
 # Uses indeterminates a_1, t_1, a_{ConicAlg_rank}, t_{ComRing_rank}
-_WeylErrorAndParity := function(root, w, wInv)
+_WeylErrorAndParity := function(root, onRootList, w, wInv)
 	local baseRoot, baseRootErrorList, isWeylOnBaseRoot, errors, a, x, twistList,
 		t, b, y, test, i, pars, par, parList;
 	errors := [];
 	pars := [];
-	for baseRoot in F4Roots do
+	for baseRoot in onRootList do
 		if baseRoot in F4ShortRoots then
 			a := ConicAlgBasicIndet(1);
 			x := GrpRootHomF4(baseRoot, a);
@@ -297,8 +298,8 @@ _WeylErrorAndParity := function(root, w, wInv)
 	fi;
 end;
 
-WeylParityList := function(root, w, wInv)
-	return _WeylErrorAndParity(root, w, wInv)[1];
+WeylParityList := function(root, onRootList, w, wInv)
+	return _WeylErrorAndParity(root, onRootList, w, wInv)[1];
 end;
 
 # w, wInv: Elements of LieEndo. It is assumed that wInv = w^-1.
@@ -343,6 +344,11 @@ TestWeylParity := function(root, w, wInv, parList)
 	fi;
 end;
 
+# Documentation: See TestWeyl, but with onRootList
+TestWeylOn := function(root, onRootList, w, wInv)
+	return _WeylErrorAndParity(root, onRootList, w, wInv)[2];
+end;
+
 # w, wInv: Elements of LieEndo. It is assumed that wInv = w^-1.
 # Output: true if w can be proven to be a root-Weyl element.
 # Otherwise the output is a list consisting of lists [baseRoot, errorList] where
@@ -350,8 +356,9 @@ end;
 # be proven to be zero.
 # Uses indeterminates a_1, t_1, a_{ConicAlg_rank}, t_{ComRing_rank}
 TestWeyl := function(root, w, wInv)
-	return _WeylErrorAndParity(root, w, wInv)[2];
+	return TestWeylOn(root, F4Roots, w, wInv)[2];
 end;
+
 
 
 # root: Root in F4.
