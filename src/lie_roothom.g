@@ -159,11 +159,26 @@ end);
 DeclareOperation("LieRootHomF4", [IsList, IsRingElement, IsBool]);
 DeclareOperation("LieRootHomF4", [IsList, IsRingElement]);
 
+# Add minus signs to ensure that we get a Chevalley basis
+if not IsBoundGlobal("_MinusSignRootsLong") then
+	_MinusSignRootsLong := Difference(F4NegLongRoots, [
+		[-1, -1, -1, 1], [1, 1, -1, 1], [1, -1, 1, 1], [-1, 1, 1, 1],
+	]);
+	MakeConstantGlobal("_MinusSignRootsLong");
+fi;
+if not IsBoundGlobal("_MinusSignRootsShort") then
+	_MinusSignRootsShort := [
+		[1, 0, -1, 0], [0, 1, 0, 1], [0, 0, 1, 1], [0, -1, -1, 0],
+		[-1, 1, 0, 0], [-1, 0, 0, 1]
+	];
+	MakeConstantGlobal("_MinusSignRootsShort");
+fi;
+
 # a: Element of ComRing if root is long and element of ConicAlg otherwise
-# naive: If true, then no multiplication by gamma occurs
+# naive: If true, then no multiplication by gamma and -1 occurs
 # Output: Root space element corresponding to a
 InstallMethod(LieRootHomF4, [IsList, IsRingElement, IsBool], function(root, a, naive)
-	local sum, G2Root, minusSignRootsLong, minusSignRootsShort, cub, sign, l;
+	local sum, G2Root, cub, sign, l;
 	if root in F4LongRoots then
 		ReqComRingEl(a);
 	elif root in F4ShortRoots then
@@ -172,15 +187,8 @@ InstallMethod(LieRootHomF4, [IsList, IsRingElement, IsBool], function(root, a, n
 		Error("Argument must be a root in F4");
 		return fail;
 	fi;
-	# Add minus signs to ensure that we get a Chevalley basis
-	minusSignRootsLong := Difference(F4NegLongRoots, [
-		[-1, -1, -1, 1], [1, 1, -1, 1], [1, -1, 1, 1], [-1, 1, 1, 1],
-	]);
-	minusSignRootsShort := [
-		[1, 0, -1, 0], [0, 1, 0, 1], [0, 0, 1, 1], [0, -1, -1, 0],
-		[-1, 1, 0, 0], [-1, 0, 0, 1]
-	];
-	if root in Union(minusSignRootsLong, minusSignRootsShort) then
+
+	if not naive and root in Union(_MinusSignRootsLong, _MinusSignRootsShort) then
 		a := -a;
 	fi;
 	G2Root := F4RootG2Coord(root);
