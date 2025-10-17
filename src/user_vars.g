@@ -126,3 +126,33 @@ checkParity := function(root, weylIndex)
     Display(LieRootHomF4(F4Refl(root, delta), One(ConicAlg)));
     Display(Simplify(w(LieRootHomF4(root, One(ConicAlg)))));
 end;
+
+# --- Check G2-Weyl elements ---
+
+bCub := t1*CubicComEl(1,t1) + CubicComEl(2, One(ComRing)) + CubicComEl(3, One(ComRing));
+bCubInv := CubicNorm(bCub)^-1 * CubicAdj(bCub);
+bLie := LieBrownNegElFromTuple(Zero(ComRing), bCub, CubicZero, Zero(ComRing));
+bInvLie := LieBrownPosElFromTuple(Zero(ComRing), CubicZero, -bCubInv, Zero(ComRing));
+phiMid := F4Exp(-bLie);
+phiMidInv := F4Exp(bLie);
+phiR := F4Exp(-bInvLie);
+phiRInv := F4Exp(bInvLie);
+phibs := phiR * phiMid * phiR; # = \phibs^-1
+phibsInv := phiRInv * phiMidInv * phiRInv; # 
+
+t := CubicNorm(bCub);
+iota := x -> t*JordanU(bCubInv, x);
+iotainv := x -> t^-1 * JordanU(bCub, x);
+
+# For Lemma: e_{(0,a,0,0)_+}^\phibs = e_{-a^\iota}
+aCub := CubicAlgEl(1, a1);
+aLie1 := LieBrownPosElFromTuple(Zero(ComRing), aCub, CubicZero, Zero(ComRing));
+aLie2 := CubicNegToLieEmb(-iota(aCub));
+e1 := F4Exp(aLie1);
+e2 := F4Exp(aLie2);
+
+# For Lemma: e_{(0,0,a',0)_+}^\phibs = e_{(0,-t(a')^\iota, 0, 0)_-}
+a2Lie1 := LieBrownPosElFromTuple(Zero(ComRing), CubicZero, aCub, Zero(ComRing));
+a2Lie2 := LieBrownNegElFromTuple(Zero(ComRing), -t*iotainv(aCub), CubicZero, Zero(ComRing));
+e1 := F4Exp(aLie1);
+e2 := F4Exp(aLie2);
