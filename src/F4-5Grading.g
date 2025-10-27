@@ -305,10 +305,25 @@ getAllC3Subsystems := function()
 end;
 
 testG2ShortPreimage := function()
-	local alpha, preim, subsys;
+	local alpha, preim, preimShort, preimLong, i, j, scp, subsys;
 	for alpha in Filtered(G2Roots, G2RootIsShort) do
 		preim := projW1Inv(alpha);
-		if not (Number(preim, F4RootIsShort) = 3 or Length(preim) = 6) then
+		preimShort := Filtered(preim, F4RootIsShort);
+		preimLong := Difference(preim, preimShort);
+		if not (Length(preimShort) = 3 and Length(preimLong) = 3) then
+			return false;
+		fi;
+		e := 1/2 * preimLong;
+		# Check that e[1], e[2], e[3] are pairwise orthogonal
+		for i in [1..3] do
+			for j in [1..3] do
+				scp := F4InnerProduct(e[i], e[j]);
+				if i <> j and scp <> 0 then
+					return false;
+				fi;
+			od;
+		od;
+		if Set([e[1]+e[2], e[1]+e[3], e[2]+e[3]]) <> Set(preimShort) then
 			return false;
 		fi;
 		subsys := generatedSubsystem(F4RootsLC, preim);
@@ -328,6 +343,18 @@ testG2LongPreimage := function()
 				return false;
 			fi;
 		fi;
+	od;
+	return true;
+end;
+
+testSubspacesOrtho := function()
+	local a, b;
+	for a in W1BasList do
+		for b in W2BasList do
+			if F4InnerProduct(a, b) <> 0 then
+				return false;
+			fi;
+		od;
 	od;
 	return true;
 end;
