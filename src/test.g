@@ -703,7 +703,9 @@ end;
 # proof of the more general statements in [DMW]. They are merely a sanity check.
 testG2WeylFormulas := function()
 	local bCub, bCubInv, bLie, bInvLie, phiMid, phiMidInv, phiR, phiRInv, phibs, phibsInv, t, iota,
-		iotainv, testList, aCub, aLie1, aLie2, list;
+		iotainv, testList, aCub, aLie1, aLie2, list, t1, a1;
+	t1 := ComRingBasicIndet(1);
+	a1 := ConicAlgBasicIndet(1);
 	# Define phibs as w(bLie), a product of exponential automorphisms
 	bCub := t1*CubicComEl(1,t1) + CubicComEl(2, One(ComRing)) + CubicComEl(3, One(ComRing));
 	bCubInv := CubicNorm(bCub)^-1 * CubicAdj(bCub);
