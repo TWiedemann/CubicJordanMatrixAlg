@@ -428,3 +428,53 @@ findGradingCounterExample := function()
 		od;
 	od;
 end;
+
+# Let w \in Weyl(G2). We look for all u(w) in Weyl(F4) s.t. projW1(gamma^{u(w)}) = projW1(gamma)^{w}
+# for all gamma \in F4. We know that there exists at least one such u(w). Any other
+# u'(w) must be of the form u'(w) = u(w) + h for some h: V \to W2 (because
+# the W1-component of u(w) is uniquely determined). We let
+# [g1, ..., g4] denote a root basis of F4 which is mapped by u(w) to the fixed
+# root basis [f1, ..., f4]. Since u'(w) and u(w) must be isometries, we obtain restrictions
+# on h. This function prints all possible choices of h, expressed as lists
+# [h(g1), ..., h(g4)]
+findFoldingHomPossibilities := function()
+	local candidates, i, k, l, j, x, c1, c2, c3, c4, c, breaksIsom;
+	# Since u(w')(g_i) = f_i + f(g_i) must be a root, only a finite set of values is possible
+	# for f(g_i). candidates[i] is the list of all these values
+	candidates := [];
+	for i in [1..4] do
+		candidates[i] := [];
+		for k in [-10..10] do
+			for l in [-10..10] do
+				x := k*f3 + l*f4;
+				if f[i] + x in F4RootsLC then
+					Add(candidates[i], x);
+				fi;
+			od;
+		od;
+	od;
+	for c1 in candidates[1] do
+		for c2 in candidates[2] do
+			for c3 in candidates[3] do
+				for c4 in candidates[4] do
+					c := [c1, c2, c3, c4];
+					breaksIsom := false; # Set to true if c does not describe an isometry
+					for i in [1..4] do
+						for j in [1..4] do
+							if F4InnerProduct(f[i], f[j]) <> F4InnerProduct(f[i]+c[i], f[j]+c[j]) then
+								breaksIsom := true;
+								break;
+							fi;
+						od;
+						if breaksIsom then
+							break;
+						fi;
+					od;
+					if not breaksIsom then
+						Display(c);
+					fi;
+				od;
+			od;
+		od;
+	od;
+end;
