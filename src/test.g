@@ -609,23 +609,69 @@ TestLieComRel := function(root1, root2)
 	local roots, t, a, lieCand, i, c, lie1, lie2, lie3;
 	roots := [root1, root2, root1+root2];
 	t := [ComRingBasicIndet(1), ComRingBasicIndet(2)];
-	Add(t, t[1]*t[2]);
 	a := [ConicAlgBasicIndet(1), ConicAlgBasicIndet(2)];
-	Add(a, a[1]*a[2]);
 	# We will test lie_1*lie_2=lie_3 for all lie_i in lieCand[i]
 	# Initialise
+	param := [];
+	lie := [];
+	for i in [1,2] do
+		if roots[i] in F4ShortRoots then
+			param[i] := [a[i], ConicAlgInv(a[i])];
+		else
+			param[i] := t[i];
+		fi;
+		lie[i] := LieRootHomF4(roots[i], param[i][1]);
+	od;
+	if roots[3] in F4ShortRoots then
+		if root1 in F4LongRoots and roots2 in F4LongRoots then # prod in ComRing
+			parCand[3] := [prod*One(ConicAlg)];
+		else # prod in ConicAlg
+			parCand[3] := [prod, ConicAlgInv(prod)];
+		fi;
+		lieCand[3] := List(parCand[3], x -> LieRootHomF4(roots[3], x));
+	elif roots[3] in F4LongRoots then
+		if root1 in F4LongRoots and root2 in F4LongRoots then # prod in ComRing
+			parCand[3] := [prod];
+		else # prod in ConicAlg
+
+		fi;
+	else
+
+	fi;
+
+	## Old version
+	parCand := [];
 	lieCand := [];
 	for i in [1..2] do
 		if roots[i] in F4ShortRoots then
-			lieCand[i] := List([a[i], ConicAlgInv(a[i])], x -> LieRootHomF4(roots[i], x));
+			parCand[i] := [a[i], ConicAlgInv(a[i])];
+			lieCand[i] := List(parCand[i], x -> LieRootHomF4(roots[i], x));
 		elif roots[i] in F4LongRoots then
+			parCand[i] := [t[i]];
 			lieCand[i] := [LieRootHomF4(roots[i], t[i])];
-		else # Only possible if l=3
+		else # Only possible if i=3
 			lieCand[i] := [LieZero];
 		fi;
 	od;
-	# Actual test
 	c := ChevStrucConst(root1, root2);
+	prod := parCand[1][1]*parCand[2][2];
+	if roots[3] in F4ShortRoots then
+		if root1 in F4LongRoots and roots2 in F4LongRoots then # prod in ComRing
+			parCand[3] := [prod*One(ConicAlg)];
+		else # prod in ConicAlg
+			parCand[3] := [prod, ConicAlgInv(prod)];
+		fi;
+		lieCand[3] := List(parCand[3], x -> LieRootHomF4(roots[3], x));
+	elif roots[3] in F4LongRoots then
+		if root1 in F4LongRoots and root2 in F4LongRoots then # prod in ComRing
+			parCand[3] := [prod];
+		else # prod in ConicAlg
+
+		fi;
+	else
+
+	fi;
+	# Actual test
 	for lie1 in lieCand[1] do
 		for lie2 in lieCand[2] do
 			for lie3 in lieCand[3] do
@@ -638,6 +684,8 @@ TestLieComRel := function(root1, root2)
 			od;
 		od;
 	od;
+	Display(lieCand[1]*lieCand[2]);
+	Display(lieCand[3]);
 	return false;
 end;
 
