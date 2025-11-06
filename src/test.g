@@ -605,103 +605,87 @@ TestChevH := function()
 	return true;
 end;
 
+# root1, root2: Roots in F4
+# Output: If root1=-root2, return true. If root1+root2 is not a root and not zero,
+# return true if the commutator formula
+# LieRootHomF4(root1, a) * LieRootHomF4(root2, b) = 0
+# is satisfied. In any other case, returns true if the commutator formula
+# LieRootHomF4(root1, a) * LieRootHomF4(root2, b) = LieRootHomF4(root1+root2, p)
+# is satisfied for some p, which may be one of the following:
+# - ChevStrucConst(root1, root2)/2 * tr(c*d) if root1+root2 is long and root1, root2 are short
+# - ChevStrucConst(root1, root2) * tr(c*d) otherwise
+# where c in [a,a'], d in [b,b'].
 TestLieComRel := function(root1, root2)
-	local roots, t, a, lieCand, i, c, lie1, lie2, lie3;
+	local roots, t, a, i, c, param, lie, comm, test, prod, p1, p2, par;
 	roots := [root1, root2, root1+root2];
 	t := [ComRingBasicIndet(1), ComRingBasicIndet(2)];
 	a := [ConicAlgBasicIndet(1), ConicAlgBasicIndet(2)];
-	# We will test lie_1*lie_2=lie_3 for all lie_i in lieCand[i]
-	# Initialise
+	# Initialisation: lie contains the two Lie algebra elements whose commutator
+	# is tested. param[i] contains the parameters which are later tested for the
+	# commutator formula.
 	param := [];
 	lie := [];
 	for i in [1,2] do
 		if roots[i] in F4ShortRoots then
 			param[i] := [a[i], ConicAlgInv(a[i])];
 		else
-			param[i] := t[i];
+			param[i] := [t[i]];
 		fi;
 		lie[i] := LieRootHomF4(roots[i], param[i][1]);
 	od;
+	# Test
+	comm := Simplify(lie[1]*lie[2]);
 	c := ChevStrucConst(root1, root2);
 	for p1 in param[1] do
 		for p2 in param[2] do
-			prod := p1*p2;
-		od;
-	od;
-	if roots[3] in F4ShortRoots then
-		if root1 in F4LongRoots and roots2 in F4LongRoots then # prod in ComRing
-			parCand[3] := [prod*One(ConicAlg)];
-		else # prod in ConicAlg
-			parCand[3] := [prod, ConicAlgInv(prod)];
-		fi;
-		lieCand[3] := List(parCand[3], x -> LieRootHomF4(roots[3], x));
-	elif roots[3] in F4LongRoots then
-		if root1 in F4LongRoots and root2 in F4LongRoots then # prod in ComRing
-			parCand[3] := [prod];
-		else # prod in ConicAlg
-
-		fi;
-	else
-
-	fi;
-
-	## Old version
-	parCand := [];
-	lieCand := [];
-	for i in [1..2] do
-		if roots[i] in F4ShortRoots then
-			parCand[i] := [a[i], ConicAlgInv(a[i])];
-			lieCand[i] := List(parCand[i], x -> LieRootHomF4(roots[i], x));
-		elif roots[i] in F4LongRoots then
-			parCand[i] := [t[i]];
-			lieCand[i] := [LieRootHomF4(roots[i], t[i])];
-		else # Only possible if i=3
-			lieCand[i] := [LieZero];
-		fi;
-	od;
-	c := ChevStrucConst(root1, root2);
-	prod := parCand[1][1]*parCand[2][2];
-	if roots[3] in F4ShortRoots then
-		if root1 in F4LongRoots and roots2 in F4LongRoots then # prod in ComRing
-			parCand[3] := [prod*One(ConicAlg)];
-		else # prod in ConicAlg
-			parCand[3] := [prod, ConicAlgInv(prod)];
-		fi;
-		lieCand[3] := List(parCand[3], x -> LieRootHomF4(roots[3], x));
-	elif roots[3] in F4LongRoots then
-		if root1 in F4LongRoots and root2 in F4LongRoots then # prod in ComRing
-			parCand[3] := [prod];
-		else # prod in ConicAlg
-
-		fi;
-	else
-
-	fi;
-	# Actual test
-	for lie1 in lieCand[1] do
-		for lie2 in lieCand[2] do
-			for lie3 in lieCand[3] do
-				# Display(IsLieElement(lie1));
-				# Display(IsLieElement(lie2));
-				# Display(IsLieElement(lie3));
-				if TestEquality(lie1*lie2, lie3, false) then
+			prod := c*p1*p2;
+			if roots[3] in F4ShortRoots then
+				if root1 in F4LongRoots and root2 in F4LongRoots then # prod in ComRing
+					prod := prod * One(ConicAlg);
+				fi;
+				for par in [prod, ConicAlgInv(prod)] do
+					test := LieRootHomF4(roots[3], par);
+					if TestEquality(comm, test, false) then
+						return true;
+					fi;
+				od;
+			elif roots[3] in F4LongRoots then
+				if not (root1 in F4LongRoots and root2 in F4LongRoots) then # prod in ConicAlg
+					# Remove factor that is contained in c because it is
+					# "already covered by the trace map"
+					if not IsEvenInt(c) then
+						return false;
+					fi;
+					prod := ConicAlgTr(c/2 * p1 * p2);
+				fi;
+				test := LieRootHomF4(roots[3], prod);
+				if TestEquality(comm, test, false) then
 					return true;
 				fi;
-			od;
+			elif roots[3] <> [0,0,0,0] then
+				test := LieZero;
+				if TestEquality(comm, test, false) then
+					return true;
+				fi;
+			else
+				# Nothing to test
+				return true;
+			fi;
 		od;
 	od;
-	Display(lieCand[1]*lieCand[2]);
-	Display(lieCand[3]);
 	return false;
 end;
 
 TestLieComRels := function()
-	local t1, t2, a1, a2, root1, root2, rootSum, lie1, lie2, test, comm;
+	local t1, t2, a1, a2, root1, root2, rootSum, lie1, lie2, test, comm, counter;
 	t1 := ComRingBasicIndet(1);
 	t2 := ComRingBasicIndet(2);
 	a1 := ConicAlgBasicIndet(1);
 	a2 := ConicAlgBasicIndet(2);
+	counter := 0;
 	for root1 in F4Roots do
+		counter := counter+1;
+		# Print(counter, "/48\n");
 		for root2 in F4Roots do
 			if not TestLieComRel(root1, root2) then
 				Print(root1, ", ", root2, "\n");
