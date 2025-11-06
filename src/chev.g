@@ -33,7 +33,7 @@ ChevStrucConst := function(root1, root2)
 	# such that [ x_root1, x_root2 ] = c x_{root1+root2}. Hence we cannot use GAP functions
 	# to immediately obtain c. However, it turns out that there is only a low number of
 	# possibilities which may occur, so we simply try them all out.
-	candidates := [-4,-3,-2,-1,1,2,3,4];
+	candidates := [-2,-1,1,2];
 	comm := ChevBasEl(root1) * ChevBasEl(root2);
 	chevSum := ChevBasEl(sum);
 	for c in candidates do
