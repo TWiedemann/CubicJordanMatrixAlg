@@ -833,3 +833,40 @@ testG2WeylFormulas := function()
 		Display(TestEquality(phibsInv*list[1]*phibs, list[2]));
 	od;
 end;
+
+# Prints F4SimpleRootParLists as a LaTeX table
+printLatexParityTable := function()
+	local e1, e2, e3, e4, rootCoeffs, rootCoeff, root, pos, i, k, l, par;
+	Display("\\toprule");
+	Display("$\\alpha$ & $\\tilde{\\eta}(\\alpha, f_1)$ & $\\tilde{\\eta}(\\alpha, f_2)$ & $\\tilde{\\eta}(\\alpha, f_3)$ & $\\tilde{\\eta}(\\alpha, f_4)$ \\\\");
+	e1 := [1,0,0,0];
+	e2 := [0,1,0,0];
+	e3 := [0,0,1,0];
+	e4 := [0,0,0,1];
+	rootCoeffs := [ 
+		e1, e2, e3, e4, e1+e2, e2+e3, e3+e4, e1+e2+e3, e2+2*e3, e2+e3+e4, e1+e2+2*e3, 
+		e1+e2+e3+e4, e2+2*e3+e4, e1+2*e2+2*e3, e1+e2+2*e3+e4, e2+2*e3+2*e4, e1+2*e2+2*e3+e4, 
+		e1+e2+2*e3+2*e4, e1+2*e2+3*e3+e4, e1+2*(e2+e3+e4), e1+2*e2+3*e3+2*e4, e1+2*e2+4*e3+2*e4, 
+		e1+3*e2+4*e3+2*e4, 2*e1+3*e2+4*e3+2*e4 
+	]; # Positive roots in the desired order, expressed as linear combinations of F4SimpleRoots
+	for i in [1..Length(rootCoeffs)] do
+		if IsInt((i-1)/5) then
+			Display("\\midrule");
+		fi;
+		rootCoeff := rootCoeffs[i];
+		root := rootCoeff * F4SimpleRoots;
+		pos := Position(F4Roots, root);
+		# Print rootCoeff
+		for k in rootCoeff do
+			Print(k);
+		od;
+		# Print parities
+		for l in [1..4] do
+			Print(" & ");
+			par := F4SimpleRootParLists[l][pos];
+			Print("$ (", par[1], ", ", par[2], ") $");
+		od;
+		Print("\\\\\n");
+	od;
+	Display("\\bottomrule");
+end;
