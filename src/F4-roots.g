@@ -50,6 +50,10 @@ F4RootsZero := Concatenation(F4Roots, [[0,0,0,0]]);
 F4SimpleRoots := [[1,1,-1,-1], [-2, 0, 0, 0], [1, -1, 0, 0], [0, 1, 1, 0]]; # Dynkin diagram: 1-2>3-4
 F4SimpleRootsBas := Basis(F4Vec, F4SimpleRoots); # Simple roots as a vector space basis in GAP
 
+G2ShortRoots := [[-1,-1], [-1,0], [0,-1], [0,1], [1,0], [1,1]];
+G2LongRoots := [[-2,-1], [-1,-2], [-1,1], [1,-1], [1,2], [2,1]];
+G2Roots := Concatenation(G2ShortRoots, G2LongRoots);
+
 # root: Root in F4
 # Output: List a of coefficients w.r.t. F4SimpleRoots. Thus root = a*F4SimpleRoots.
 F4RootBasisCoeffs := function(root)
@@ -79,8 +83,21 @@ A2Roots := [[1,-1,0], [1,0,-1], [0,1,-1], [0,-1,1], [-1,0,1], [-1,1,0]];
 
 F4ParityList := fail; # Not yet implemented
 
+# Since our representation of F4 is the dual of the Bourbaki representation,
+# the bilinear form on F4 is simply the usual inner product, given by *
 F4CartanInt := function(a, b)
 	return 2 * (a*b) / (b*b);
+end;
+
+G2BilinearForm := function(a, b)
+	local mat;
+	# mat[i][j] = e_i*e_j where e_1 = [1, 0], e_2 =  [0, 1]
+	mat := [ [2, -1], [-1, 2] ];
+	return a*mat*b;
+end;
+
+G2CartanInt := function(a,b)
+	return 2 * G2BilinearForm(a,b) / G2BilinearForm(b,b);
 end;
 
 # Returns argRoot^{\sigma_reflRoot}, the reflection along reflRoot applied to argRoot

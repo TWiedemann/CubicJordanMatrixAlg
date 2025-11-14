@@ -573,6 +573,24 @@ TestChevStrucConstSigns := function()
 	return true;
 end;
 
+# Returns true if c(root1, root2) = -c(-root1, -root2) for all roots root1, root2 in G2
+# where c = ChevStrucConst
+TestChevG2StrucConstSigns := function()
+	local i, j, root1, root2;
+	for i in [1..Length(G2Roots)] do
+		for j in [1..Length(G2Roots)] do
+			# (It would be sufficient to test only the cases with i<j, but the
+			# whole test runs in less than a minute anyway.)
+			root1 := G2Roots[i];
+			root2 := G2Roots[j];
+			if ChevG2StrucConst(root1, root2) <> -ChevG2StrucConst(-root1, -root2) then
+				return false;
+			fi;
+		od;
+	od;
+	return true;
+end;
+
 # root: Root in F4.
 # Output: true if ChevHEl(root) acts as the scalar F4CartanInt(alpha, root)
 # on every root space L_alpha of Lie, and false otherwise
@@ -599,6 +617,31 @@ TestChevH := function()
 	local root;
 	for root in F4Roots do
 		if TestChevHOnRoot(root) = false then
+			return false;
+		fi;
+	od;
+	return true;
+end;
+
+TestChevG2HOnRoot := function(root)
+	local h, alpha, a, x, coeff;
+	h := ChevG2HEl(root);
+	for alpha in G2Roots do
+		x := ChevG2BasEl(alpha);
+		coeff := G2CartanInt(alpha, root) * One(ComRing);
+		if Simplify(h*x - coeff*x) <> LieZero then
+			Print(root, " on ", alpha, "\n");
+			return false;
+		fi;
+	od;
+	return true;
+end;
+
+# Returns true if TestChevG2HOnRoot(alpha) = true for all alpha \in G2
+TestChevG2H := function()
+	local root;
+	for root in G2Roots do
+		if TestChevG2HOnRoot(root) = false then
 			return false;
 		fi;
 	od;
