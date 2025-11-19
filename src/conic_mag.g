@@ -1,6 +1,6 @@
 ### This file contains the definition of ConicAlgMag, the free magma consisting
 ### of products of the ideterminates in the conic algebra, and functions related
-### to this magma
+### to this magma.
 
 # ----- Indeterminates and their names -----
 
@@ -38,7 +38,7 @@ ConicAlgMagIndets := GeneratorsOfMagmaWithOne(ConicAlgMag);
 ConicAlgMagBasicIndets := ConicAlgMagIndets{[1..ConicAlg_rank]};
 ConicAlgMagInvIndets := ConicAlgMagIndets{[ConicAlg_rank+1..2*ConicAlg_rank]};
 
-ConicAlgMagBasicIndet := function(i)
+ConicAlgMagIndet := function(i)
 	return ConicAlgMagBasicIndets[i];
 end;
 

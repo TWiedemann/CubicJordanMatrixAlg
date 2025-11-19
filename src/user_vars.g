@@ -1,23 +1,23 @@
 ## Elements of ConicAlg and ConicAlgMag
 a1 := ConicAlgIndet(1);
 a2 := ConicAlgIndet(2);
-aMag1 := ConicAlgMagBasicIndet(1);
-aMag2 := ConicAlgMagBasicIndet(2);
+aMag1 := ConicAlgMagIndet(1);
+aMag2 := ConicAlgMagIndet(2);
 if ConicAlg_rank > 2 then
     a3 := ConicAlgIndet(3);
-    aMag3 := ConicAlgMagBasicIndet(3);
+    aMag3 := ConicAlgMagIndet(3);
 fi;
 if ConicAlg_rank > 3 then
     a4 := ConicAlgIndet(4);
-    aMag4 := ConicAlgMagBasicIndet(4);
+    aMag4 := ConicAlgMagIndet(4);
 fi;
 if ConicAlg_rank > 4 then
     a5 := ConicAlgIndet(5);
-    aMag5 := ConicAlgMagBasicIndet(5);
+    aMag5 := ConicAlgMagIndet(5);
 fi;
 if ConicAlg_rank > 5 then
     a6 := ConicAlgIndet(6);
-    aMag6 := ConicAlgMagBasicIndet(6);
+    aMag6 := ConicAlgMagIndet(6);
 fi;
 
 ## Elements of Comring

@@ -193,6 +193,18 @@ TestWithoutTraces := function()
 	return true;
 end;
 
+# ----- Cubic -----
+
+# Returns the matrix corresponding to the representation of an element of Cubic
+CubicRepToMatrix := function(rep)
+	local x, u, g;
+	x := rep[1]; # ComRing elements
+	u := rep[2]; # ConicAlg elements
+	g := TwistDiag;
+	return [ [x[1], g[2]*u[3], g[3]*ConicAlgInv(u[2])], [g[1]*ConicAlgInv(u[3]), x[2], g[3]*u[1]],
+			[g[1]*u[2], g[2]*ConicAlgInv(u[1]), x[3]]];
+end;
+
 ## Tests for abstract parametrisation strategy
 
 # relations: A list of lists [l1, l2] where l1 and l2 are lists containing elements

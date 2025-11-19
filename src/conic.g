@@ -1,9 +1,12 @@
+### This file contains the definition of ConicAlg, a free nonassociative algebra
+### that represents an arbitrary multiplicative conic alternative algebra,
+### and functions related to it.
+### Technically, ConicAlg is a free magma ring over the free magma ConicAlgMag
+### whose coefficient ring is ComRing.
 
-## Definition of ConicAlg
+# ----- Definition of ConicAlg -----
 
 ConicAlg := FreeMagmaRing(ComRing, ConicAlgMag);
-ConicAlgMagToAlg := x -> ImageElm(Embedding(ConicAlgMag, ConicAlg), x);
-ConicAlgElFam := FamilyObj(Zero(ConicAlg));
 
 ConicAlgMagEmb := x -> ImageElm(Embedding(ConicAlgMag, ConicAlg), x);
 ConicAlgIndets := List(ConicAlgMagIndets, ConicAlgMagEmb);
@@ -11,17 +14,24 @@ ConicAlgIndets := List(ConicAlgMagIndets, ConicAlgMagEmb);
 ConicAlgBasicIndets := ConicAlgIndets{[1..ConicAlg_rank]};
 ConicAlgInvIndets := ConicAlgIndets{[ConicAlg_rank+1..2*ConicAlg_rank]};
 
-## Functions which test requirements and throw errors
+# ----- Functions which test requirements and throw errors ---
 
 DeclareOperation("ReqComRingEl", [IsRingElement]);
 DeclareOperation("ReqComRingEl", [IsList]);
 DeclareOperation("ReqConicAlgEl", [IsRingElement]);
 DeclareOperation("ReqConicAlgEl", [IsList]);
 
+# For runtime reasons, we only test whether an element is a rational function
+# to determine whether it lies (or rather, can possibly lie) in ComRing.
+# Since these functions are essentially only a safeguard against inputting
+# elements of ConicAlg where elements of ComRing are required (and vice versa),
+# this is sufficient.
+
 InstallMethod(ReqComRingEl, [IsRingElement], function(a)
 	if _SkipTests then
 		return true;
 	fi;
+	# We only test
 	if not IsRationalFunction(a) then
 		Display(a);
 		Error("Invalid input: Must be in ComRing.");
@@ -57,7 +67,7 @@ InstallMethod(ReqConicAlgEl, [IsList], function(list)
 	od;
 end);
 
-## Constructors for indeterminates
+# ----- Constructors for indeterminates -----
 
 ConicAlgIndet := function(i)
 	return ConicAlgBasicIndets[i];
@@ -69,6 +79,8 @@ end;
 
 ## Functions on the rings
 
+# a: Element of ConicAlg.
+# Output: The conjugate a' of a.
 ConicAlgInv := function(a)
 	ReqConicAlgEl(a);
 	return ChangeRingElByMagmaTrans(ConicAlg, a, ConicAlgMagInv);
@@ -76,7 +88,6 @@ end;
 
 # magFunc: A function ConicAlgMag -> ComRing.
 # Output: The linear extension ConicAlg -> Comring of magFunc.
-# (This is only used for the trace, which makes it a bit useless. I accidentally thought I could use it for the trace and for the norm, but the norm is of course not linear.)
 ConicAlgFunctionalFromMagFunctional := function(magFunc)
 	return function(a)
 		local coeffList, result, i, magmaEl, coeff;
@@ -93,8 +104,8 @@ end;
 
 ConicAlgTr := ConicAlgFunctionalFromMagFunctional(ConicAlgMagTr);
 
-# a, b: Element of ConicAlg.
-# Output: n(a,b) such that n(a+b) = n(a) + n(b) + n(a,b).
+# a, b: Elements of ConicAlg.
+# Output: n(a,b) := n(a+b) - n(a) - n(b).
 # By [GPR24, (16.12.4), (16.5.2)], we have n(a,b) = n(1, a'b) = t(a'b)
 ConicAlgNormLin := function(a, b)
 	ReqConicAlgEl([a,b]);
@@ -102,7 +113,8 @@ ConicAlgNormLin := function(a, b)
 end;
 
 # a: Element of ConicAlg.
-# Output: Its norm, an element of ComRing.
+# Output: Its norm n(a), an element of ComRing.
+# Use that n(\sum_i c_i m_i) = \sum_i c_i^2 n(m_i) + sum_{i<j} c_i c_j n(m_i, m_j)
 ConicAlgNorm := function(a)
 	local coeffList, result, i, j, magmaEl, magmaEl2, coeff, coeff2;
 	ReqConicAlgEl(a);
@@ -111,11 +123,13 @@ ConicAlgNorm := function(a)
 	for i in [1..Length(coeffList)/2] do
 		magmaEl := coeffList[2*i - 1]; # \in ConicAlgMag
 		coeff := coeffList[2*i]; # \in ComRing
+		# a is the sum of all coeff*magmaEl. Begin by adding coeff^2 * n(magmaEl).
 		result := result + coeff^2 * ConicAlgMagNorm(magmaEl); # norm(x_i)
 		for j in [i+1..Length(coeffList)/2] do
 			magmaEl2 := coeffList[2*j - 1]; # \in ConicAlgMag
 			coeff2 := coeffList[2*j]; # \in ComRing
-			result := result + coeff*coeff2 * ConicAlgMagTr(magmaEl * ConicAlgMagInv(magmaEl2)); # tr(x_i x_j') = linearisation of norm
+
+			result := result + coeff*coeff2 * ConicAlgMagNormLin(magmaEl, magmaEl2); # tr(x_i x_j') = linearisation of norm
 		od;
 	od;
 	return result;

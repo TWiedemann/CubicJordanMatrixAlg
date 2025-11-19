@@ -342,14 +342,14 @@ _ApplyDistAndPeirceLaw_OnSummands_int2 := function(i1, j1, a, i2, j2, b)
 			aMag := aCoeffList[2*p - 1]; # in ConicAlgMag
 			bMag := bCoeffList[2*q - 1]; # in ConicAlgMag
 			if aMag = One(ConicAlgMag) then
-				c := c + aCoeff*bCoeff*ConicAlgMagToAlg(bMag);
+				c := c + aCoeff*bCoeff*ConicAlgMagEmb(bMag);
 			elif bMag = One(ConicAlgMag) then
 				# Use relation dd_{a[ij],1[ji]} = dd_{1[ij],a[ji]}
-				c := c + aCoeff*bCoeff*ConicAlgMagToAlg(aMag);
+				c := c + aCoeff*bCoeff*ConicAlgMagEmb(aMag);
 			else
 				Add(coeffs, aCoeff*bCoeff);
-				Add(lConic, ConicAlgMagToAlg(aMag));
-				Add(rConic, ConicAlgMagToAlg(bMag));
+				Add(lConic, ConicAlgMagEmb(aMag));
+				Add(rConic, ConicAlgMagEmb(bMag));
 			fi;
 		od;
 	od;

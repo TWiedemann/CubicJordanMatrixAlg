@@ -1,11 +1,11 @@
 ## If you use a Windows system, set isUnixOS to false and change windowsUserPath to the path
 ## where your source files are stored
-isUnixOS := true;
-windowsUserPath := "C:/Users/Torben/Documents/Repositories/F4-graded-groups/src/";
+_IsUnixOS := true;
+_WindowsUserPath := "C:/Users/Torben/Documents/Repositories/F4-graded-groups/src/";
 
 myFilePath := function(s)
-	if not isUnisOS then
-		return Concatenation(windowsUserPath, s);
+	if not _IsUnixOS then
+		return Concatenation(_WindowsUserPath, s);
 	else
 		return Concatenation("./", s);
 	fi;
@@ -52,7 +52,7 @@ ConicAlg_rank := 2;
 Trace_MaxLength := 5;
 
 # ---- Precomputed information ----
-# Dictionary with precomputed values for all traces. Will be initalised later.
+# Dictionary with precomputed values for all traces. Will be initalised later, mostly in init.g.
 # _TrDict has as keys the representations of elements of ConicAlgMag and as objects their traces,
 # which are elements of ComRing.
 _TrDict := fail;
@@ -62,7 +62,8 @@ _TrDict := fail;
 # and info is additional information: For t_i and g_i, info is i. For n(x) and tr(x),
 # info is x (as an element of ConicAlgMag)
 _ComRingIndetInfo := fail;
-# List of all indeterminates tr(a) and list of the "corresponding" elements a+a' in ConicAlg.
+# _ComRingTraceIndets: List of all indeterminates of the form tr(a) \in ComRing with a \in ConicAlgMag.
+# _ConicAlgTraces: List of the "corresponding" elements a+a' in ConicAlg.
 # Used by WithoutTraces().
 _ComRingTraceIndets := fail;
 _ConicAlgTraces := fail;
@@ -74,7 +75,8 @@ _TrSubIndetList := fail;
 _TrSubValueList := fail;
 
 # ---- Misc ----
-BaseRing := Rationals;
+# The ring over which ComRing is a polynomial ring.
+BaseRing := Integers;
 
 ### ----- End of global variables -----
 

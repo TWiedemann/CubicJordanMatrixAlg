@@ -1,53 +1,58 @@
-### Cubic norm structure (i.e., cubic Jordan matrix algebra), called Cubic in the following
-
-# We will write Cubic' for the other part of the cubic norm pair, but the structural
-# maps of Cubic' are the same as those of Cubic.
+### This file contains the definition of the cubic Jordan matrix algebra over
+### ConicAlg and ComRing with respec to the structural constants
+### TwistDiag := [g1, g2, g3].
+### We refer to this cubic Jordan matrix algebra as Cubic in the following.
+### Cubic is a cubic norm structure and hence (Cubic, Cubic') is a cubic norm pair
+### where Cubic' is a copy of Cubic. We do not distuingish between Cubic and Cubic'
+### in the code, but we sometimes do in the comments and documentation.
 
 TwistDiag := List([1,2,3], i -> ComRingGamIndet(i)); # [g1, g2, g3]
 CycPerm := [ [1,2,3], [2,3,1], [3,1,2] ]; # List of cyclic permutations of [1,2,3]
 
-# An element of Cubic is represented by [[x1, x2, x3], [u1, u2, u3]] where
-# x1, x2, x3 lie in ComRing and u1, u2, u3 lie in ConicAlg.
-# This represents the matrix
+# An element of Cubic is of the form
+# x1[11]+x2[22]+x3[33] + u1[23]+u2[31]+u3[12]
+# where x1, x2, x3 lie in ComRing and u1, u2, u3 lie in ConicAlg.
+# x[ii] is what is called x*e_i in [DMW].
+# We internally represent this element as a list [[x1, x2, x3], [u1, u2, u3]].
+# It can be thought to represent the matrix
 # [ [x1, g2*u3, g3*ConicAlgInv(u2)],
 # 	[g1*ConicAlgInv(u3), x2, g3*u1],
 #	[g1*u2, g2*ConicAlgInv(u1), x3]]
 # (see [GPR24, 36.6]).
 
-# Returns the matrix corresponding to the representation of an element of Cubic
-CubicRepToMatrix := function(rep)
-	local x, u, g;
-	x := rep[1]; # ComRing elements
-	u := rep[2]; # ConicAlg elements
-	g := TwistDiag;
-	return [ [x[1], g[2]*u[3], g[3]*ConicAlgInv(u[2])], [g[1]*ConicAlgInv(u[3]), x[2], g[3]*u[1]],
-			[g[1]*u[2], g[2]*ConicAlgInv(u[1]), x[3]]];
-end;
+# String used to display the zero element of Cubic in the terminal
+_CubicZeroString := "0_J";
 
-CubicZeroString := "0_J";
-
+# a: Internal rep of an element of Cubic, as described above.
+# Output: A string to display the corresponding element of Cubic.
 CubicRepToString := function(a)
 	local stringList, i, s;
+	# Collect all summands in a list, and add "+" later
 	stringList := [];
+	# Display elements of ComRing.
 	for i in [1..3] do
 		if a[1][i] <> Zero(ComRing) then
 			s := Concatenation("(", String(a[1][i]), ")", "[", String(i), String(i), "]");
 			Add(stringList, s);
 		fi;
 	od;
+	# Display elements of ConicAlg.
 	for i in [1..3] do
 		if a[2][i] <> Zero(ConicAlg) then
 			s := Concatenation("(", String(a[2][i]), ")", "[", String(CycPerm[i][2]), String(CycPerm[i][3]), "]");
 			Add(stringList, s);
 		fi;
 	od;
-	return StringSum(stringList, "+", CubicZeroString);
+	return StringSum(stringList, "+", _CubicZeroString);
 end;
+
+# We define Cubic using the GAP function ArithmeticElementCreator
 
 CubicSpec := rec(
 	ElementName := "CubicElement",
 	Zero := a -> [[Zero(ComRing), Zero(ComRing), Zero(ComRing)], [Zero(ConicAlg), Zero(ConicAlg), Zero(ConicAlg)]],
 	One := a -> [[One(ComRing), One(ComRing), One(ComRing)], [Zero(ConicAlg), Zero(ConicAlg), Zero(ConicAlg)]],
+	# The representation of elements behaves under "+" and "-" exactly as they should
 	Addition := function(a, b)
 		return a+b;
 	end,
@@ -66,19 +71,23 @@ CubicZero := Cubic([[Zero(ComRing), Zero(ComRing), Zero(ComRing)], [Zero(ConicAl
 InstallMethod(String, [IsCubicElement], x -> CubicRepToString(UnderlyingElement(x)));
 
 # Scalar multiplication ComRing x Cubic -> Cubic (with priority 2, i.e., high enough to be used)
-InstallMethod(\*, "for ComRingElement and CubicElement", [IsRingElement, IsCubicElement], 2, function(a,b)
-	local rep, productRep;
-	ReqComRingEl(a);
-	rep := UnderlyingElement(b);
-	productRep := [];
-	productRep[1] := List(rep[1], x -> a*x);
-	productRep[2] := List(rep[2], x -> a*x);
-	return Cubic(productRep);
+InstallMethod(\*, "for ComRingElement and CubicElement", [IsRingElement, IsCubicElement], 2, 
+	function(a,b)
+		local rep, productRep;
+		ReqComRingEl(a);
+		rep := UnderlyingElement(b);
+		productRep := [];
+		productRep[1] := List(rep[1], x -> a*x);
+		productRep[2] := List(rep[2], x -> a*x);
+		return Cubic(productRep);
 end);
 
-## Getters for coefficients
+# ----- Getter functions for coefficients of elements of Cubic -----
 
-# Return u_i as above
+# cubicEl: Element of Cubic
+# i: 1, 2, or 3
+# Output: u \in Conic such that u[jl] is the jl-summand of cubicEl where ijl is
+# the unique cyclic permutation starting from i
 CubicElAlgCoeff := function(cubicEl, i)
 	if i in [1,2,3] then
 		return UnderlyingElement(cubicEl)[2][i];

@@ -212,6 +212,13 @@ ConicAlgMagTr := function(magEl)
 	return ConicAlgMagTrOnRep(ExtRepOfObj(magEl));
 end;
 
+# a, b: Elements of ConicAlgMag.
+# Output: n(a,b) := n(a+b) - n(a) - n(b).
+# By [GPR24, (16.12.4), (16.5.2)], we have n(a,b) = n(1, a'b) = t(a'b)
+ConicAlgMagNormLin := function(a, b)
+	return ConicAlgMagTr(ConicAlgMagInv(a)*b);
+end;
+
 _ComRingGamIndetNum := []; # Contains the indeterminate number of gamma_i at position i
 
 # Initialises:
