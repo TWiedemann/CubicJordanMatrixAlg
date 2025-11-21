@@ -1,10 +1,11 @@
 
 
-### ---- Equality test ----
+# ----- General equality test fucntions -----
 
-# Tests equality of two elements in the Lie algebra.
-# If the output is true, they are equal.
-# Otherwise they may or may not be equal.
+# lieEl1, lieEl2: Elements of Lie.
+# print: Bool (default: false).
+# Returns: If lieEl1 can be proven to be equal to lieEl2 using Simplify, returns true.
+# Otherwise returns false, but they may still be equal.
 # If print = true, additional information is printed for the parts which are not equal.
 DeclareOperation("TestEquality", [IsLieElement, IsLieElement, IsBool]);
 InstallMethod(TestEquality, [IsLieElement, IsLieElement, IsBool], function(lieEl1, lieEl2, print)
@@ -23,11 +24,16 @@ InstallMethod(TestEquality, [IsLieElement, IsLieElement, IsBool], function(lieEl
 	return isEqual;
 end);
 
+DeclareOperation("TestEquality", [IsLieElement, IsLieElement]);
+InstallMethod(TestEquality, [IsLieElement, IsLieElement, IsBool], function(lieEl1, lieEl2)
+	return TestEquality(lieEl1, lieEl2, false);
+end);
+
 # lieEndo1, lieEndo2: Elements of LieEndo
 # genList: List of elements of Lie
-# Returns: true if lieEndo1 and lieEndo2 agree on all elements of genList.
+# Returns: true if lieEndo1 and lieEndo2 agree on all elements of genList after simplification.
 # Otherwise the output is the list of all lists [a, b] where a is an element of genList
-# algebra and b = lieEndo1(a) - lieEndo2(a) <> 0.
+# and b = lieEndo1(a) - lieEndo2(a) <> 0.
 DeclareOperation("TestEqualityOnGenList", [IsLieEndo, IsLieEndo, IsList]);
 InstallMethod(TestEqualityOnGenList, [IsLieEndo, IsLieEndo, IsList], 
 	function(lieEndo1, lieEndo2, genList)
@@ -77,31 +83,6 @@ InstallMethod(TestEquality, [IsLieEndo, IsLieEndo],
 	end
 );
 
-# Same as TestEquality, but uses the inverted list of lie algebra generators
-DeclareOperation("TestEqualityY", [IsLieEndo, IsLieEndo, IsInt, IsInt]);
-DeclareOperation("TestEqualityY", [IsLieEndo, IsLieEndo, IsInt]);
-DeclareOperation("TestEqualityY", [IsLieEndo, IsLieEndo]);
-
-InstallMethod(TestEqualityY, [IsLieEndo, IsLieEndo, IsInt, IsInt],
-	function(lieEndo1, lieEndo2, comIndetNum, conicIndetNum)
-		local genList;
-		genList := LieGensAsLie(comIndetNum, conicIndetNum, true);
-		return TestEqualityOnGenList(lieEndo1, lieEndo2, genList);
-	end
-);
-
-InstallMethod(TestEqualityY, [IsLieEndo, IsLieEndo, IsInt], 
-	function(lieEndo1, lieEndo2, indetNum)
-		return TestEquality(lieEndo1, lieEndo2, indetNum, indetNum);
-	end
-);
-
-InstallMethod(TestEqualityY, [IsLieEndo, IsLieEndo], 
-	function(lieEndo1, lieEndo2)
-		return TestEquality(lieEndo1, lieEndo2, ComRing_rank, ConicAlg_rank);
-	end
-);
-
 # Like TestEquality, but uses LieGensAsModule in place of LieGensAsLie.
 # Uses indeterminates t_comIndetNum, a_conicIndetNum AND a_{conicIndetNum+1}
 DeclareOperation("TestEqualityOnModuleGens", [IsLieEndo, IsLieEndo, IsInt, IsInt]);
@@ -128,10 +109,10 @@ InstallMethod(TestEqualityOnModuleGens, [IsLieEndo, IsLieEndo],
 	end
 );
 
-# relations: A list of lists [g1, g2] where g1, g2 are automorphisms of Lie
-# Returns a list of all relations which have to be proven by hand to verify that g1 = g2 for
+# relations: A list of lists [g1, g2] where g1, g2 are automorphisms of Lie.
+# Returns: A list of all relations which have to be proven by hand to verify that g1 = g2 for
 # all [g1, g2] \in relations.
-# Uses indeterminates t_(ComRing_rank), a_(ConicAlg_rank).
+# Uses indeterminates t_{ComRing_rank}, a_{ConicAlg_rank}.
 TestRelations := function(relations)
 	local rel, test, error, part, i, result;
 	result := [];
@@ -143,9 +124,8 @@ TestRelations := function(relations)
 				# differ, which is not interesting
 				for i in [-2..2] do
 					part := LiePart(error[2], i);
-					if not IsZero(WithoutTraces(part)) then
+					if not IsZero(part) and not IsZero(WithoutTraces(part)) then
 						Add(result, part);
-						# Display(part);
 					fi;
 				od;
 			od;
@@ -154,114 +134,29 @@ TestRelations := function(relations)
 	return result;
 end;
 
-# Tests of specific mathematical behaviour
+# ----- Tests involving Weyl elements -----
 
-# Prints all terms that have to be proven to be zero to show that
-# d(a[ij], b[jl]) = d(1[ij], ab[jl]) for a cyclic permutation i,j,l of 1,2,3
-TestDDRelation := function()
-	local i, j, l, a1, a2, a3, t, f, gen, a;
-	i := 1;
-	j := 2;
-	l := 3;
-	a1 := ConicAlgIndet(1);
-	a2 := ConicAlgIndet(2);
-	a3 := ConicAlgIndet(3);
-	t := ComRingIndet(1);
-	f := L0dd(CubicAlgElMat(i, j, a1), CubicAlgElMat(j, l, a2))
-			- L0dd(CubicAlgElMat(i, j, One(ConicAlg)), CubicAlgElMat(j, l, a1*a2));
-	for gen in BrownGensAsModule(4) do
-		a := L0ElAsEndo(f, 1)(gen);
-		if not IsZero(a) then
-			Display(gen);
-			Display(a);
-		fi;
-	od;
-end;
-
-# Prints { a[ij], b[jl], . } for certain i, j, l
-TestDRelation := function()
-	local indices, list, i, j, l, a, x, b, y, cubicGeneric;
-	indices := [[1,1,2], [1,2,2], [1,3,2], [2,1,1], [2,2,1], [2,3,1]];
-	for list in indices do
-		i := list[1];
-		j := list[2];
-		l := list[3];
-		if i = j then
-			a := ComRingIndet(4);
-			x := CubicComEl(i, a);
-		else
-			a := ConicAlgIndet(4);
-			x := CubicAlgElMat(i, j, a);
-		fi;
-		if j = l then
-			b := ComRingIndet(5);
-			y := CubicComEl(j, b);
-		else
-			b := ConicAlgIndet(5);
-			y := CubicAlgElMat(j, l, b);
-		fi;
-		cubicGeneric := CubicGenericEl(0);
-		Display(list);
-		Display(JordanD(x, y, cubicGeneric));
-	od;
-end;
-
-# Tests whether GrpRootHomF4(root, _) is a homomorphism.
-# If root is short: Uses indeterminates a_1, a_2, a_(ConicAlg_rank), t_(ComRing_rank),
-# and it is assumed that ConicAlg_rank > 2.
-# If root is long: Uses indeterminates t_1, t_2, t_(ComRing_rank), a_(ConicAlg_rank),
-# and it is assumed that ComRing_rank > 2.
-TestGrpRootHom := function(root)
-	local x1, x2, g1, g2, g3;
-	if root in F4ShortRoots then
-		x1 := ConicAlgIndet(1);
-		x2 := ConicAlgIndet(2);
-	elif root in F4LongRoots then
-		x1 := ComRingIndet(1);
-		x2 := ComRingIndet(2);
-	else
-		return fail;
-	fi;
-	g1 := GrpRootHomF4(root, x1);
-	g2 := GrpRootHomF4(root, x2);
-	g3 := GrpRootHomF4(root, x1+x2);
-	return TestEquality(g1*g2, g3, true);
-end;
-
-# Tests whether GrpRootHomF4 is a homomorphism for all roots.
-# Uses indeterminates a_1, a_2, t_1, t_2, a_(ConicAlg_rank), t_(ComRing_rank),
-# and it is assumed that ComRing_rank > 2 and ConicAlg_rank > 2.
-TestGrpRootHoms := function()
-	local isHom, root;
-	isHom := true;
-	for root in F4Roots do
-		if not TestGrpRootHom(root) then
-			isHom := false;
-		fi;
-	od;
-	return isHom;
-end;
-
+# TODO: Also verify the correctness on L_{00}
 # root: Root in F4
 # refl: Element of LieEndo
 # Returns: true if refl permutes the root spaces (except possible the 0-space) according to refl and the induced
 # isomorphisms between the root spaces lie in the subgroup generated by { -1, ConicAlgInv }
-# Uses indeterminates a_1, t_1
+# Uses indeterminates a_{ConicAlg_rank}, t_{ComRing_rank}
 TestReflection := function(root, refl)
 	local alpha, a, candidates, b, alphaRefl, testEl, isOk;
 	for alpha in F4Roots do
 		if alpha in F4ShortRoots then
-			a := ConicAlgIndet(1);
+			a := ConicAlgIndet(ConicAlg_rank);
 			candidates := [a, -a, ConicAlgInv(a), -ConicAlgInv(a)];
 		else
-			a := ComRingIndet(1);
+			a := ComRingIndet(ComRing_rank);
 			candidates := [a, -a];
 		fi;
 		alphaRefl := F4Refl(alpha, root);
 		testEl := refl(LieRootHomF4(alpha, a));
 		isOk := false;
 		for b in candidates do
-			if TestEquality(testEl, LieRootHomF4(alphaRefl, b), false) = true then
+			if TestEquality(testEl, LieRootHomF4(alphaRefl, b)) = true then
 				isOk := true;
 				break;
 			fi;
@@ -280,54 +175,57 @@ end;
 # Returns: A list [pars, errors] where:
 # - pars is a list such that pars[i] is the parity of w on the root group with
 # respect to onRootList[i].
-# - errors is either true or a list consisting of lists [baseRoot, errorList] where
-# baseRoot is a root and errorList is the list of Lie algebra elements which have to
-# be proven to be zero.
-# (To decide the parity, the sign with the shortest error list is chosen. There
-# is no guarantee that this is the correct sign, but it usually works and will
-# be tested by hand later.)
+# - errors is either true or a list consisting of Lie algebra elements which have to
+# be proven to be zero to show that w acts with the parities in pars.
+# (To decide which parity to return, the twist with the shortest error list is chosen. There
+# is no guarantee that this is the correct twist, but it works and will be verified
+# by hand by proving that all elements in the error list are actually zero.)
 # Uses indeterminates a_1, t_1, a_{ConicAlg_rank}, t_{ComRing_rank}
-_WeylErrorAndParity := function(root, onRootList, w, wInv, naive...)
+_WeylErrorAndParity := function(root, onRootList, w, wInv)#, naive...)
 	local baseRoot, baseRootErrorList, isWeylOnBaseRoot, errors, a, x, twistList,
 		t, b, y, test, i, pars, par, parList;
 	errors := [];
 	pars := [];
-	if Length(naive) = 0 then
-		naive := false;
-	else
-		naive := naive[1];
-	fi;
+	# if Length(naive) = 0 then
+	# 	naive := false;
+	# else
+	# 	naive := naive[1];
+	# fi;
+	# Check action on all root groups w.r.t. onRootList
 	for baseRoot in onRootList do
+		# Define root group element x on which we act
 		if baseRoot in F4ShortRoots then
 			a := ConicAlgIndet(1);
-			x := GrpRootHomF4(baseRoot, a, naive);
+			x := GrpRootHomF4(baseRoot, a, true, true);
 			twistList := [a, -a, ConicAlgInv(a), -ConicAlgInv(a)];
 			parList := [[1,1], [-1,1], [1,-1], [-1,-1]];
 		else
 			t := ComRingIndet(1);
-			x := GrpRootHomF4(baseRoot, t, naive);
+			x := GrpRootHomF4(baseRoot, t, true, true);
 			twistList := [t, -t];
 			parList := [[1,1], [-1,1]];
 		fi;
-		isWeylOnBaseRoot := false;
+		isWeylOnBaseRoot := false; # whether wInv*x*w has been proven to be of the desired form
 		baseRootErrorList := fail;
 		par := fail;
 		for i in [1..Length(parList)] do
 			b := twistList[i];
-			y := GrpRootHomF4(F4Refl(baseRoot, root), b, naive);
+			y := GrpRootHomF4(F4Refl(baseRoot, root), b, true, true);
 			test := TestEquality(wInv*x*w, y);
 			if test = true then
 				isWeylOnBaseRoot := true;
 				par := parList[i];
 				break;
+			# Keep twist with shortest error list
 			elif baseRootErrorList = fail or Length(test) < Length(baseRootErrorList) then
 				baseRootErrorList := test;
 				par := parList[i];
 			fi;
 		od;
 		Add(pars, par);
+		# There remain error terms that have to be proven to be zero by hand
 		if not isWeylOnBaseRoot then
-			Add(errors, [baseRoot, List(baseRootErrorList, x -> x[2])]);
+			errors := Concatenation(errors, List(baseRootErrorList, x -> x[2]));
 		fi;
 	od;
 	if IsEmpty(errors) then
@@ -336,6 +234,8 @@ _WeylErrorAndParity := function(root, onRootList, w, wInv, naive...)
 		return [pars, errors];
 	fi;
 end;
+
+# TODO: Check everything concerning Weyl elements from here
 
 WeylParityList := function(root, onRootList, w, wInv)
 	return _WeylErrorAndParity(root, onRootList, w, wInv)[1];
@@ -404,8 +304,6 @@ TestWeyl := function(root, w, wInv, naive...)
 	return TestWeylOn(root, F4Roots, w, wInv, naive);
 end;
 
-
-
 # root: Root in F4.
 # Returns true if GrpStandardWeylF4(root) can be proven to be a Weyl element,
 # otherwise false.
@@ -473,28 +371,26 @@ TestStandardWeylParity := function(i)
 	return errorList;
 end;
 
-GrpRootHomCom := function(root1, a1, root2, a2, naive...)
+# ----- Tests involving commutator relations in the group -----
+
+# root1, root2: Roots in F4 of the same length.
+# a1, a2: Elements of ComRing if root1, root2 are long and elements of ConicAlg otherwise.
+# Returns: The commutator of the root group elements determined by [root1, a1]
+# and [root2, a2].
+GrpRootHomCom := function(root1, a1, root2, a2)
 	local hom;
-	if Length(naive) = 0 then
-		naive := false;
-	else
-		naive := naive[1];
-	fi;
 	hom := function(root, a)
-		return GrpRootHomF4(root, a, naive);
+		return GrpRootHomF4(root, a);
 	end;
 	return hom(root1, -a1)*hom(root2, -a2)*hom(root1, a1)*hom(root2, a2);
 end;
 
-# Returns a list of all relations which have to be verified by hand to prove that
-# all desired commutator relations are satisfied.
-TestComRels := function(naive...)
+# Returns: A list of all relations which have to be verified by hand to prove that
+# all desired F4-commutator relations in [DMW] are satisfied.
+# Uses indeterminates t_1, t_2, t_{ComRing_rank} a_1, a_2, a_{ConicAlg_rank} and assumes
+# that both ranks are > 2.
+TestComRels := function()
 	local t1, t2, a1, a2, d1, d2, d3, d4, g1, g2, g3, comm, test, rel;
-	if Length(naive) = 0 then
-		naive := false;
-	else
-		naive := naive[1];
-	fi;
 	t1 := ComRingIndet(1);
 	t2 := ComRingIndet(2);
 	a1 := ConicAlgIndet(1);
@@ -506,90 +402,80 @@ TestComRels := function(naive...)
 	g1 := ComRingGamIndet(1);
 	g2 := ComRingGamIndet(2);
 	g3 := ComRingGamIndet(3);
-	if not naive then
-		return TestRelations([
-			# Commutator relation on [d1, d2]
-			[GrpRootHomCom(d1, t1, d2, t2), GrpRootHomF4(d1+d2, t1*t2)],
-			# Commutator relation on [d2, d3]
-			[
-				GrpRootHomCom(d2, t1, d3, a1),
-				GrpRootHomF4(d2+d3, -t1*a1) * GrpRootHomF4(d2+2*d3, t1*ConicAlgNorm(a1))
-			],
-			# Commutator relation on [d2+d3, d3]
-			[
-				GrpRootHomCom(d2+d3, a1, d3, a2),
-				GrpRootHomF4(d2+2*d3, -ConicAlgTr(a1 * ConicAlgInv(a2)))
-			],
-			# Commutator relation on [d2, d2+2*d3]
-			[
-				GrpRootHomCom(d2, t1, d2+2*d3, t2),
-				GrpOne
-			],
-			# Commutator relation on [d3, d4]
-			[GrpRootHomCom(d3, a1, d4, a2), GrpRootHomF4(d3+d4, -ConicAlgInv(a1)*ConicAlgInv(a2))]
-		]);
-	else
-		return TestRelations([
-			[
-				GrpRootHomCom(d2, t1, d3, a1, true),
-				GrpRootHomF4(d2+d3, -t1*a1, true) * GrpRootHomF4(d2+2*d3, g2*g3*t1*ConicAlgNorm(a1), true)
-			]
-		]);
-	fi;
+	return TestRelations([
+		# Commutator relation on [d1, d2]
+		[GrpRootHomCom(d1, t1, d2, t2), GrpRootHomF4(d1+d2, t1*t2)],
+		# Commutator relation on [d2, d3]
+		[
+			GrpRootHomCom(d2, t1, d3, a1),
+			GrpRootHomF4(d2+d3, -t1*a1) * GrpRootHomF4(d2+2*d3, t1*ConicAlgNorm(a1))
+		],
+		# Commutator relation on [d2+d3, d3]
+		[
+			GrpRootHomCom(d2+d3, a1, d3, a2),
+			GrpRootHomF4(d2+2*d3, -ConicAlgTr(a1 * ConicAlgInv(a2)))
+		],
+		# Commutator relation on [d2, d2+2*d3]
+		[
+			GrpRootHomCom(d2, t1, d2+2*d3, t2),
+			GrpOne
+		],
+		# Commutator relation on [d3, d4]
+		[GrpRootHomCom(d4, a1, d3, a2), GrpRootHomF4(d3+d4, ConicAlgInv(a2)*ConicAlgInv(a1))]
+	]);
 end;
 
+# ----- Tests involving the Chevalley basis -----
 
-
-# Returns true if c(root1, root2) = -c(-root1, -root2) for all roots root1, root2 in F4
-# where c = ChevStrucConst
+# Returns: true if c(root1, root2) = -c(-root1, -root2) for all roots root1, root2 in F4 or G2
+# where c denotes the Chevalley structure constant
 TestChevStrucConstSigns := function()
-	local i, j, root1, root2;
-	for i in [1..Length(F4Roots)] do
-		for j in [1..Length(F4Roots)] do
-			# (It would be sufficient to test only the cases with i<j, but the
-			# whole test runs in less than a minute anyway.)
-			root1 := F4Roots[i];
-			root2 := F4Roots[j];
-			if ChevStrucConst(root1, root2) <> -ChevStrucConst(-root1, -root2) then
-				return false;
-			fi;
+	local i, j, k, root1, root2, roots, c;
+	for k in [1,2] do
+		if k=1 then
+			roots := F4Roots;
+			c := ChevStrucConst;
+		else
+			roots := G2Roots;
+			c := ChevStrucConst;
+		fi;
+		for i in [1..Length(F4Roots)] do
+			for j in [1..Length(F4Roots)] do
+				# (It would be sufficient to test only the cases with i<j, but the
+				# whole test runs in less than a minute anyway.)
+				root1 := roots[i];
+				root2 := roots[j];
+				if c(root1, root2) <> -c(-root1, -root2) then
+					return false;
+				fi;
+			od;
 		od;
 	od;
 	return true;
 end;
 
-# Returns true if c(root1, root2) = -c(-root1, -root2) for all roots root1, root2 in G2
-# where c = ChevStrucConst
-TestChevG2StrucConstSigns := function()
-	local i, j, root1, root2;
-	for i in [1..Length(G2Roots)] do
-		for j in [1..Length(G2Roots)] do
-			# (It would be sufficient to test only the cases with i<j, but the
-			# whole test runs in less than a minute anyway.)
-			root1 := G2Roots[i];
-			root2 := G2Roots[j];
-			if ChevG2StrucConst(root1, root2) <> -ChevG2StrucConst(-root1, -root2) then
-				return false;
-			fi;
-		od;
-	od;
-	return true;
-end;
-
-# root: Root in F4.
-# Returns: true if ChevHEl(root) acts as the scalar F4CartanInt(alpha, root)
+# root: Root in F4 or G2.
+# Returns: true if ChevHEl(root) acts as the scalar CartanInt(alpha, root)
 # on every root space L_alpha of Lie, and false otherwise
 TestChevHOnRoot := function(root)
-	local h, alpha, a, x, coeff;
-	h := ChevHEl(root);
-	for alpha in F4Roots do
-		if alpha in F4ShortRoots then
-			a := ConicAlgIndet(1);
-		else
-			a := ComRingIndet(1);
-		fi;
-		x := LieRootHomF4(alpha, a);
-		coeff := F4CartanInt(alpha, root) * One(ComRing);
+	local h, alpha, a, x, coeff, roots, cartan, hEl, chev;
+	if root in F4Roots then
+		roots := F4Roots;
+		cartan := F4CartanInt;
+		hEl := ChevHEl;
+		chev := ChevBasEl;
+	elif root in G2Roots then
+		roots := G2Roots;
+		cartan := G2CartanInt;
+		hEl := ChevG2HEl;
+		chev := ChevG2BasEl;
+	else
+		return fail;
+	fi;
+	h := hEl(root);
+	for alpha in roots do
+		x := chev(alpha);
+		coeff := cartan(alpha, root) * One(ComRing);
 		if Simplify(h*x - coeff*x) <> LieZero then
 			return false;
 		fi;
@@ -597,10 +483,11 @@ TestChevHOnRoot := function(root)
 	return true;
 end;
 
-# Returns true if TestChevHOnRoot(alpha) = true for all alpha \in F4
+# Returns: true if TestChevHOnRoot(alpha) = true for all alpha \in F4 and all alpha \in G2, and
+# false otherwise.
 TestChevH := function()
 	local root;
-	for root in F4Roots do
+	for root in Concatenation(F4Roots, G2Roots) do
 		if TestChevHOnRoot(root) = false then
 			return false;
 		fi;
@@ -608,34 +495,11 @@ TestChevH := function()
 	return true;
 end;
 
-TestChevG2HOnRoot := function(root)
-	local h, alpha, a, x, coeff;
-	h := ChevG2HEl(root);
-	for alpha in G2Roots do
-		x := ChevG2BasEl(alpha);
-		coeff := G2CartanInt(alpha, root) * One(ComRing);
-		if Simplify(h*x - coeff*x) <> LieZero then
-			Print(root, " on ", alpha, "\n");
-			return false;
-		fi;
-	od;
-	return true;
-end;
+# ----- Tests involving commutator relations in the Lie algebra -----
 
-# Returns true if TestChevG2HOnRoot(alpha) = true for all alpha \in G2
-TestChevG2H := function()
-	local root;
-	for root in G2Roots do
-		if TestChevG2HOnRoot(root) = false then
-			return false;
-		fi;
-	od;
-	return true;
-end;
-
-# root1, root2: Roots in F4
-# Returns: If root1=-root2, return true. If root1+root2 is not a root and not zero,
-# return true if the commutator formula
+# root1, root2: Roots in F4.
+# Returns: If root1=-root2, returns true. If root1+root2 is not a root and not zero,
+# returns true if the commutator formula
 # LieRootHomF4(root1, a) * LieRootHomF4(root2, b) = 0
 # is satisfied. In any other case, returns true if the commutator formula
 # LieRootHomF4(root1, a) * LieRootHomF4(root2, b) = LieRootHomF4(root1+root2, p)
@@ -643,6 +507,7 @@ end;
 # - ChevStrucConst(root1, root2)/2 * tr(c*d) if root1+root2 is long and one of root1, root2 is short
 # - ChevStrucConst(root1, root2) * c*d otherwise
 # where c in [a,a'], d in [b,b'].
+# Uses indeterminates t_1, t_2, a_1, a_2.
 TestLieComRel := function(root1, root2)
 	local roots, t, a, i, c, param, lie, comm, test, prod, p1, p2, par;
 	roots := [root1, root2, root1+root2];
@@ -669,35 +534,32 @@ TestLieComRel := function(root1, root2)
 			prod := c*p1*p2;
 			if roots[3] in F4ShortRoots then
 				# In this case, one of root1 and root2 must be short, so prod lies in ConicAlg
-				# if root1 in F4LongRoots and root2 in F4LongRoots then # prod in ComRing
-				# 	prod := prod * One(ConicAlg);
-				# fi;
 				for par in [prod, ConicAlgInv(prod)] do
 					test := LieRootHomF4(roots[3], par);
-					if TestEquality(comm, test, false) then
+					if TestEquality(comm, test) then
 						return true;
 					fi;
 				od;
 			elif roots[3] in F4LongRoots then
 				if root1 in F4ShortRoots or root2 in F4ShortRoots then # prod in ConicAlg
 					# Remove factor that is contained in c because it is
-					# "already covered by the trace map"
+					# "already covered by the trace map", and replace prod by a trace
 					if not IsEvenInt(c) then
 						return false;
 					fi;
 					prod := ConicAlgTr(c/2 * p1 * p2);
 				fi;
 				test := LieRootHomF4(roots[3], prod);
-				if TestEquality(comm, test, false) then
+				if TestEquality(comm, test) then
 					return true;
 				fi;
 			elif roots[3] <> [0,0,0,0] then
 				test := LieZero;
-				if TestEquality(comm, test, false) then
+				if TestEquality(comm, test) then
 					return true;
 				fi;
 			else
-				# Nothing to test
+				# Not commutator relation to test for [L_alpha, L_{-alpha}]
 				return true;
 			fi;
 		od;
@@ -705,16 +567,14 @@ TestLieComRel := function(root1, root2)
 	return false;
 end;
 
+# Returns: true if TestLieComRel succeeds for all pairs of roots in F4, and false otherwise.
 TestLieComRels := function()
-	local t1, t2, a1, a2, root1, root2, rootSum, lie1, lie2, test, comm, counter;
+	local t1, t2, a1, a2, root1, root2, rootSum, lie1, lie2, test, comm;
 	t1 := ComRingIndet(1);
 	t2 := ComRingIndet(2);
 	a1 := ConicAlgIndet(1);
 	a2 := ConicAlgIndet(2);
-	counter := 0;
 	for root1 in F4Roots do
-		counter := counter+1;
-		# Print(counter, "/48\n");
 		for root2 in F4Roots do
 			if not TestLieComRel(root1, root2) then
 				Print(root1, ", ", root2, "\n");
@@ -725,82 +585,9 @@ TestLieComRels := function()
 	return true;
 end;
 
-# Tests whether GrpRootHomF4NonDiv and GrpRootHomF4Div coincide on root
-# Uses indeterminates a_1, a_{ConicAlg_rank-1}, a_{ConicAlg_rank}, t_1, t_{ComRing_rank}
-TestGrpRootHomExp := function(root)
-	local a;
-	if root in F4ShortRoots then
-		a := ConicAlgIndet(1);
-	elif root in F4LongRoots then
-		a := ComRingIndet(1);
-	fi;
-	return TestEqualityOnModuleGens(GrpRootHomF4Div(root, a), GrpRootHomF4NonDiv(root, a));
-end;
+# ----- Misc -----
 
-TestAllGrpRootHomExp := function()
-	local root, test;
-	for root in F4Roots do
-		if F4RootG2Coord(root) <> [0,0] then
-			test := TestGrpRootHomExp(root);
-			if test <> true then
-				Print("Problem for ", root, "\n");
-				return test;
-			fi;
-		fi;
-	od;
-	return true;
-end;
-
-# Uses indeterminates t_1, t_2, a_1, ..., a_4
-DeclareOperation("LieEndoIsAuto", [IsLieEndo]);
-InstallMethod(LieEndoIsAuto, [IsLieEndo], function(f)
-	local lieGens1, lieGens2, isAuto, lieEl1, lieEl2, counter, total, test;
-	lieGens1 := LieGensAsModule(1, 1);
-	lieGens2 := LieGensAsModule(2, 3);
-	isAuto := true;
-	counter := 1;
-	total := Length(lieGens1);
-	for lieEl1 in lieGens1 do
-		Print("Progress: ", counter, "/", total, "\n");
-		for lieEl2 in lieGens2 do
-			test := TestEquality(f(lieEl1 * lieEl2), f(lieEl1) * f(lieEl2), false);
-			if not test then
-				isAuto := false;
-				Display("No proven equality f([a,b]) = [f(a), f(b)] for:");
-				Display("a:");
-				Display(lieEl1);
-				Display("b:");
-				Display(lieEl2);
-				Display("Problem:");
-				# Test equality again with error message - not efficient, but
-				# a single equality test is not too expensive.
-				TestEquality(f(lieEl1 * lieEl2), f(lieEl1) * f(lieEl2), true);
-			fi;
-		od;
-		counter := counter + 1;
-	od;
-	return isAuto;
-end);
-
-TestGrpRootHomIsAutoLongFromList := function(list)
-	local result, root, x, isAuto, i;
-	result := [];
-	for i in list do
-		root := F4LongRoots[i];
-		Display(root);
-		x := GrpRootHomF4(root, ComRingIndet(3));
-		isAuto := LieEndoIsAuto(x);
-		Display(isAuto);
-		Add(result, [root, isAuto]);
-	od;
-	return result;
-end;
-
-TestGrpRootHomIsAutoLong := function()
-	return TestGrpRootHomIsAutoLongFromList([1..Length(F4LongRoots)]);
-end;
-
-# Returns true if the content of _ComRingIndetInfo is correct
+# Returns: true if the content of _ComRingIndetInfo is correct
 TestComRingIndetInfo := function()
 	local i, info, type, indet;
 	for i in [1..Length(_ComRingIndetInfo)] do
@@ -818,50 +605,7 @@ TestComRingIndetInfo := function()
 	return true;
 end;
 
-# Displays the test results for some of the conjugation formulas for Weyl elements in the G2-grading.
-# We test these formulas only for cubic Jordan matrix algebras, so these tests do not provide a
-# proof of the more general statements in [DMW]. They are merely a sanity check.
-testG2WeylFormulas := function()
-	local bCub, bCubInv, bLie, bInvLie, phiMid, phiMidInv, phiR, phiRInv, phibs, phibsInv, t, iota,
-		iotainv, testList, aCub, aLie1, aLie2, list, t1, a1;
-	t1 := ComRingIndet(1);
-	a1 := ConicAlgIndet(1);
-	# Define phibs as w(bLie), a product of exponential automorphisms
-	bCub := t1*CubicComEl(1,t1) + CubicComEl(2, One(ComRing)) + CubicComEl(3, One(ComRing));
-	bCubInv := CubicNorm(bCub)^-1 * CubicAdj(bCub);
-	bLie := LieBrownNegElFromTuple(Zero(ComRing), bCub, CubicZero, Zero(ComRing));
-	bInvLie := LieBrownPosElFromTuple(Zero(ComRing), CubicZero, -bCubInv, Zero(ComRing));
-	phiMid := F4Exp(-bLie);
-	phiMidInv := F4Exp(bLie);
-	phiR := F4Exp(-bInvLie);
-	phiRInv := F4Exp(bInvLie);
-	phibs := phiR * phiMid * phiR; # = \phibs^-1
-	phibsInv := phiRInv * phiMidInv * phiRInv;
-	# Further constants
-	t := CubicNorm(bCub);
-	iota := x -> t*JordanU(bCubInv, x);
-	iotainv := x -> t^-1 * JordanU(bCub, x);
-	# testList will contain lists [e1, e2] for which we test that phibsInv*e1*phibs=e2
-	testList := [];
-	# e_{(0,a,0,0)_+}^\phibs = e_{-a^\iota}
-	aCub := CubicAlgEl(1, a1);
-	aLie1 := LieBrownPosElFromTuple(Zero(ComRing), aCub, CubicZero, Zero(ComRing));
-	aLie2 := CubicNegToLieEmb(-iota(aCub));
-	Add(testList, [F4Exp(aLie1), F4Exp(aLie2)]);
-	# e_{(0,0,a',0)_+}^\phibs = e_{(0,-t(a')^\iota, 0, 0)_-}
-	aLie1 := LieBrownPosElFromTuple(Zero(ComRing), CubicZero, aCub, Zero(ComRing));
-	aLie2 := LieBrownNegElFromTuple(Zero(ComRing), -t*iotainv(aCub), CubicZero, Zero(ComRing));
-	Add(testList, [F4Exp(aLie1), F4Exp(aLie2)]);
-	# e_{(0,a,0,0)_-}^\phibs = e_{(0,0, -t^{-1} a^\iota, 0)_+}
-	aLie1 := LieBrownNegElFromTuple(Zero(ComRing), aCub, CubicZero, Zero(ComRing));
-	aLie2 := LieBrownPosElFromTuple(Zero(ComRing), CubicZero, -t^-1*iota(aCub), Zero(ComRing));
-	Add(testList, [F4Exp(aLie1), F4Exp(aLie2)]);
-	# Perform actual tests
-	for list in testList do
-		Display(TestEquality(phibsInv*list[1]*phibs, list[2]));
-	od;
-end;
-
+# TODO: Check.
 # Prints F4SimpleRootParLists as a LaTeX table
 printLatexParityTable := function()
 	local e1, e2, e3, e4, rootCoeffs, rootCoeff, root, pos, i, k, l, par;

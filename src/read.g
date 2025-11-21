@@ -41,7 +41,7 @@ ComRing_rank := 6;
 ## ConicAlg_rank := 2 and Trace_MaxLength := 5 or
 ## ConicAlg_rank := 4 and Trace_MaxLength := 2.
 # ConicAlg contains indeterminates a_1, ... a_{ConicAlg_rank} (and their conjugates).
-ConicAlg_rank := 2;
+ConicAlg_rank := 4;
 # Let t = Trace_MaxLength. For all k <= t, all i_1, ..., i_k in [ 1..ConicAlg_rank ]
 # and all possible ways to choose brackets in the product a_{i_1} .. a_{i_t},
 # an indeterminate which represents tr(a_{i_1} ... a_{i_t}) 
@@ -49,7 +49,7 @@ ConicAlg_rank := 2;
 # Some of these indeterminates represent the same element of ComRing because there are identities
 # such as tr(xy) = tr(yx) or tr((xy)z) = tr(x(yz)).
 # If longer products are needed during the runtime, then an error message is printed.
-Trace_MaxLength := 5;
+Trace_MaxLength := 4;
 
 # ---- Precomputed information ----
 # Dictionary with precomputed values for all traces. Will be initalised later, mostly in init.g.
@@ -106,4 +106,5 @@ Reread(myFilePath("group.g"));
 Reread(myFilePath("simplify.g"));
 Reread(myFilePath("chev.g"));
 Reread(myFilePath("test.g"));
+Reread(myFilePath("test_additional.g"));
 Read(myFilePath("user_vars.g"));

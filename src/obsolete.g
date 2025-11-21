@@ -290,6 +290,112 @@ InstallMethod(ApplyDDLaws, [IsLieElement, IsBool], function(lieEl, applyDDRels)
 	return Lie(rep);
 end);
 
+# ----- Tests -----
+
+# Same as TestEquality, but uses the inverted list of lie algebra generators
+DeclareOperation("TestEqualityY", [IsLieEndo, IsLieEndo, IsInt, IsInt]);
+DeclareOperation("TestEqualityY", [IsLieEndo, IsLieEndo, IsInt]);
+DeclareOperation("TestEqualityY", [IsLieEndo, IsLieEndo]);
+
+InstallMethod(TestEqualityY, [IsLieEndo, IsLieEndo, IsInt, IsInt],
+	function(lieEndo1, lieEndo2, comIndetNum, conicIndetNum)
+		local genList;
+		genList := LieGensAsLie(comIndetNum, conicIndetNum, true);
+		return TestEqualityOnGenList(lieEndo1, lieEndo2, genList);
+	end
+);
+
+InstallMethod(TestEqualityY, [IsLieEndo, IsLieEndo, IsInt], 
+	function(lieEndo1, lieEndo2, indetNum)
+		return TestEquality(lieEndo1, lieEndo2, indetNum, indetNum);
+	end
+);
+
+InstallMethod(TestEqualityY, [IsLieEndo, IsLieEndo], 
+	function(lieEndo1, lieEndo2)
+		return TestEquality(lieEndo1, lieEndo2, ComRing_rank, ConicAlg_rank);
+	end
+);
+
+# Prints all terms that have to be proven to be zero to show that
+# d(a[ij], b[jl]) = d(1[ij], ab[jl]) for a cyclic permutation i,j,l of 1,2,3
+TestDDRelation := function()
+	local i, j, l, a1, a2, t, f, gen, a;
+	i := 1;
+	j := 2;
+	l := 3;
+	a1 := ConicAlgIndet(1);
+	a2 := ConicAlgIndet(2);
+	t := ComRingIndet(1);
+	f := L0dd(CubicAlgElMat(i, j, a1), CubicAlgElMat(j, l, a2))
+			- L0dd(CubicAlgElMat(i, j, One(ConicAlg)), CubicAlgElMat(j, l, a1*a2));
+	for gen in BrownGensAsModule(3) do
+		a := L0ElAsEndo(f, 1)(gen);
+		if not IsZero(a) then
+			Display(a);
+		fi;
+	od;
+end;
+
+# Prints { a[ij], b[jl], . } for certain i, j, l
+TestDRelation := function()
+	local indices, list, i, j, l, a, x, b, y, cubicGeneric;
+	indices := [[1,1,2], [1,2,2], [1,3,2], [2,1,1], [2,2,1], [2,3,1]];
+	for list in indices do
+		i := list[1];
+		j := list[2];
+		l := list[3];
+		if i = j then
+			a := ComRingIndet(4);
+			x := CubicComEl(i, a);
+		else
+			a := ConicAlgIndet(4);
+			x := CubicAlgElMat(i, j, a);
+		fi;
+		if j = l then
+			b := ComRingIndet(5);
+			y := CubicComEl(j, b);
+		else
+			b := ConicAlgIndet(5);
+			y := CubicAlgElMat(j, l, b);
+		fi;
+		cubicGeneric := CubicGenericEl(0);
+		Display(list);
+		Display(JordanD(x, y, cubicGeneric));
+	od;
+end;
+
+# Uses indeterminates t_1, t_2, a_1, ..., a_4
+DeclareOperation("LieEndoIsAuto", [IsLieEndo]);
+InstallMethod(LieEndoIsAuto, [IsLieEndo], function(f)
+	local lieGens1, lieGens2, isAuto, lieEl1, lieEl2, counter, total, test;
+	lieGens1 := LieGensAsModule(1, 1);
+	lieGens2 := LieGensAsModule(2, 3);
+	isAuto := true;
+	counter := 1;
+	total := Length(lieGens1);
+	for lieEl1 in lieGens1 do
+		Print("Progress: ", counter, "/", total, "\n");
+		for lieEl2 in lieGens2 do
+			test := TestEquality(f(lieEl1 * lieEl2), f(lieEl1) * f(lieEl2), false);
+			if not test then
+				isAuto := false;
+				Display("No proven equality f([a,b]) = [f(a), f(b)] for:");
+				Display("a:");
+				Display(lieEl1);
+				Display("b:");
+				Display(lieEl2);
+				Display("Problem:");
+				# Test equality again with error message - not efficient, but
+				# a single equality test is not too expensive.
+				TestEquality(f(lieEl1 * lieEl2), f(lieEl1) * f(lieEl2), true);
+			fi;
+		od;
+		counter := counter + 1;
+	od;
+	return isAuto;
+end);
+
 ## Tests for abstract parametrisation strategy
 
 # relations: A list of lists [l1, l2] where l1 and l2 are lists containing elements
