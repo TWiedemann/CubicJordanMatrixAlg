@@ -1,27 +1,37 @@
-### Functions that return elements which are mathematically equivalent to the input
+### This file contains "simplification functions", i.e.,
+### functions that return elements which are mathematically equivalent to the input
 ### but have a simpler representation.
-### The function Simplify is available for each structure and applies all available
+### Some structures have several simplification functions. However, each structure has
+### a function Simplify which applies all available
 ### simplification functions except for WithoutTraces because WithoutTraces is
-### not always a desirable transformation.
+### not always a desirable transformation. Hence the user will usually only call Simplify.
 
 ## -------- ComRing --------
 
 # a: Element of a.
-# Returns: The same element, but all coefficients are multiplied by the lcm of all
-# denominators (so that only integers appear) and then divided by the gcd of the
-# remaining coefficients.
+# Returns: The same element, but its integer coefficients are simplified.
+# While we never divide by integers during our computations, it may happen that
+# an element of a is represented as a rational function in which integer coefficients appear,
+# e.g. (1/2*t1)/(1/2). We may multiply the numerator and the denominator of the rational
+# function with the same integer without changing the quotient. Write
+# a = (\sum b_i/c_i m_i)/(\sum d_j/e_j n_i) where m_i, n_j are monomials and
+# b_i, c_i, d_j, e_j are integers. This function first multiplies the numerator and the
+# denominator of a by denLcm, the lcm of all c_i, e_j (to remove
+# all divisions in the numerator and in the denominator).
+# Then it divides the numerator and the denominator by numGcd, the gcd of
+# all numerators b_i, d_j in the resulting expression.
 DeclareOperation("ComRingCancel", [IsRationalFunction]);
 InstallMethod(ComRingCancel, [IsRationalFunction], function(a)
-	# local fam, numRep, denRep, num, den, gcd, gcdRep, newNumRep, newDenRep;
-	local fam, numRep, denRep, denLcm, gcd, i, newNumRep, newDenRep;
+	local fam, numRep, denRep, denLcm, numGcd, i, newNumRep, newDenRep;
 	fam := FamilyObj(a);
-	numRep := ExtRepNumeratorRatFun(a);
+	# [monomial_1, coeff_1, monomial_2, ...] with monomial given as list of indices of indet numbers
+	numRep := ExtRepNumeratorRatFun(a); 
 	denRep := ExtRepDenominatorRatFun(a);
 	# If denominator is trivial, no extra work is necessary
 	if denRep = [[], 1] then
 		return a;
 	fi;
-	# Compute the lcm of the denominators appearing in numRep and denrep
+	# Compute the lcm of the denominators appearing in numRep and denRep
 	denLcm := 1;
 	for i in [1..Length(denRep)/2] do
 		denLcm := Lcm(denLcm, DenominatorRat(denRep[2*i]));
@@ -31,24 +41,24 @@ InstallMethod(ComRingCancel, [IsRationalFunction], function(a)
 	od;
 	# Compute the gcd of all coeff*denLcm where coeff runs through all coefficients
 	# appearing in numRep and denRep
-	gcd := denRep[2]*denLcm;
-	for i in [2..Length(denRep)/2] do
-		gcd := Lcm(gcd, NumeratorRat(numRep[2*i]*denLcm));
+	numGcd := denRep[2]*denLcm;
+	for i in [2..Length(numRep)/2] do
+		numGcd := Gcd(numGcd, NumeratorRat(numRep[2*i]*denLcm));
 	od;
 	for i in [1..Length(denRep)/2] do
-		gcd := Lcm(gcd, NumeratorRat(denRep[2*i]*denLcm));
+		numGcd := Gcd(numGcd, NumeratorRat(denRep[2*i]*denLcm));
 	od;
 	# Create new representations in which each coefficient is multiplied by
-	# denLcm/gcd
+	# denLcm/numGcd
 	newNumRep := [];
 	for i in [1..Length(numRep)/2] do
 		Add(newNumRep, numRep[2*i-1]);
-		Add(newNumRep, numRep[2*i]*denLcm/gcd);
+		Add(newNumRep, numRep[2*i]*denLcm/numGcd);
 	od;
 	newDenRep := [];
 	for i in [1..Length(denRep)/2] do
 		Add(newDenRep, denRep[2*i-1]);
-		Add(newDenRep, denRep[2*i]*denLcm/gcd);
+		Add(newDenRep, denRep[2*i]*denLcm/numGcd);
 	od;
 	if newDenRep = [[], 1] then
 		# trivial denominator
@@ -58,6 +68,11 @@ InstallMethod(ComRingCancel, [IsRationalFunction], function(a)
 	fi;
 end);
 
+# a: Element of ComRing
+# Returns: The same element brought into a "more canonical" form by using the relation
+# tr(xy') = tr(x)tr(y) - tr(xy). In this way, all occurences of conjugates a_i'
+# inside the argument of tr may be removed (though we only do this for products
+# of length up to 3)
 DeclareOperation("ComRingSimplifyTr", [IsRationalFunction]);
 InstallMethod(ComRingSimplifyTr, [IsRationalFunction], function(a)
 	return Value(a, _TrSubIndetList, _TrSubValueList, One(ComRing));
@@ -72,7 +87,7 @@ end);
 
 # a: Element of ConicAlg.
 # Returns: The same element, but with occurences of bc+b'c and cb+cb' replaced by
-# tr(b)c for b,c \in ConicAlg.
+# tr(b)c for b,c \in ConicAlgMag.
 DeclareOperation("MakeTraces", [IsElementOfFreeMagmaRing]);
 InstallMethod(MakeTraces, [IsElementOfFreeMagmaRing], function(a)
 	local magCoeffList, aCoeffs, aMags, aMagReps, resultMagList, resultCoeffList,
@@ -90,7 +105,11 @@ InstallMethod(MakeTraces, [IsElementOfFreeMagmaRing], function(a)
 		magRep1 := aMagReps[i];
 		coeff1 := aCoeffs[i];
 		magRep1Inv := ConicAlgMagInvOnRep(magRep1);
+		if IsZero(coeff1) then
+			continue;
+		fi;
 		if IsList(magRep1) then
+			# Decompose mag1 = lMag1 * rMag1, magRep1 = [ lMagRep1, rMagRep1 ]
 			lMagRep1 := magRep1[1];
 			lMagRep1Inv := ConicAlgMagInvOnRep(lMagRep1);
 			rMagRep1 := magRep1[2];
@@ -99,14 +118,17 @@ InstallMethod(MakeTraces, [IsElementOfFreeMagmaRing], function(a)
 		# Look for second summand to merge with
 		for j in [i+1..Length(aCoeffs)] do
 			magRep2 := aMagReps[j];
+			# Look for occurence of b+b'
 			if magRep2 = magRep1Inv then
 				# Create new summand coeff1*tr(magRep1)*One(ConicAlg)
 				Add(resultMagList, One(ConicAlgMag));
 				Add(resultCoeffList, coeff1*ConicAlgMagTrOnRep(magRep1));
 				# Subtract coeff1 from the coefficients of mag1 and mag2
+				# and go to next summand mag1
 				aCoeffs[i] := Zero(ComRing);
 				aCoeffs[j] := aCoeffs[j] - coeff1;
 				break;
+			# Look for occurence of bc+b'c or cb+cb'
 			elif IsList(magRep1) then
 				# Decompose mag1 = lMag1 * rMag1, magRep1 = [ lMagRep1, rMagRep1 ]
 				if not IsList(magRep2) then
@@ -119,9 +141,11 @@ InstallMethod(MakeTraces, [IsElementOfFreeMagmaRing], function(a)
 				# trace*mag for trace in ComRing
 				trace := fail;
 				if lMagRep1 = lMagRep2 and rMagRep1Inv = rMagRep2 then
+					# We can merge cb+cb' = tr(b)c
 					trace := ConicAlgMagTrOnRep(rMagRep1);
 					mag := ConicAlgMagElFromRep(lMagRep1);
 				elif rMagRep1 = rMagRep2 and lMagRep1Inv = lMagRep2 then
+					# We can merge bc+b'c = tr(b)c
 					trace := ConicAlgMagTrOnRep(lMagRep1);
 					mag := ConicAlgMagElFromRep(rMagRep1);
 				fi;
@@ -146,8 +170,7 @@ InstallMethod(MakeTraces, [IsElementOfFreeMagmaRing], function(a)
 end);
 
 # a: Element of ComRing.
-# Returns: The element obtained from a by replacing each occurence of tr(a) by a+a'.
-# In particular, the output lies in ConicAlg.
+# Returns: The element of ConicAlg obtained from a by replacing each occurence of tr(a) by a+a'.
 DeclareOperation("WithoutTraces", [IsRationalFunction]);
 InstallMethod(WithoutTraces, [IsRationalFunction], function(a)
 	local coeffList, result, i, magEl, comEl;
@@ -173,7 +196,7 @@ InstallMethod(WithoutTraces, [IsElementOfFreeMagmaRing], function(a)
 end);
 
 # a: Element of ConicAlg.
-# Returns: Mathematically he same element, but simplified: First apply
+# Returns: Mathematically the same element, but simplified: First apply
 # MakeTraces repeatedly until it no longer changes the input, and then
 # apply Simplify to all ComRing-coefficients.
 DeclareOperation("Simplify", [IsElementOfFreeMagmaRing]);
@@ -199,7 +222,7 @@ end);
 
 ## -------- Cubic --------
 
-# Apply WithoutTraces to all ConicAlg-components
+# Applies WithoutTraces to all ConicAlg-components
 DeclareOperation("WithoutTraces", [IsCubicElement]);
 InstallMethod(WithoutTraces, [IsCubicElement], function(cubEl)
 	return CubicElFromTuple(
@@ -225,7 +248,7 @@ end);
 
 ## -------- Brown --------
 
-# Apply WithoutTraces to all ConicAlg-components
+# Applies WithoutTraces to all ConicAlg-components
 DeclareOperation("WithoutTraces", [IsBrownElement]);
 InstallMethod(WithoutTraces, [IsBrownElement], function(brownEl)
 	return BrownElFromTuple(
@@ -251,17 +274,18 @@ end);
 
 ## -------- DD --------
 
-# Helper functions for ApplyDistAndPeirceLaw
+# Helper functions for ApplyDDLaws, which simplifies an element of DD
+# by applying the distributive laws dd_{a+b,c} = dd_{a,c} + dd_{b,c} and the 
 
 # i1, j1, i2, j2: Integers in {1,2,3} such that the intersection of {i1, j1}
 # and {i2, j2} has exactly one element
 # a: Element of ComRing if i1 = j1. Element of ConicAlg otherwise.
 # b: Element of ComRing if i2 = j2. Element of ConicAlg otherwise.
-# Put x1 := a[i1,j1] = CubicElMat(i1, j1, a) and x2 := b[i2,j2].
+# Put x1 := a[i1,j1] and x2 := b[i2,j2].
 # Returns: A list [i, j, y] such that
-# dd(x1, x2) = dd(CubicElOneMat(i,i), CubicElMat(i, j, y)).
+# dd(x1, x2) = dd(1[ii], y[ij]).
 # Here i, j \in {1,2,3} and y \in ComRing if i=j and y \in ConicAlg if i<>j.
-_ApplyDistAndPeirceLaw_OnSummands_int1 := function(i1, j1, a, i2, j2, b)
+_ApplyDDLaws_OnSummands_int1 := function(i1, j1, a, i2, j2, b)
 	local p, q, l;
 	# Define p, q, l such that dd(x1, y2) lies in Z_{pq,ql}
 	q := Intersection([i1, j1], [i2, j2])[1];
@@ -276,7 +300,7 @@ _ApplyDistAndPeirceLaw_OnSummands_int1 := function(i1, j1, a, i2, j2, b)
 		l := i2;
 	fi;
 	# Replace a by ConicAlgInv(a) if necessary to ensure that
-	# cubic1 = CubicAlgElMat(p, q, a)
+	# cubic1 = a[pq]
 	if i1 <> p then
 		# Since { i1, j1 } = { p, q }, we have a in ConicAlg in this case
 		a := ConicAlgInv(a);
@@ -287,27 +311,32 @@ _ApplyDistAndPeirceLaw_OnSummands_int1 := function(i1, j1, a, i2, j2, b)
 	fi;
 	
 	if q in [p,l] then
+		# dd_{t[pp],a[pl]} = dd_{1[pp],ta[pl]} and
+		# dd_{a[pq],t[qq]} = dd_{1[pp],at[pq]}
 		return [p, l, a*b];
 	else
 		# In this case, we also have p <> l because otherwise,
-		# q and p would be two distinct elements in intersection.
+		# q and p would be two distinct elements in the of [i1,j1], [i2,j2]. We use
+		# dd_{a[pq],b[ql]} = dd_{1[pp],\gamma_q*a*b[pl]}
 		return [p, l, TwistDiag[q]*a*b];
 	fi;
 end;
 
 # i1, j1, i2, j2: Integers in {1,2,3} such that {i1, j1} = {i2, j2} and i1 <> j1
 # a, b: Elements of ConicAlg.
-# Put x1 := a[i1,j1] = CubicAlgElMat(i1, j1, a) and x2 := b[i2, j2].
+# Put x1 := a[i1,j1] and x2 := b[i2, j2].
 # Returns: A list [i, j, c, coeffs, lConic, rConic] where {i, j} = {i1, j1}, i < j,
 # coeffs, lConic, rConic are lists of the same length, c \in ConicAlg,
-# the elements of coeffs are in ComRing and the elements of lConic, rConic are monimals in ConicAlg,
-# and dd(x1, x2) = dd_{1[ij],c[ji]}+\sum_{k=1}^{Length(coeffs)} coeffs[k]*dd((lConic[k])[ij], (rConic[k])[ji]).
+# the elements of coeffs are in ComRing and the elements of lConic, rConic are 
+# monomials in ConicAlg (but they lie in ConicAlg and not in ConicAlgMag), and
+# dd(x1, x2) = dd_{1[ij],c[ji]}
+#				+\sum_{k=1}^{Length(coeffs)} coeffs[k]*dd((lConic[k])[ij], (rConic[k])[ji]).
 # Further, for all k we have (lConic[k] <> 1 implies rConic[k] <> 1) and
 # (lConic[k] = 1 implies coeffs[k] = 1). This says that whenever we have only one
 # non-zero coefficient from ConicAlg, we apply relations to ensure that the
-# non-zero coefficients appears on the right-hand side and that the coefficient
+# non-zero coefficient appears on the right-hand side and that the coefficient
 # from ComRing is pulled into the coefficient from ConicAlg (via c*dd_{1,a} = dd_{1,c*a}).
-_ApplyDistAndPeirceLaw_OnSummands_int2 := function(i1, j1, a, i2, j2, b)
+_ApplyDDLaws_OnSummands_int2 := function(i1, j1, a, i2, j2, b)
 	local i, j, coeffs, lConic, rConic, aCoeffList, aCoeff, bCoeff, bCoeffList,
 		aMag, bMag, aTwist, p, q, c;
 	# Define i < j s.t. {i,j} = {i1,j1} and ensure that x1 = a[ij], x2 = b[ji].
@@ -360,25 +389,27 @@ end;
 # applyDDRels: Bool.
 # Returns: An element of DD+ComRing*xi+ComRing*zeta (internally, an element of L0)
 # which (mathematically) represents the same element, but simplified:
-# 1. For each i <> j, there is at most one summands from Z_{i \to j}, and it is
+# 1. For each i <> j, there is at most one summand from Z_{i \to j}, and it is
 # of the form d_{1[ii], c[ij]} for some c in ConicAlg.
+# (Use isomorphism between ConicAlg and Z_{i \to j}.)
 # 2. For each i, there is at most one summand from Z_{ii,ii}, and it is
-# of the form d_{1[ii], t[ii]} for some t in ComRing.
+# of the form d_{1[ii], t[ii]} for some t in ComRing. (Use k-linearity.)
 # 3. For each i<j, there is at most one summand of the form d_{1[ij],a[ji]}.
 # Every other summand in Z_{ij,ji} is of the form t*d_{a[ij],b[ji]} where
 # t \in ComRing and a, b \in ConicAlg are monomial (i.e., lie in the image of ConicAlgMag)
-# with a <> 1 and b <> 1.
-# 4. Summands from Z_{ij,kl} with Intersection([i,j], [k,l]) = [] are removed.
+# with a <> 1 and b <> 1. (Use that dd(a[ij],1[ji]) = dd(1[ij],a[ji]).)
+# 4. Summands from Z_{ij,kl} with Intersection([i,j], [k,l]) = [] are removed (Peirce decomp).
 # If applyDDRels = true, then by applying certain relations in L0, we achieve that
 # the output has the following additional properties:
-# - it has no summand of the form d_{1[33],t[33]}.
+# - it has no summand of the form d_{1[33],t[33]}. (Use \sum dd(1[ii],1[ii]) = 2\zeta-\xi.)
 # - it has no summand of the form d_{a[ij],a'[ji]}.
+# (They equal g_i g_j n(a)(dd(1[ii],1[ii]) + dd(1[jj],1[jj])).)
 # - it has no pair of summands of the form c1*d(a[ij],b[ji])+c2*d(b'[ij],a'[ji]).
+# (We use d(a[ij],b[ji])+*d(b'[ij],a'[ji]) = g_i g_j tr(ab') (d(1[ii],1[ii]) + d(1[jj],1[jj])).)
 # - in all summands of the form d_{1[ij],a[ji]} with a \in ConicAlg,
-# a has no summand of the form t*1 for t \in ComRing.
-# See [DMW, 3.8, 5.2, 5.20] for the mathematical justification.
-DeclareOperation("ApplyDistAndPeirceLaw", [IsDDElement, IsBool]);
-InstallMethod(ApplyDistAndPeirceLaw, [IsDDElement, IsBool], function(ddEl, applyDDRels)
+# a has no summand of the form t*1 for t \in ComRing. (Use relation d(a[ij],a'[ji]) = ...)
+DeclareOperation("ApplyDDLaws", [IsDDElement, IsBool]);
+InstallMethod(ApplyDDLaws, [IsDDElement, IsBool], function(ddEl, applyDDRels)
 	local resultZto, resultRemainSummandList, resultCoeffList, ddSummand, ddCoeff,
 		cubic1, cubic2, cubSummandList1, cubSummandList2, i1, j1, a, i2, j2, b,
 		intersection, simp, i, j, coeffs, lCubic, rCubic, k, resultZShift, c, t,
@@ -419,14 +450,14 @@ InstallMethod(ApplyDistAndPeirceLaw, [IsDDElement, IsBool], function(ddEl, apply
 				intersection := Intersection([i1,j1], [i2,j2]);
                 # Consider the summand ddCoeff*dd(a[i1,j1], b[i2,j2])
 				if Size(intersection) = 1 then
-					simp := _ApplyDistAndPeirceLaw_OnSummands_int1(i1, j1, a, i2, j2, ddCoeff*b);
+					simp := _ApplyDDLaws_OnSummands_int1(i1, j1, a, i2, j2, ddCoeff*b);
 					i := simp[1];
 					j := simp[2];
                     c := simp[3];
                     # The summand equals dd(1[ii], c[ij])
 					resultZto[i][j] := resultZto[i][j] + c;
 				elif Size(intersection) = 2 then
-					simp := _ApplyDistAndPeirceLaw_OnSummands_int2(i1, j1, a, i2, j2, ddCoeff*b);
+					simp := _ApplyDDLaws_OnSummands_int2(i1, j1, a, i2, j2, ddCoeff*b);
 					i := simp[1];
 					j := simp[2];
 					c := simp[3];
@@ -449,7 +480,8 @@ InstallMethod(ApplyDistAndPeirceLaw, [IsDDElement, IsBool], function(ddEl, apply
 		od;
 	od;
 
-    ### Apply DD-relations
+    ### Apply additional DD-relations
+	# Coefficients of result
 	xiCoeff := Zero(ComRing);
 	zetaCoeff := Zero(ComRing);
     if applyDDRels then
@@ -580,7 +612,7 @@ InstallMethod(WithoutTraces, [IsDDElement], function(dd)
 end);
 
 # Applies Simplify to all components.
-# Does NOT apply ApplyDistAndPeirceLaw because the output would be in L0, not in DD.
+# Does NOT apply ApplyDDLaws because the output would be in L0, not in DD.
 DeclareOperation("Simplify", [IsDDElement]);
 InstallMethod(Simplify, [IsDDElement], function(ddEl)
 	local coeffList, resultCoeffList, list;
@@ -596,17 +628,6 @@ end);
 
 ## -------- L0 --------
 
-# L0el: Element of L0.
-# Returns: The same element with ApplyDistAndPeirceLaw applied to the DD-part.
-# Usually not needed because Simplify also applies ApplyDistAndPeirceLaw to the DD-part.
-DeclareOperation("ApplyDistAndPeirceLaw", [IsL0Element, IsBool]);
-InstallMethod(ApplyDistAndPeirceLaw, [IsL0Element, IsBool], function(L0el, applyDDRels)
-	local rep;
-	rep := StructuralCopy(UnderlyingElement(L0el));
-	rep.dd := ApplyDistAndPeirceLaw(rep.dd, applyDDRels);
-	return L0(rep);
-end);
-
 # Apply WithoutTraces to all ConicAlg-Components
 DeclareOperation("WithoutTraces", [IsL0Element]);
 InstallMethod(WithoutTraces, [IsL0Element], function(l0El)
@@ -619,7 +640,7 @@ InstallMethod(WithoutTraces, [IsL0Element], function(l0El)
 	]);
 end);
 
-# Applies Simplify to all components and applies ApplyDistAndPeirceLaw to the DD-part.
+# Applies Simplify to all components and applies ApplyDDLaws to the DD-part.
 DeclareOperation("Simplify", [IsL0Element]);
 InstallMethod(Simplify, [IsL0Element], function(L0El)
 	local pos, neg, zeta, xi, dd, l0;
@@ -627,15 +648,15 @@ InstallMethod(Simplify, [IsL0Element], function(L0El)
 	neg := L0CubicNegCoeff(L0El);
 	zeta := L0ZetaCoeff(L0El);
 	xi := L0XiCoeff(L0El);
-	# To the DD-part, we apply Simplify, then ApplyDistAndPeirceLaw, then
-	# Simplify, then ApplyDistAndPeirceLaw and then Simplify.
+	# To the DD-part, we apply Simplify, then ApplyDDLaws, then
+	# Simplify, then ApplyDDLaws and then Simplify.
 	# We have to apply Simplify to the DD-part before applying
-	# ApplyDistAndPeirceLaw because Simplify may produce summands in
+	# ApplyDDLaws because Simplify may produce summands in
 	# ComRing*One(ConicAlg) which were not visible beforehand (e.g. a1+a1').
-	l0 := ApplyDistAndPeirceLaw(Simplify(L0DDCoeff(L0El)), true);
+	l0 := ApplyDDLaws(Simplify(L0DDCoeff(L0El)), true);
 	zeta := zeta + L0ZetaCoeff(l0);
 	xi := xi + L0XiCoeff(l0);
-	l0 := ApplyDistAndPeirceLaw(Simplify(L0DDCoeff(l0)), true);
+	l0 := ApplyDDLaws(Simplify(L0DDCoeff(l0)), true);
 	return Sum([
 		CubicPosToL0Emb(Simplify(pos)),
 		CubicNegToL0Emb(Simplify(neg)),
@@ -647,18 +668,7 @@ end);
 
 ## -------- Lie --------
 
-# lieEl: Element of Lie.
-# Returns: The same element with ApplyDistAndPeirceLaw applied to the DD-part.
-# Usually not needed because Simplify also applies ApplyDistAndPeirceLaw to the DD-part.
-DeclareOperation("ApplyDistAndPeirceLaw", [IsLieElement, IsBool]);
-InstallMethod(ApplyDistAndPeirceLaw, [IsLieElement, IsBool], function(lieEl, applyDDRels)
-	local rep;
-	rep := StructuralCopy(UnderlyingElement(lieEl));
-	rep.zero := ApplyDistAndPeirceLaw(rep.zero, applyDDRels);
-	return Lie(rep);
-end);
-
-# Apply WithoutTraces to all ConicAlg-components
+# Applies WithoutTraces to all ConicAlg-components
 DeclareOperation("WithoutTraces", [IsLieElement]);
 InstallMethod(WithoutTraces, [IsLieElement], function(lieEl)
 	return LieElFromTuple(
@@ -683,6 +693,7 @@ end);
 
 ## -------- LieEndo --------
 
+# Applies Simplifie to result before returning it
 DeclareOperation("Simplify", [IsLieEndo]);
 InstallMethod(Simplify, [IsLieEndo], function(lieEndo)
 	return LieEndo(

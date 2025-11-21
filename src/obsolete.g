@@ -172,7 +172,7 @@ PrintLieComRel := function()
 				continue;
 			fi;
 			count := count+1;
-			Print(root1, " * ", root2, ": ", ApplyDistAndPeirceLaw(LieRootHomF4(root1, a1) * LieRootHomF4(root2, a2)), "\n");
+			Print(root1, " * ", root2, ": ", ApplyDDLaws(LieRootHomF4(root1, a1) * LieRootHomF4(root2, a2)), "\n");
 			Print(root3, ": ", LieRootHomF4(root3, a3), "\n\n");
 		od;
 	od;
@@ -263,6 +263,31 @@ end);
 
 InstallMethod(GrpWeylF4, [IsList, IsRingElement, IsRingElement], function(root, a, b)
 	return GrpWeylF4(root, a, b, false);
+end);
+
+# ----- Simplification -----
+
+# L0el: Element of L0.
+# Returns: The same element with ApplyDDLaws applied to the DD-part.
+# Usually not needed because Simplify also applies ApplyDDLaws to the DD-part.
+DeclareOperation("ApplyDDLaws", [IsL0Element, IsBool]);
+InstallMethod(ApplyDDLaws, [IsL0Element, IsBool], function(L0el, applyDDRels)
+	local rep, dd;
+	rep := StructuralCopy(UnderlyingElement(L0el));
+	dd := rep.dd;
+	rep.dd := DDZero;
+	return L0(rep) + ApplyDDLaws(dd, applyDDRels);
+end);
+
+# lieEl: Element of Lie.
+# Returns: The same element with ApplyDDLaws applied to the DD-part.
+# Usually not needed because Simplify also applies ApplyDDLaws to the DD-part.
+DeclareOperation("ApplyDDLaws", [IsLieElement, IsBool]);
+InstallMethod(ApplyDDLaws, [IsLieElement, IsBool], function(lieEl, applyDDRels)
+	local rep;
+	rep := StructuralCopy(UnderlyingElement(lieEl));
+	rep.zero := ApplyDDLaws(rep.zero, applyDDRels);
+	return Lie(rep);
 end);
 
 ## Tests for abstract parametrisation strategy

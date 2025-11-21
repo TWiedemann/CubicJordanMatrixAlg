@@ -437,7 +437,12 @@ GrpStandardWeylF4 := function(root, sign...)
 	return inv * GrpRootHomF4(root, sign*one) * inv;
 end;
 
-
+# root: Root in F4.
+# a: Element of ConicAlg if root is short and element of ComRing if root is long.
+# naive: Bool.
+# Returns: If naive=false (default), the image of the a under the root homomorphism
+# w.r.t. root. If naive=true, the "naive" root homomorphism is used (no multiplication
+# by -1, g1, g2, g3).
 InstallMethod(GrpRootHomF4, [IsList, IsRingElement, IsBool], function(root, a, naive)
 	local roothom, roothomNeg, weyl, weylInv, d1, d4, minusRoots, invRoots;
 	if root in F4LongRoots then
@@ -449,6 +454,7 @@ InstallMethod(GrpRootHomF4, [IsList, IsRingElement, IsBool], function(root, a, n
 		return fail;
 	fi;
 	if F4RootG2Coord(root) = [0,0] then
+		# Define root homomorphism as conjugate of root homomorphisms outside of [0, 0]
 		roothom := rootArg -> GrpRootHomF4NonDiv(rootArg, a, naive);
 		roothomNeg := rootArg -> GrpRootHomF4NonDiv(rootArg, -a, naive);
 		weyl := GrpStandardWeylF4;

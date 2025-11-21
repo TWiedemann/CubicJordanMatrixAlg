@@ -1,19 +1,4 @@
-### ---- Membership test ----
 
-TestInF4RootSpace := function(lieEl, root)
-	# Should be used for 0-space
-	# Lieddi := function(i, j)
-	# 	local t, a1, a2;
-	# 	if i = j then
-	# 		t := ComRingIndet(1);
-	# 		return Liedd(CubicComEl(i, One(ComRing)), CubicComEl(i, t));
-	# 	else
-	# 		a1 := ConicAlgIndet(1);
-	# 		a2 := ConicAlgIndet(2);
-	# 		return Liedd(CubicAlgElMat(i, j, a1), CubicAlgElMat(j, i, a2));
-	# 	fi;
-	# end;
-end;
 
 ### ---- Equality test ----
 

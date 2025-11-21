@@ -1,3 +1,7 @@
+### This file contains the definition of the Chevalley-type basis of Lie and function
+### which compute its structure constants.
+### It also contains a "Chevalley basis of type G2".
+
 ## -------- Chevalley basis of Lie --------
 
 # root: Root in F4
@@ -19,12 +23,13 @@ end;
 ChevG2BasEl := function(root)
 	local F4root, result, sign;
 	if root in G2LongRoots then
-		# Find corresponding F4-root
+		# Additional minus sign
 		if root in [[-2,-1], [-1,-2]] then
 			sign := -1;
 		else
 			sign := 1;
 		fi;
+		# Find corresponding F4-root
 		for F4root in F4LongRoots do
 			if F4RootG2Coord(F4root) = root then
 				return sign*LieRootHomF4(F4root, One(ComRing), true, true);
@@ -92,10 +97,6 @@ ChevG2StrucConst := function(root1, root2)
 	if not sum in G2Roots then
 		return Zero(ComRing);
 	fi;
-	# Since ComRing is not a field, it is not evident that there even exists c \in ComRing
-	# such that [ x_root1, x_root2 ] = c x_{root1+root2}. Hence we cannot use GAP functions
-	# to immediately obtain c. However, it turns out that there is only a low number of
-	# possibilities which may occur, so we simply try them all out.
 	candidates := [-4,-3,-2,-1,1,2,3,4];
 	comm := ChevG2BasEl(root1) * ChevG2BasEl(root2);
 	chevSum := ChevG2BasEl(sum);
