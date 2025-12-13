@@ -92,7 +92,7 @@ testG2WeylFormulas := function()
 	# testList will contain lists [e1, e2] for which we test that phibsInv*e1*phibs=e2
 	testList := [];
 	# e_{(0,a,0,0)_+}^\phibs = e_{-a^\iota}
-	aCub := CubicAlgEl(1, a1);
+	aCub := CubicConicEl(1, a1);
 	aLie1 := LieBrownPosElFromTuple(Zero(ComRing), aCub, CubicZero, Zero(ComRing));
 	aLie2 := CubicNegToLieEmb(-iota(aCub));
 	Add(testList, [F4Exp(aLie1), F4Exp(aLie2)]);

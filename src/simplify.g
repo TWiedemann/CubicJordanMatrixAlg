@@ -305,7 +305,7 @@ _ApplyDDLaws_OnSummands_int1 := function(i1, j1, a, i2, j2, b)
 		# Since { i1, j1 } = { p, q }, we have a in ConicAlg in this case
 		a := ConicAlgInv(a);
 	fi;
-	# Similarly, ensure that cubic2 = CubicAlgElMat(q, l, b)
+	# Similarly, ensure that cubic2 = CubicConicElMat(q, l, b)
 	if j2 <> l then
 		b := ConicAlgInv(b);
 	fi;
@@ -572,7 +572,7 @@ InstallMethod(ApplyDDLaws, [IsDDElement, IsBool], function(ddEl, applyDDRels)
 			]);
 			if i<j then
 				Add(resultCoeffList, [
-					One(ComRing), CubicAlgElOneMat(i,j), 
+					One(ComRing), CubicConicElOneMat(i,j), 
 					CubicElMat(j, i, resultZShift[i][j])
 				]);
 			fi;
@@ -586,8 +586,8 @@ InstallMethod(ApplyDDLaws, [IsDDElement, IsBool], function(ddEl, applyDDRels)
 		coeff := list[3];
 		a := list[4];
 		b := list[5];
-		cubic1 := CubicAlgElMat(i, j, a);
-		cubic2 := CubicAlgElMat(j, i, b);
+		cubic1 := CubicConicElMat(i, j, a);
+		cubic2 := CubicConicElMat(j, i, b);
 		Add(resultCoeffList, [coeff, cubic1, cubic2]);
 	od;
 

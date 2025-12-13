@@ -266,7 +266,7 @@ Lie0000Gens := function(comIndetNum, conicIndetNum)
 	for i in [1,2,3] do
 		Add(result, Liedd(CubicComEl(i, One(ComRing)), CubicComEl(i, t1)));
 		for j in [i+1..3] do
-			Add(result, Liedd(CubicAlgElMat(i, j, a1), CubicAlgElMat(j, i, a2)));
+			Add(result, Liedd(CubicConicElMat(i, j, a1), CubicConicElMat(j, i, a2)));
 		od;
 	od;
 	return result;

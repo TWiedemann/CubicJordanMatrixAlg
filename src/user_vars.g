@@ -36,7 +36,7 @@ g3 := ComRingGamIndet(3);
 cubicGen1 := CubicGenericEl(0);
 # cubicGen2 := CubicGenericEl(1);
 c1 := CubicComEl(1, t1);
-c2 := CubicAlgEl(2, a1);
+c2 := CubicConicEl(2, a1);
 c3 := CubicElFromTuple(t1, t2, t3, a1, a2, a1);
 
 ## Simple roots

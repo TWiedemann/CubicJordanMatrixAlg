@@ -327,8 +327,8 @@ TestDDRelation := function()
 	a1 := ConicAlgIndet(1);
 	a2 := ConicAlgIndet(2);
 	t := ComRingIndet(1);
-	f := L0dd(CubicAlgElMat(i, j, a1), CubicAlgElMat(j, l, a2))
-			- L0dd(CubicAlgElMat(i, j, One(ConicAlg)), CubicAlgElMat(j, l, a1*a2));
+	f := L0dd(CubicConicElMat(i, j, a1), CubicConicElMat(j, l, a2))
+			- L0dd(CubicConicElMat(i, j, One(ConicAlg)), CubicConicElMat(j, l, a1*a2));
 	for gen in BrownGensAsModule(3) do
 		a := L0ElAsEndo(f, 1)(gen);
 		if not IsZero(a) then
@@ -350,14 +350,14 @@ TestDRelation := function()
 			x := CubicComEl(i, a);
 		else
 			a := ConicAlgIndet(4);
-			x := CubicAlgElMat(i, j, a);
+			x := CubicConicElMat(i, j, a);
 		fi;
 		if j = l then
 			b := ComRingIndet(5);
 			y := CubicComEl(j, b);
 		else
 			b := ConicAlgIndet(5);
-			y := CubicAlgElMat(j, l, b);
+			y := CubicConicElMat(j, l, b);
 		fi;
 		cubicGeneric := CubicGenericEl(0);
 		Display(list);
