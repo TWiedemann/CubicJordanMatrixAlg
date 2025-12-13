@@ -114,6 +114,8 @@ end;
 
 CubicZero := Cubic([[Zero(ComRing), Zero(ComRing), Zero(ComRing)], [Zero(ConicAlg), Zero(ConicAlg), Zero(ConicAlg)]]);
 
+# TODO: Change order of arguments in CubicComEl and CubicConicEl
+
 # i: 1, 2, or 3
 # t: Element of ComRing
 # Returns: The element t[ii] of Cubic.
