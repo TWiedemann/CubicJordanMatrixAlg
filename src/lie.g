@@ -292,6 +292,17 @@ InstallMethod(LiePart, [IsLieElement, IsInt], function(lieEl, i)
 	fi;
 end);
 
+DeclareOperation("LieCubicPosPart", [IsLieElement]);
+DeclareOperation("LieCubicNegPart", [IsLieElement]);
+
+InstallMethod(LieCubicPosPart, [IsLieElement], function(lieEl)
+	return L0CubicPosPart(LiePart(lieEl, 0));
+end);
+
+InstallMethod(LieCubicNegPart, [IsLieElement], function(lieEl)
+	return L0CubicNegPart(LiePart(lieEl, 0));
+end);
+
 InstallOtherMethod(IsZero, [IsLieElement], function(lieEl)
 	local i;
 	for i in [-2..2] do
@@ -320,7 +331,7 @@ InstallMethod(IsInLie0000, [IsLieElement], function(lieEl)
 	od;
 	lie0 := LiePart(lieEl, 0);
 	# Check L_{01} and L_{0,-1}
-	for func in [L0CubicPosCoeff, L0CubicNegCoeff] do
+	for func in [L0CubicPosPart, L0CubicNegPart] do
 		if not IsZero(func(lie0)) then
 			return false;
 		fi;

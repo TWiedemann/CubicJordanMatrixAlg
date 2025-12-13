@@ -632,8 +632,8 @@ end);
 DeclareOperation("WithoutTraces", [IsL0Element]);
 InstallMethod(WithoutTraces, [IsL0Element], function(l0El)
 	return Sum([
-		CubicPosToL0Emb(WithoutTraces(L0CubicPosCoeff(l0El))),
-		CubicNegToL0Emb(WithoutTraces(L0CubicNegCoeff(l0El))),
+		CubicPosToL0Emb(WithoutTraces(L0CubicPosPart(l0El))),
+		CubicNegToL0Emb(WithoutTraces(L0CubicNegPart(l0El))),
 		L0XiCoeff(l0El)*L0Xi,
 		L0ZetaCoeff(l0El)*L0Zeta,
 		DDToL0Emb(WithoutTraces(L0DDCoeff(l0El)))
@@ -644,8 +644,8 @@ end);
 DeclareOperation("Simplify", [IsL0Element]);
 InstallMethod(Simplify, [IsL0Element], function(L0El)
 	local pos, neg, zeta, xi, dd, l0;
-	pos := L0CubicPosCoeff(L0El);
-	neg := L0CubicNegCoeff(L0El);
+	pos := L0CubicPosPart(L0El);
+	neg := L0CubicNegPart(L0El);
 	zeta := L0ZetaCoeff(L0El);
 	xi := L0XiCoeff(L0El);
 	# To the DD-part, we apply Simplify, then ApplyDDLaws, then

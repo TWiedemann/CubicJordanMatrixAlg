@@ -127,8 +127,8 @@ InstallMethod(GrpRootHomF4NonDiv, [IsList, IsRingElement, IsBool], function(root
 		lieDDCoeffList := DDCoeffList(L0DDCoeff(lie0));
 		lieXiCoeff := L0XiCoeff(lie0);
 		lieZetaCoeff := L0ZetaCoeff(lie0);
-		lieCubicPos := L0CubicPosCoeff(lie0);
-		lieCubicNeg := L0CubicNegCoeff(lie0);
+		lieCubicPos := L0CubicPosPart(lie0);
+		lieCubicNeg := L0CubicNegPart(lie0);
 		liePos1 := LiePart(lieEl, 1);
 		lieYCoeff := LiePart(lieEl, 2);
 		result := lieEl;
@@ -315,7 +315,7 @@ InstallMethod(GrpRootHomF4NonDiv, [IsList, IsRingElement, IsBool], function(root
 			return result;
 		elif rootG2 = [0, 1] then
 			aLie := liehom(root, a);
-			aCubic := L0CubicPosCoeff(LiePart(aLie, 0)); # aLie = ad_{aCubic}^+
+			aCubic := L0CubicPosPart(LiePart(aLie, 0)); # aLie = ad_{aCubic}^+
 			## Action on L_2 + L_{-2} + xi + Cubic is id
 			## Action on L_1 + L_{-1}
 			for sign in [1, -1] do
@@ -353,7 +353,7 @@ InstallMethod(GrpRootHomF4NonDiv, [IsList, IsRingElement, IsBool], function(root
 			return result;
 		elif rootG2 = [0, -1] then
 			aLie := liehom(root, a);
-			aCubic2 := L0CubicNegCoeff(LiePart(aLie, 0)); # aLie = ad_{aCubic}^+
+			aCubic2 := L0CubicNegPart(LiePart(aLie, 0)); # aLie = ad_{aCubic}^+
 			## Action on L_2 + L_{-2} +zeta + Cubic' is id
 			## Action on L_1 + L_{-1}
 			for sign in [1, -1] do

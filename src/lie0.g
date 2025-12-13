@@ -196,8 +196,8 @@ end);
 
 DeclareOperation("L0XiCoeff", [IsL0Element]);
 DeclareOperation("L0ZetaCoeff", [IsL0Element]);
-DeclareOperation("L0CubicPosCoeff", [IsL0Element]);
-DeclareOperation("L0CubicNegCoeff", [IsL0Element]);
+DeclareOperation("L0CubicPosPart", [IsL0Element]);
+DeclareOperation("L0CubicNegPart", [IsL0Element]);
 DeclareOperation("L0DDCoeff", [IsL0Element]);
 
 InstallMethod(L0XiCoeff, [IsL0Element], function(L0El)
@@ -206,10 +206,10 @@ end);
 InstallMethod(L0ZetaCoeff, [IsL0Element], function(L0El)
 	return UnderlyingElement(L0El).zetaCoeff;
 end);
-InstallMethod(L0CubicPosCoeff, [IsL0Element], function(L0El)
+InstallMethod(L0CubicPosPart, [IsL0Element], function(L0El)
 	return UnderlyingElement(L0El).cubicPos;
 end);
-InstallMethod(L0CubicNegCoeff, [IsL0Element], function(L0El)
+InstallMethod(L0CubicNegPart, [IsL0Element], function(L0El)
 	return UnderlyingElement(L0El).cubicNeg;
 end);
 InstallMethod(L0DDCoeff, [IsL0Element], function(L0El)
@@ -218,7 +218,7 @@ end);
 
 InstallOtherMethod(IsZero, [IsL0Element], function(L0el)
 	return IsZero(L0XiCoeff(L0el)) and IsZero(L0ZetaCoeff(L0el)) and IsZero(L0DDCoeff(L0el))
-		and IsZero(L0CubicPosCoeff(L0el)) and IsZero(L0CubicNegCoeff(L0el));
+		and IsZero(L0CubicPosPart(L0el)) and IsZero(L0CubicNegPart(L0el));
 end);
 
 # ----- Scalar multiplication ComRing x L0 -> L0 -----
@@ -227,8 +227,8 @@ InstallOtherMethod(\*, "for ComRingElement and L0Element", [IsRingElement, IsL0E
 		dd := comEl * L0DDCoeff(L0El),
 		xiCoeff := comEl * L0XiCoeff(L0El),
 		zetaCoeff := comEl * L0ZetaCoeff(L0El),
-		cubicPos := comEl * L0CubicPosCoeff(L0El),
-		cubicNeg := comEl * L0CubicNegCoeff(L0El)
+		cubicPos := comEl * L0CubicPosPart(L0El),
+		cubicNeg := comEl * L0CubicNegPart(L0El)
 	));
 end);
 
@@ -281,8 +281,8 @@ InstallMethod(L0ElAsEndo, [IsL0Element, IsInt], function(L0El, i)
 	# Components of L0El
 	xi := L0XiCoeff(L0El);
 	zeta := L0ZetaCoeff(L0El);
-	a := L0CubicPosCoeff(L0El);
-	a2 := L0CubicNegCoeff(L0El);
+	a := L0CubicPosPart(L0El);
+	a2 := L0CubicNegPart(L0El);
 	ddList := DDCoeffList(L0DDCoeff(L0El));
 	if i = -2 then
 		return function(comEl)
