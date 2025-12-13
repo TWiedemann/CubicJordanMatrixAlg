@@ -65,9 +65,9 @@ gap> t1*brown1;
 ### L_0
 gap> DDZero;
 0_{L_0}
-gap> dd(cubicGen1, cubicGen2);
+gap> DDdd(cubicGen1, cubicGen2);
 dd_{(t1)[11]+(t2)[22]+(t3)[33]+((1)*a1)[23]+((1)*a2)[31]+((1)*a3)[12],(t4)[11]+(t5)[22]+(t6)[33]+((1)*a4)[23]+((1)*a5)[31]+((1)*a6)[12]}
-gap> dd(cubicGen1, CubicZero);
+gap> DDdd(cubicGen1, CubicZero);
 0_{L_0}
 gap> L0Xi + t1*L0Zeta + L0dd(cubicGen1, cubicGen2) - L0Zeta;
 dd_{(t1)[11]+(t2)[22]+(t3)[33]+((1)*a1)[23]+((1)*a2)[31]+((1)*a3)[12],(t4)[11]+(t5)[22]+(t6)[33]+((1)*a4)[23]+((1)*a5)[31]+((1)*a6)[12]}+xi+(t1-1)*zeta

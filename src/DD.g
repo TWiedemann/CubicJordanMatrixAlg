@@ -146,8 +146,8 @@ DDZero := DD([]);
 
 # cubicEl1, cubicEl2: Elements of Cubic.
 # Returns: dd_{cubicEl1, cubicEl2} \in DD.
-DeclareOperation("dd", [IsCubicElement, IsCubicElement]);
-InstallMethod(dd, [IsCubicElement, IsCubicElement], function(cubicEl1, cubicEl2)
+DeclareOperation("DDdd", [IsCubicElement, IsCubicElement]);
+InstallMethod(DDdd, [IsCubicElement, IsCubicElement], function(cubicEl1, cubicEl2)
 	if IsZero(cubicEl1) or IsZero(cubicEl2) then
 		return DDZero;
 	else

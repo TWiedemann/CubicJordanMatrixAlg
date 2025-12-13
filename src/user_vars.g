@@ -39,6 +39,9 @@ c1 := CubicComEl(1, t1);
 c2 := CubicConicEl(2, a1);
 c3 := CubicElFromTuple(t1, t2, t3, a1, a2, a1);
 
+## dd as a shorthand for Liedd. TODO: Make this a constant.
+dd := Liedd;
+
 ## Simple roots
 d1 := F4SimpleRoots[1];
 d2 := F4SimpleRoots[2];

@@ -160,7 +160,7 @@ InstallMethod(DDRootHomA2, [IsList, IsRingElement, IsBool], function(root, a, no
 	else
 		lambda := One(ComRing);
 	fi;
-    return dd(CubicComEl(i, One(ComRing)), lambda*CubicConicElMat(i, j, a));
+    return DDdd(CubicComEl(i, One(ComRing)), lambda*CubicConicElMat(i, j, a));
 end);
 
 # Default: noGamma = false.

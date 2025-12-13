@@ -189,7 +189,7 @@ end);
 # Returns: dd_{cubicEl1, cubicEl2} \in L0.
 DeclareOperation("L0dd", [IsCubicElement, IsCubicElement]);
 InstallMethod(L0dd, [IsCubicElement, IsCubicElement], function(cubicEl1, cubicEl2)
-	return DDToL0Emb(dd(cubicEl1, cubicEl2));
+	return DDToL0Emb(DDdd(cubicEl1, cubicEl2));
 end);
 
 # ---- Getter functions for parts of elements of L0 ----
