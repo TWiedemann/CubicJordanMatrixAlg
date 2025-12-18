@@ -2,7 +2,7 @@
 
 This collection of GAP files allows basic symbolic computation in free multiplicative conic alternative algebras (over free commutative rings, that is, polynomial rings).
 In other words, it provides a framework to prove that certain identities hold in any multiplicative conic alternative algebra over any commutative ring by deriving these identities from a set of known identities in such objects.
-It also supports similar computations in the Lie algebra and the group of automorphisms that are constructed in the preprint \[DMW25\] "Name" (arXiV link) from an arbitrary multiplicative conic alternative algebra.
+It also supports similar computations in the Lie algebra and the group of automorphisms that are constructed in the preprint \[DMW25\] *Cubic norm pairs and $G_2$- and $F_4$-graded groups and Lie algebras* (TODO: arXiv link) from an arbitrary multiplicative conic alternative algebra.
 It cannot prove any such identity (which seems to be a hopeless task), but it is powerful enough to prove all identities that are needed in \[DMW25\].
 
 # Installation
@@ -15,6 +15,8 @@ Blabla download and read `read.g`. Modify `ComRing_rank`, `ConicAlg_rank` and `T
 ## Windows
 
 ## Unix
+
+# Verification of the claims in \[DMW25\]
 
 # User interface
 
@@ -138,13 +140,17 @@ The zero elements in $k$, $C$, $B$, `DD`, $L_0$, $L$, `LieEndo` may be accessed 
 
 Let `a` be an element of $C$. Then `Simplify(a)` represents the same element of (the free multiplicative conic alternative algebra `C`), but its internal representation is (hopefully) simplified. In many situations, if `a` represents the zero element in $C$, then the internal representation of `Simplify(a)` is trivial. Thus in order to check whether `a = b`, one should always check whether `Simplify(a-b) = Zero(ConicAlg)`: If this is true, then `a` and `b` are proven to represent the same element of $C$. However, if it is `false`, this does not prove that they represent distinct elements.
 
-The function `Simplify` is also defined on $k$, $B$, `DD`, $L_0$ and $L$, and works on these structures in a similar way. For more details, we refer to Section ??? in \[DMW25\].
+The function `Simplify` is also defined on $k$, $B$, `DD`, $L_0$ and $L$, and works on these structures in a similar way. For more details, we refer to Section 9.3 (TODO: number still correct?) in \[DMW25\].
 
-## Equality of automorphism of $L$
+## Testing equality of automorphism of $L$
 
+Let `g, h` be elements of `LieEndo` which are assumed to be compatible with the Lie bracket. We can try to prove that `g` equals `h` by checking that `Simplify(g(gen) - h(gen))` is zero (in $L$) for all `gen` in a set of Lie algebra generators of $L$. Two functions are available for this task:
+- `TestEquality(g, h)` is `true` if all checks described above are successful. Otherwise it is the list of all lists `[gen, Simplify(g(gen) - h(gen))]` for any `gen` for which the test was not successfull.
+- `TestEqualityPieces(g, h)` is `true` if all checks described above are successful. Otherwise it is a list of all non-zero elements of $k$, $C$ and $L_0$ that appear in `Simplify(g(gen) - h(gen))` for any `gen`.
 
+The general strategy for proving equality of `g` and `h` is to call `TestEqualityPieces(g, h)` and to prove by hand that all terms in the result (if there are any) equal zero.
 
-# Verification of the claims in \[DMW25\]
+The list of all generators `gen` on which we test equality is obtained by evaluating all root homomorphisms with image in $L_{-2} + L_1$ on the last indeterminate in $k$ or $C$ (that is, on `ComRingIndet(ComRing_rank)` or `ConicAlgIndet(ConicAlg_rank)`). The user should assure that these indeterminates do not occur in `g` and `h`.
 
 # License
 
