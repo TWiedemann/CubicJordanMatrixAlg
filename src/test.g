@@ -112,17 +112,44 @@ InstallMethod(TestEqualityOnModuleGens, [IsLieEndo, IsLieEndo],
 # by hand to be zero to verify that g1 = g2 for all [g1, g2] \in relations.
 # Uses indeterminates t_{ComRing_rank}, a_{ConicAlg_rank}.
 TestEqualityPiecesOnList := function(relations)
-	local rel, test, error, part, i, result;
+	local rel, test, error, part, i, j, result, part2, summands, summand, a;
 	result := [];
 	for rel in relations do
 		test := TestEquality(rel[1], rel[2]);
 		if test <> true then
 			for error in test do
 				# error[1] contains the Lie algebra generator on which rel[1] and rel[2]
-				# differ, which is not interesting
+				# differ, which is not interesting.
+				# error[2] is the Lie algebra element which must be proven by hand to be zero.
 				for i in [-2..2] do
+					# Decompose error[2] in its parts
 					part := LiePart(error[2], i);
-					if not IsZero(part) and not IsZero(WithoutTraces(part)) then
+					if i=1 or i=-1 then
+						# part lies in Brown, and is thus further decomposed
+						for j in [1,2] do
+							part2 := BrownElComPart(part, j); # \in ComRing
+							if not IsZero(part2) then
+								Add(result, part2);
+							fi;
+							part2 := BrownElCubicPart(part, j); # \in Cubic
+							# Add all non-zero components of part2 to result
+							summands := Summands(part2);
+							for summand in summands do
+								# summand = [i, j, a], represents a[ij]
+								a := summand[3]; # \in ComRing or ConicAlg
+								if summand[1] = summand[2] then # a \in ComRing
+									if not IsZero(a) then
+										Add(result, a);
+									fi;
+								else # a \in ConicAlg
+									if not IsZero(a) and not IsZero(WithoutTraces(a)) then
+										Add(result, a);
+									fi;
+								fi;
+							od;
+						od;
+					elif not IsZero(part) then
+						# part lies in ComRing
 						Add(result, part);
 					fi;
 				od;
@@ -339,7 +366,7 @@ end;
 # all desired F4-commutator relations in [DMW] are satisfied.
 # Uses indeterminates t_1, t_2, t_{ComRing_rank} a_1, a_2, a_{ConicAlg_rank} and assumes
 # that both ranks are > 2.
-TestComRels := function()
+TestGrpComRels := function()
 	local t1, t2, a1, a2, d1, d2, d3, d4, g1, g2, g3, comm, test, rel;
 	t1 := ComRingIndet(1);
 	t2 := ComRingIndet(2);
