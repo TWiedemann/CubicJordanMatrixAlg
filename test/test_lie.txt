@@ -3,6 +3,7 @@
 ### This file tests that the F4-commutator relations in the Lie algebra have the
 ### desired form and that the claimed Chevalley-type bases (for F4 and G2) adheres
 ### indeed Chevalley-type bases.
+### Runtime: ~4 minutes.
 
 # Test claim about length of roots for pairs a, b for which a+b is a root
 gap> TestF4RootLengthSum();
