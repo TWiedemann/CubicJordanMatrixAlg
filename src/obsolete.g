@@ -470,7 +470,7 @@ TestStandardWeylParity := function(i)
 			b := ConicAlgInv(b);
 		fi;
 		y := GrpRootHomF4(F4Refl(baseRoot, d), b);
-		error := TestRelations([[wInv*x*w, y]]);
+		error := TestEqualityPiecesOnList([[wInv*x*w, y]]);
 		if not IsEmpty(error) then
 			Print(baseRoot, " -> ", F4Refl(baseRoot, d), ":\n");
 			Display(error);
@@ -484,7 +484,7 @@ end;
 
 # relations: A list of lists [l1, l2] where l1 and l2 are lists containing elements
 # from [-4, -3, -2, -1, 1, 2, 3, 4] or elements from LieEndo
-# The function calls TestRelations on the list weylRelations which is obtained from relations
+# The function calls TestEqualityPiecesOnList on the list weylRelations which is obtained from relations
 # by replacing any list [g1, g2, ...] by the automorphism g1 * g2 * ...
 # If gi is a positive integer, it is interpreted as w_gi. If it is a negative integer,
 # it is interpreted as w_(-gi)^-1. Here wj = GrpStandardWeyl(F4SimpleRoots[j]).
@@ -511,7 +511,7 @@ TestWeylRelations := function(relations)
 		od;
 		return auto;
 	end));
-	return TestRelations(weylRelations);
+	return TestEqualityPiecesOnList(weylRelations);
 end;
 
 # Prints all relations which have to be proven by hand to verify the braid relations for

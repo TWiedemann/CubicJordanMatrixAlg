@@ -1,6 +1,4 @@
-
-
-# ----- General equality test fucntions -----
+# ----- General functions for equality tests -----
 
 # lieEl1, lieEl2: Elements of Lie.
 # print: Bool (default: false).
@@ -113,7 +111,7 @@ InstallMethod(TestEqualityOnModuleGens, [IsLieEndo, IsLieEndo],
 # Returns: A list of all elements of ComRing, ConicAlg and L0 which have to be proven
 # by hand to be zero to verify that g1 = g2 for all [g1, g2] \in relations.
 # Uses indeterminates t_{ComRing_rank}, a_{ConicAlg_rank}.
-TestRelations := function(relations)
+TestEqualityPiecesOnList := function(relations)
 	local rel, test, error, part, i, result;
 	result := [];
 	for rel in relations do
@@ -134,9 +132,9 @@ TestRelations := function(relations)
 	return result;
 end;
 
-# Like TestRelations, but only one relation "term1=term2" is tested.
-TestRelation := function(term1, term2)
-	return TestRelations([[term1, term2]]);
+# Like TestEqualityPiecesOnList, but only one relation "term1=term2" is tested.
+TestEqualityPieces := function(term1, term2)
+	return TestEqualityPiecesOnList([[term1, term2]]);
 end;
 
 # ----- Tests involving Weyl elements -----
@@ -292,7 +290,7 @@ TestWeylParity := function(root, w, wInv, parList)
 			b := ConicAlgInv(b);
 		fi;
 		y := GrpRootHomF4(F4Refl(baseRoot, root), b);
-		test := TestRelation(wInv*x*w, y);
+		test := TestEqualityPieces(wInv*x*w, y);
 		errorList := Concatenation(errorList, test);
 	od;
 	if IsEmpty(errorList) then
@@ -354,7 +352,7 @@ TestComRels := function()
 	g1 := ComRingGamIndet(1);
 	g2 := ComRingGamIndet(2);
 	g3 := ComRingGamIndet(3);
-	return TestRelations([
+	return TestEqualityPiecesOnList([
 		# Commutator relation on [d1, d2]
 		[GrpRootHomCom(d1, t1, d2, t2), GrpRootHomF4(d1+d2, t1*t2)],
 		# Commutator relation on [d2, d3]

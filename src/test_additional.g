@@ -20,7 +20,11 @@ TestGrpRootHom := function(root)
 	g1 := GrpRootHomF4(root, x1);
 	g2 := GrpRootHomF4(root, x2);
 	g3 := GrpRootHomF4(root, x1+x2);
-	return IsEmpty(TestRelations([[g1*g2, g3]]));
+	if TestEqualityPieces(g1*g2, g3) = true then
+		return true;
+	else
+		return false;
+	fi;
 end;
 
 # Tests whether GrpRootHomF4 is a homomorphism for all roots.
