@@ -69,11 +69,10 @@ TestAllGrpRootHomExp := function()
 	return true;
 end;
 
-# TODO: Check this.
 # Displays the test results for some of the conjugation formulas for Weyl elements in the G2-grading.
 # We test these formulas only for cubic Jordan matrix algebras, so these tests do not provide a
 # proof of the more general statements in [DMW]. They are merely a sanity check.
-testG2WeylFormulas := function()
+TestG2WeylFormulas := function()
 	local bCub, bCubInv, bLie, bInvLie, phiMid, phiMidInv, phiR, phiRInv, phibs, phibsInv, t, iota,
 		iotainv, testList, aCub, aLie1, aLie2, list, t1, a1;
 	t1 := ComRingIndet(1);
