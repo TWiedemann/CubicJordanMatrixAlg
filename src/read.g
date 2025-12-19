@@ -105,6 +105,7 @@ Reread(myFilePath("lie_roothom.g"));
 Reread(myFilePath("group.g"));
 Reread(myFilePath("simplify.g"));
 Reread(myFilePath("chev.g"));
-Reread(myFilePath("test.g"));
+Reread(myFilePath("test_equal.g"));
+Reread(myFilePath("test_paper.g"));
 Reread(myFilePath("test_additional.g"));
 Read(myFilePath("user_vars.g"));
