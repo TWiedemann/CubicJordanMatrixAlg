@@ -33,3 +33,5 @@ _TrSubValueList := fail;
 # ---- Misc ----
 # The ring over which ComRing is a polynomial ring.
 BaseRing := Integers;
+
+

@@ -1,11 +1,7 @@
 #
-# F4_graded_groups: Provides basic functionality for symbolic computation in free multiplicative conic alternative algebras and associated F4-graded Lie algebras and groups
+# F4GradedGroups: Provides basic functionality for symbolic computation in free multiplicative conic alternative algebras and associated F4-graded Lie algebras and groups
 #
-# This file contains package meta data. For additional information on
-# the meaning and correct usage of these fields, please consult the
-# manual of the "Example" package as well as the comments in its
-# PackageInfo.g file.
-#
+
 SetPackageInfo( rec(
 
 PackageName := "F4GradedGroups",
@@ -18,7 +14,7 @@ Persons := [
   rec(
     FirstNames := "Torben",
     LastName := "Wiedemann",
-    #WWWHome := TODO,
+    WWWHome := "https://github.com/TWiedemann",
     Email := "torben.wiedemann@rptu.de",
     IsAuthor := true,
     IsMaintainer := true,
@@ -30,7 +26,7 @@ Persons := [
 
 #SourceRepository := rec( Type := "TODO", URL := "URL" ),
 #IssueTrackerURL := "TODO",
-PackageWWWHome := "https://TODO/",
+PackageWWWHome := "https://github.com/TWiedemann/F4GradedGroups",
 PackageInfoURL := Concatenation( ~.PackageWWWHome, "PackageInfo.g" ),
 README_URL     := Concatenation( ~.PackageWWWHome, "README.md" ),
 ArchiveURL     := Concatenation( ~.PackageWWWHome,
@@ -50,7 +46,7 @@ PackageDoc := rec(
 ),
 
 Dependencies := rec(
-  GAP := ">= 4.13",
+  GAP := ">= 4.15",
   NeededOtherPackages := [ ],
   SuggestedOtherPackages := [ ],
   ExternalConditions := [ ],
