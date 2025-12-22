@@ -10,8 +10,10 @@ gap> TestAllReflections();
 true
 
 ### Test that the Weyl elements have the desired parities.
-## In the comments above each expression, we sketch the argument why the corresponding
-## expression equals 0.
+## The function Simplify can reduce all terms that appear in the computation to 0
+## except for the 14 terms that are stored in the variable `test`. To complete
+## the proof, we have to show by hand that these 14 terms equal 0.
+## In the comments above each expression, we sketch the argument why this is the case.
 ## We will write d_i for dd(1[ii],1[ii]).
 ## We will use the following identities from [DMW25, Sections 9 and 10]:
 ## (1) tr(a)*1_C = a+a'

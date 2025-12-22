@@ -136,6 +136,9 @@ end);
 
 # a: Element of ConicAlgMag or of ConicAlg
 # Returns: a'
+
+#! @Arguments a
+#! @Returns the conjugate of a
 BindGlobal("ConicInv", function(a)
 	if a in ConicAlg then
 		return ConicAlgInv(a);
