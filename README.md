@@ -3,8 +3,8 @@
 This [GAP](https://www.gap-system.org/) package allows basic symbolic computation in free multiplicative conic alternative algebras (over free commutative rings, that is, polynomial rings).
 In other words, it provides a framework to prove that certain identities hold in any multiplicative conic alternative algebra over any commutative ring by deriving these identities from a set of known identities in such objects.
 It also supports similar computations in the Lie algebra and the group of automorphisms that are constructed in the preprint \[DMW\] *Cubic norm pairs and $G_2$- and $F_4$-graded groups and Lie algebras* (TODO: arXiv link) from an arbitrary multiplicative conic alternative algebra.
-It cannot prove any such identity (which seems to be a hopeless task), but it is powerful enough to prove all identities that are needed in \[DMW\].
-The basic strategy of this implementation is described in \[DMW, 9.3\].
+It cannot prove any identity in the objects described above (which seems to be a hopeless task), but it is powerful enough to prove all identities that are needed in \[DMW\], which is its main purpose.
+The basic strategy of this package is described in \[DMW, 9.3\].
 
 # Installation
 
@@ -20,10 +20,11 @@ For details, see [`doc/manual.md`](https://github.com/TWiedemann/F4GradedGroups/
 
 # Verification of the claims in \[DMW\]
 
-For each of the files in `[gap]/pkg/F4GradedGroups/tst`, do the following to perform the tests in this file that verify the claims in \[DMW\].
+For each of the files in `[gap]/pkg/F4GradedGroups/tst`, do the following to perform the tests in this file that verify certain claims in \[DMW\].
 1. Start a GAP session.
 2. Type `LoadPackage("F4GradedGroups");` and press Enter to load the package. Do NOT call `InitF4Graded()`, this will be done automatically by the following steps.
 3. Type `Test("filepath", rec(width:=50000));` and press Enter. Here `filepath` should be replaced by the path of the file you want to test. On Unix, if you started the GAP session inside `[gap]/pkg/F4GradedGroups/tst`, then `filepath` can simply be the name of the file, e.g. `Test("test_basic.tst", rec(width:=50000));`. On Windows, it could be something like TODO.
+Consult the [GAP manual](https://docs.gap-system.org/doc/ref/chap7_mj.html#X801051CC86594630) for more information on the GAP function `Test`.
 4. An output of `true` on the terminal signifies that all tests were successful. Some tests run only a few seconds, others may take 10 minutes or longer.
 5. To test the next file, close GAP and start a new session.
 

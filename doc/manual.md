@@ -16,16 +16,17 @@ High values of `ConicAlg_rank` and `Trace_MaxLength` strongly impact the runtime
 
 # Notational conventions
 
-In the following, we denote elements of $k$ by `t, s, r`, elements of $C$ by `a, b, c`, elements of the cubic Jordan matrix algebra by `cub`, elements of the Brown algebra $B$ by `brown`, elements of `DD` by `ddEl`, elements of $L_0$ by `l0`, elements of $L$ by `lie` and elements of `LieEndo` by `f, g`. Further, we denote by `i, j, l` integers in ˙[1,2,3]˙ and by `p` arbitrary integers.
+In the following, we denote elements of $k$ by `t, s, r`, elements of $C$ by `a, b, c`, elements of the cubic Jordan matrix algebra by `cub`, elements of the Brown algebra $B$ by `brown`, elements of `DD` by `ddEl`, elements of $L_0$ by `l0`, elements of $L$ by `lie` and elements of `LieEndo` by `f, g`.
+Further, we denote by `i, j, l` integers in `[1,2,3]` and by `p` arbitrary integers.
 
 # The commutative ring $k$
 
 Internally, we use the name `ComRing` for the commutative ring $k$.
 
 ```
-ComRingIndet(i)
+ComRingIndet(p)
 ```
-Returns the `i`-th indeterminate in $k$, which is printed as `ti`. If the package was initialised with `userVars = true`, then GAP variables `t1 := ComRingIndet(1), ...` are defined.
+Returns the `p`-th indeterminate in $k$, which is printed as `tp`. We must have `1 <= p <= ComRing_rank`. If the package was initialised with `userVars = true`, then GAP variables `t1 := ComRingIndet(1), ...` are defined.
 
 ```
 ComRingGamIndet(i)
@@ -42,9 +43,9 @@ The usual arithmetic operations in GAP for addition, multiplication and inversio
 Internally, we use the name `ConicAlg` for the multiplicative conic alternative $k$-algebra $C$.
 
 ```
-ConicAlgIndet(i)
+ConicAlgIndet(p)
 ```
-Returns the `i`-th indeterminate in $C$, which is printed as `ai`. If the package was initialised with `userVars = true`, then GAP variables `a1 := ConicAlgIndet(1), ...` are available.
+Returns the `p`-th indeterminate in $C$, which is printed as `ap`. We must have `1 <= p <= ComRing_rank`. If the package was initialised with `userVars = true`, then GAP variables `a1 := ConicAlgIndet(1), ...` are available.
 
 ```
 +, *, ^-1
@@ -79,7 +80,7 @@ Returns `n(a+b)-n(a)-n(b)`, which is known to be the same as `tr(a'b)`.
 
 # The cubic Jordan matrix algebra
 
-Internally, we use the name `Cubic` for the cubic Jordan matrix algebra $J \coloneqq\operatorname{Her}_3(C, \Gamma)$.
+Internally, we use the name `Cubic` for the cubic Jordan matrix algebra $J \coloneqq\text{Her}_3(C, \Gamma)$.
 
 ## Elements of the cubic Jordan matrix algebra
 
@@ -372,3 +373,7 @@ By "pieces" we mean the underlying elements of $k$, $C$ and $L_0$ that make up t
 Thus to prove that `g` and `h` are the same, it suffices to prove that all elements in the output list represent 0.
 
 As for `TestEquality`, the user should assure that `ComRingIndet(ComRing_rank)` or `ConicAlgIndet(ConicAlg_rank)` do not occur in the definition of `g` and `h`.
+
+# For advanced users
+
+While the main functions of the package are described above, more functions can be found by studying the GAP source files in `F4GradedGroups/gap`.
