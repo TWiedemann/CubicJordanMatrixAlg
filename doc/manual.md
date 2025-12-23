@@ -376,4 +376,6 @@ As for `TestEquality`, the user should assure that `ComRingIndet(ComRing_rank)` 
 
 # For advanced users
 
-While the main functions of the package are described above, more functions can be found by studying the GAP source files in `F4GradedGroups/gap`.
+While the main functions of the package are described above, more functions and their documentation can be found by studying the GAP source files in `F4GradedGroups/gap`.
+Most files are commited to building up the desired structures step by step (similarly as this manual does), and the precise order in which they are loaded can be read off from `F4GradedGroups/init.g`.
+The most complicated tasks are the simplification functions in `simplify.g` and the construction of the trace function in `comring.g`.
