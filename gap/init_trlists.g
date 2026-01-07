@@ -32,6 +32,9 @@ BindGlobal("_InitTrSubLists", function()
 	local tr, inv, add, indet, i, j, k, x, y, z;
 	BindGlobal("_TrSubIndetList", []);
 	BindGlobal("_TrSubValueList", []);
+	if Trace_MaxLength < 2 then
+		return;
+	fi;
 	tr := ConicAlgMagTr;
 	inv := ConicAlgMagInv;
 	indet := ConicAlgMagIndet;
@@ -52,6 +55,9 @@ BindGlobal("_InitTrSubLists", function()
 			# tr(xy') = tr(x)tr(y) - tr(xy)
 			add(tr(x*inv(y)), tr(x)*tr(y) - tr(x*y));
 			## Products of length 3
+			if Trace_MaxLength < 3 then
+				return;
+			fi;
 			for k in [1..ConicAlg_rank] do
 				z := indet(k);
 				# tr(xyz') = tr(xy)tr(z) - tr(xyz)
