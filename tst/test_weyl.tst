@@ -9,7 +9,7 @@ gap> RereadPackage("F4GradedGroups", "gap/DMW/test_DMW.g");;
 gap> TestAllReflections();
 true
 
-### Test that Table 3 in \[DMW\] is correct.
+### Test that Table 3 in [DMW] is correct.
 gap> PrintLatexParityTable();
 \toprule
 $\alpha$ & $\tilde{\eta}(\alpha, f_1)$ & $\tilde{\eta}(\alpha, f_2)$ & $\tilde{\eta}(\alpha, f_3)$ & $\tilde{\eta}(\alpha, f_4)$ \\
@@ -22,27 +22,31 @@ $\alpha$ & $\tilde{\eta}(\alpha, f_1)$ & $\tilde{\eta}(\alpha, f_2)$ & $\tilde{\
 \midrule
 0110 & $ (-1, 1) $ & $ (-1, 1) $ & $ (-1, -1) $ & $ (-1, -1) $\\
 0011 & $ (1, 1) $ & $ (1, 1) $ & $ (-1, -1) $ & $ (1, -1) $\\
-1110 & $ (1, 1) $ & $ (1, 1) $ & $ (-1, -1) $ & $ (1, -1) $\\
+1110 & $ (1, 1) $ & $ (1, 1) $ & $ (-1, -1) $ & $ (1, 1) $\\
 0120 & $ (-1, 1) $ & $ (1, 1) $ & $ (1, 1) $ & $ (1, 1) $\\
-0111 & $ (1, 1) $ & $ (-1, 1) $ & $ (1, -1) $ & $ (1, -1) $\\
+0111 & $ (1, -1) $ & $ (-1, 1) $ & $ (1, -1) $ & $ (1, -1) $\\
 \midrule
 1120 & $ (1, 1) $ & $ (1, 1) $ & $ (1, 1) $ & $ (-1, 1) $\\
-1111 & $ (-1, 1) $ & $ (1, 1) $ & $ (1, -1) $ & $ (-1, -1) $\\
+1111 & $ (-1, -1) $ & $ (1, 1) $ & $ (1, 1) $ & $ (-1, 1) $\\
 0121 & $ (1, 1) $ & $ (1, 1) $ & $ (-1, -1) $ & $ (-1, -1) $\\
 1220 & $ (1, 1) $ & $ (-1, 1) $ & $ (1, 1) $ & $ (-1, 1) $\\
-1121 & $ (-1, 1) $ & $ (1, 1) $ & $ (-1, -1) $ & $ (-1, -1) $\\
+1121 & $ (-1, 1) $ & $ (1, 1) $ & $ (-1, 1) $ & $ (-1, -1) $\\
 \midrule
 0122 & $ (1, 1) $ & $ (1, 1) $ & $ (1, 1) $ & $ (1, 1) $\\
 1221 & $ (1, 1) $ & $ (-1, 1) $ & $ (1, -1) $ & $ (-1, -1) $\\
 1122 & $ (-1, 1) $ & $ (1, 1) $ & $ (1, 1) $ & $ (-1, 1) $\\
-1231 & $ (1, 1) $ & $ (1, 1) $ & $ (-1, -1) $ & $ (1, 1) $\\
+1231 & $ (1, 1) $ & $ (1, 1) $ & $ (-1, -1) $ & $ (1, -1) $\\
 1222 & $ (1, 1) $ & $ (-1, 1) $ & $ (1, 1) $ & $ (-1, 1) $\\
 \midrule
-1232 & $ (1, 1) $ & $ (1, 1) $ & $ (-1, -1) $ & $ (-1, 1) $\\
+1232 & $ (1, 1) $ & $ (1, 1) $ & $ (-1, -1) $ & $ (-1, -1) $\\
 1242 & $ (1, 1) $ & $ (1, 1) $ & $ (1, 1) $ & $ (1, 1) $\\
 1342 & $ (1, 1) $ & $ (-1, 1) $ & $ (1, 1) $ & $ (1, 1) $\\
 2342 & $ (-1, 1) $ & $ (1, 1) $ & $ (1, 1) $ & $ (1, 1) $\\
 \bottomrule
+
+### Test that Table 2 in [DMW] is correct
+gap> TestZeroParities();
+true
 
 ### Test that the Weyl elements have the desired parities.
 ## The function Simplify can reduce all terms that appear in the computation to 0
@@ -93,9 +97,11 @@ dd_{((1)*<identity ...>)[23],((1/-g2)*(a2*a1))[23]}+(-g3/(g1*g2))*dd_{((1)*a2')[
 
 # Like test[3]: The dd-summands are precisely
 # 1/(g1g3) * \sum g_i dd_{b_i[jl], b_l'b_j'[jl]}
-# where b1 = , b2 = a1, b3 = a2, so the whole sum is 0 by (7).
+# where b1 = 1, b2 = a1', b3 = a2, so the sum of the dd-summands is
+# g2 tr(a1'a2) (2*zeta - xi)
+# by (7). Thus the whole sums is 0 by (2).
 gap> test[5];
-dd_{((1)*<identity ...>)[23],((1/g3)*(a2'*a1'))[23]}+(g2/(g1*g3))*dd_{((1)*a1)[31],((1)*a2')[31]}+(1/g1)*dd_{((1)*a2)[12],((1)*a1')[12]}+(g2*tr(a1a2))*xi+(-2*g2*tr(a1a2))*zeta
+dd_{((1)*<identity ...>)[23],((1/g3)*(a2'*a1))[23]}+(g2/(g1*g3))*dd_{((1)*a1')[31],((1)*a2')[31]}+(1/g1)*dd_{((1)*a2)[12],((1)*a1)[12]}+(g2*tr(a1)*tr(a2)-g2*tr(a1a2))*xi+(-2*g2*tr(a1)*tr(a2)+2*g2*tr(a1a2))*zeta
 
 # Like test[3]: The dd-summands are precisely
 # 1/(g2g3) * \sum g_i dd_{b_i[jl], b_l'b_j'[jl]}
@@ -103,14 +109,17 @@ dd_{((1)*<identity ...>)[23],((1/g3)*(a2'*a1'))[23]}+(g2/(g1*g3))*dd_{((1)*a1)[3
 gap> test[6];
 dd_{((1)*<identity ...>)[23],((g1/(g2*g3))*(a1*a2))[23]}+(1/g3)*dd_{((1)*a2')[31],((1)*a1)[31]}+(1/g2)*dd_{((1)*a1')[12],((1)*a2)[12]}+(g1*tr(a1a2))*xi+(-2*g1*tr(a1a2))*zeta
 
-# Follows from (1) and (2).
-gap> test[7];
-((-g1*tr(a1)*tr(a2)+g1*tr(a1a2))/g2)*<identity ...>+(g1*tr(a2)/g2)*a1+(-g1/g2)*(a1*a2)+(g1/g2)*(a2*a1')
-
-# -tr(a1a2) = -tr(a2a1) = -a2a1 - a1'a2' and
+# By (1),
+# -tr(a1a2) = -a2a1 - a1'a2' and
 # tr(a2)a1' = a1'a2 + a1'a2'
+gap> test[7];
+(-g1*tr(a1a2)/g2)*<identity ...>+(g1*tr(a2)/g2)*a1'+(g1/g2)*(a2*a1)+(-g1/g2)*(a1'*a2)
+
+# By (2) and (1),
+# -tr(a1)tr(a2) + tr(a1a2) = -tr(a1a2') = -tr(a2a1') = -a2a1' - a1a2' and
+# tr(a2)a1 = a1a2 + a1a2'
 gap> test[8];
-(-g2*tr(a1a2)/g1)*<identity ...>+(g2*tr(a2)/g1)*a1'+(g2/g1)*(a2*a1)+(-g2/g1)*(a1'*a2)
+((-g2*tr(a1)*tr(a2)+g2*tr(a1a2))/g1)*<identity ...>+(g2*tr(a2)/g1)*a1+(-g2/g1)*(a1*a2)+(g2/g1)*(a2*a1')
 
 # Like test[3]: The dd-summands are precisely
 # 1/(g1g2) * \sum g_i dd_{b_i[jl], b_l'b_j'[jl]}

@@ -141,6 +141,9 @@ InstallMethod(DDRootHomA2, [IsList, IsRingElement, IsBool], function(root, a, no
     i := Position(root, 1);
     j := Position(root, -1);
     l := Position(root, 0);
+	if i > j then
+		a := ConicAlgInv(a);
+	fi;
 	if not noGamma then
 		if root = [1, -1, 0] then
 			lambda := ComRingGamIndet(1)^-1 * ComRingGamIndet(2)^-1 * ComRingGamIndet(3);

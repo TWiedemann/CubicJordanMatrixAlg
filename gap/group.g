@@ -454,12 +454,11 @@ InstallMethod(GrpRootHomF4, [IsList, IsRingElement, IsBool], function(root, a, n
 		return fail;
 	fi;
 	if F4RootG2Coord(root) = [0,0] then
-		## Define root homomorphism as conjugate of root homomorphisms outside of [0, 0]
-		# Twist parameter
+		## Define root homomorphism as the conjugate of a root homomorphism outside of [0, 0]
+		# Twist parameter (as in [DMW, ])
 		if root in [[0, 1, -1, 0], [0, -1, 1, 0]] then
 			a := -a;
-		fi;
-		if root in [[0, -1, 1, 0], [0, 1, 0, -1], [0, 0, 1, -1]] then
+		else
 			a := ConicAlgInv(a);
 		fi;
 		roothom := rootArg -> GrpRootHomF4NonDiv(rootArg, a, naive);

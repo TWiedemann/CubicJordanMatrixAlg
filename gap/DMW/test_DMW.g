@@ -202,7 +202,7 @@ TestZeroParities := function()
 		[1, 0, -1, 0], [0, -1, 0, -1], [0, 1, 0, 1]
 	];
 	wiList := [ w1, w1, w1, w1, w4, w4 ];
-	etaList := [ [-1,1], [-1,-1], [1,-1], [1,1], [1,-1], [1,1] ];
+	etaList := [ [-1,1], [-1,1], [1,-1], [1,-1], [1,-1], [1,-1] ];
 	# Test
 	for i in [1..6] do
 		if not TestEquality(
@@ -472,7 +472,7 @@ end;
 PrintLatexParityTable := function()
 	local e1, e2, e3, e4, rootCoeffs, rootCoeff, root, pos, i, k, l, par;
 	Display("\\toprule");
-	Display("$\\alpha$ & $\\tilde{\\eta}(\\alpha, f_1)$ & $\\tilde{\\eta}(\\alpha, f_2)$ & $\\tilde{\\eta}(\\alpha, f_3)$ & $\\tilde{\\eta}(\\alpha, f_4)$ \\\\");
+	Display("$\\alpha$ & $\\eta(\\alpha, f_1)$ & $\\eta(\\alpha, f_2)$ & $\\eta(\\alpha, f_3)$ & $\\eta(\\alpha, f_4)$ \\\\");
 	e1 := [1,0,0,0];
 	e2 := [0,1,0,0];
 	e3 := [0,0,1,0];
