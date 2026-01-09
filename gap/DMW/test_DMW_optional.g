@@ -20,7 +20,7 @@ TestGrpRootHom := function(root)
 	g1 := GrpRootHomF4(root, x1);
 	g2 := GrpRootHomF4(root, x2);
 	g3 := GrpRootHomF4(root, x1+x2);
-	if TestEqualityPieces(g1*g2, g3) = true then
+	if IsEmpty(TestEqualityPieces(g1*g2, g3)) then
 		return true;
 	else
 		return false;
@@ -34,14 +34,16 @@ TestGrpRootHoms := function()
 	local root;
 	for root in F4Roots do
 		if not TestGrpRootHom(root) then
+			Print("Problem for ", root, "\n");
 			return false;
 		fi;
 	od;
 	return true;
 end;
 
-# Returns: true if GrpRootHomF4NonDiv and GrpRootHomF4Div coincide on root, otherwise
-# the corresponding error list of terms that have to be checked by hand.
+# root: Root in F4 with F4RootGsCoord
+# Returns: true if GrpRootHomF4 and GrpRootHomF4Div coincide on root.
+# Otherweise returns the corresponding error list of terms that have to be checked by hand.
 # Uses indeterminates a_1, a_{ConicAlg_rank-1}, a_{ConicAlg_rank}, t_1, t_{ComRing_rank}
 TestGrpRootHomExp := function(root)
 	local a;
@@ -50,23 +52,27 @@ TestGrpRootHomExp := function(root)
 	elif root in F4LongRoots then
 		a := ComRingIndet(1);
 	fi;
-	return TestEqualityOnModuleGens(GrpRootHomF4Div(root, a), GrpRootHomF4NonDiv(root, a));
+	return TestEqualityOnModuleGens(GrpRootHomF4Div(root, a), GrpRootHomF4(root, a));
 end;
 
-# Returns: true if TestGrpRootHomExp succeeds for all roots in F4, otherwise the error list
-# for the first root for which the test does not succeed.
-TestAllGrpRootHomExp := function()
-	local root, test;
+# Returns: true if TestGrpRootHomExp succeeds for all roots in F4 with F4RootGsCoord <> [0,0].
+# Otherwise returns the list of all error terms that have to be checked by hand.
+TestNon00GrpRootHomExp := function()
+	local root, test, errorList;
+	errorList := [];
 	for root in F4Roots do
 		if F4RootG2Coord(root) <> [0,0] then
 			test := TestGrpRootHomExp(root);
 			if test <> true then
-				Print("Problem for ", root, "\n");
-				return test;
+				errorList := Concatenation(errorList, List(test, x -> x[2]));
 			fi;
 		fi;
 	od;
-	return true;
+	if IsEmpty(errorList) then
+		return true;
+	else
+		return errorList;
+	fi;
 end;
 
 # Displays the test results for some of the conjugation formulas for Weyl elements in the G2-grading.
@@ -109,6 +115,9 @@ TestG2WeylFormulas := function()
 	Add(testList, [F4Exp(aLie1), F4Exp(aLie2)]);
 	# Perform actual tests
 	for list in testList do
-		Display(TestEquality(phibsInv*list[1]*phibs, list[2]));
+		if TestEquality(phibsInv*list[1]*phibs, list[2]) <> true then
+			return false;
+		fi;
 	od;
+	return true;
 end;
