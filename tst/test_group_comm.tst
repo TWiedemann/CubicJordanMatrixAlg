@@ -5,8 +5,8 @@
 ### the desired F4-commutator relations.
 
 ### Init
-gap> InitF4Graded(6, 3, 4, false);;
-gap> RereadPackage("F4GradedGroups", "gap/DMW/test_DMW.g");;
+gap> InitCJMA(6, 3, 4, false);;
+gap> RereadPackage("CubicJordanMatrixAlg", "gap/DMW/test_DMW.g");;
 
 # Element is trivial because
 # n(a2)*a1 = a1*n(a2) = a1*(a2*a2') = (a1*a2)*a2',

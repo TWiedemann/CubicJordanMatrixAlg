@@ -4,7 +4,7 @@
 ### Runtime: Negligible.
 
 ### ----- Init -----
-gap> InitF4Graded(6, 6, 3, false);;
+gap> InitCJMA(6, 6, 3, false);;
 
 ### ----- Basic elements -----
 

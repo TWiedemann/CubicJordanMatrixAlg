@@ -3,7 +3,7 @@
 ### Runtime: Negligible.
 
 ### ----- Init -----
-gap> InitF4Graded(6, 3, 4, false);;
+gap> InitCJMA(6, 3, 4, false);;
 gap> a1 := ConicAlgIndet(1);; a2 := ConicAlgIndet(2);; a3 := ConicAlgIndet(3);;
 gap> s1 := ComRingIndet(1);; s2 := ComRingIndet(2);; s3 := ComRingIndet(3);;
 

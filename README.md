@@ -1,29 +1,62 @@
 # Introduction
 
-This [GAP](https://www.gap-system.org/) package allows basic symbolic computation in free multiplicative conic alternative algebras (over free commutative rings, that is, polynomial rings).
-In other words, it provides a framework to prove that certain identities hold in any multiplicative conic alternative algebra over any commutative ring by deriving these identities from a set of known identities in such objects.
-It also supports similar computations in the Lie algebra and the group of automorphisms that are constructed in the preprint \[DMW\] *Cubic norm pairs and $G_2$- and $F_4$-graded groups and Lie algebras* (TODO: arXiv link) from an arbitrary multiplicative conic alternative algebra.
-It cannot prove any identity in the objects described above (which seems to be a hopeless task), but it is powerful enough to prove all identities that are needed in \[DMW\], which is its main purpose.
-The basic strategy of this package is described in \[DMW, 9.3\].
+This [GAP](https://www.gap-system.org/) package allows basic symbolic computation in
+free multiplicative conic alternative algebras (over free commutative rings, that is, polynomial rings)
+and, as the main application, in cubic Jordan matrix algebras over them.
+In other words, it provides a framework to prove that certain identities hold in any multiplicative conic alternative algebra over any commutative ring.
+It does this deriving these identities from a set of known identities in such objects.
+It also supports similar computations in the Lie algebra and the group of automorphisms
+that are constructed in the preprint \[DMW\] *Cubic norm pairs and $G_2$- and $F_4$-graded groups and Lie algebras* (TODO: arXiv link)
+from the cubic Jordan matrix algebra of
+an arbitrary multiplicative conic alternative algebra.
+It cannot prove any identity in the objects described above (which seems to be a hopeless task),
+but it is powerful enough to prove all identities that are needed in \[DMW\].
+The basic underlying principles of this package are described in \[DMW, 9.3\].
 
 # Installation
 
 1. Install the latest version of [GAP](https://www.gap-system.org/install/). This package requires GAP version at least 4.15.0, and has been tested with GAP version 4.15.1. It will run into errors with GAP version 4.14.0 or lower.
-2. Download (or `git clone`) this repository into a new directory `[gap]/pkg/F4GradedGroups` inside your `gap` directory, which should already contain a `pkg` directory. Thus the `init` file of this package should lie in `[gap]/pkg/F4GradedGroups/init.g`.
+2. Start the GAP package manager:
+```
+gap> LoadPackage("PackageManager");
+```
+3. Install the package from its git repository:
+```
+gap> InstallPackage("https://github.com/TWiedemann/CubicJordanMatrixAlg.git");
+```
+This will will install the package into `.gap/pkg/` inside your `home` directory.
+Alternatively, you can manually download (or `git clone`) this repository into this directory.
 
-# Using this package
+# Updating the package
 
-1. In GAP, load the package with `LoadPackage("F4GradedGroups");`.
-2. Initialise the package with `InitF4Graded();`.
+1. Start the GAP package manager:
+```
+gap> LoadPackage("PackageManager");
+```
+2. Update the package:
+```
+gap> UpdatePackage("CubicJordanMatrixAlg");
+```
 
-For details, see [`doc/manual.md`](https://github.com/TWiedemann/F4GradedGroups/blob/main/doc/manual.md). Usage examples may also be found in (the text file) `tst/test_basic.tst`.
+# Using the package
+
+1. In GAP, load the package with
+```
+gap> LoadPackage("CubicJordanMatrixAlg");
+```
+2. Initialise the package with
+```
+gap> InitCJMA();
+```
+
+For details, see [`doc/manual.md`](https://github.com/TWiedemann/CubicJordanMatrixAlg/blob/main/doc/manual.md). Usage examples may also be found in (the text file) `tst/test_basic.tst`.
 
 # Verification of the claims in \[DMW\]
 
-For each of the files in `[gap]/pkg/F4GradedGroups/tst`, do the following to perform the tests in this file that verify certain claims in \[DMW\].
+For each of the files in `[gap]/pkg/CubicJordanMatrixAlg/tst`, do the following to perform the tests in this file that verify certain claims in \[DMW\].
 1. Start a GAP session.
-2. Type `LoadPackage("F4GradedGroups");` and press Enter to load the package. Do NOT call `InitF4Graded()`, this will be done automatically by the following steps.
-3. Type `Test("filepath", rec(width:=50000));` and press Enter. Here `filepath` should be replaced by the path of the file you want to test. On Unix, if you started the GAP session inside `[gap]/pkg/F4GradedGroups/tst`, then `filepath` can simply be the name of the file, e.g. `Test("test_basic.tst", rec(width:=50000));`. On Windows, this does not work, but you can drag and drop the `tst` file into your GAP session to obtain its path.
+2. Type `LoadPackage("CubicJordanMatrixAlg");` and press Enter to load the package. Do NOT call `InitCJMA()`, this will be done automatically by the following steps.
+3. Type `Test("filepath", rec(width:=50000));` and press Enter. Here `filepath` should be replaced by the path of the file you want to test (which, if you installed the package with the package manager, should lie in `.gap/pkg/CubicJordanMatrixAlg/tst` in your `home` directory). On Unix, if you started the GAP session inside `.gap/pkg/CubicJordanMatrixAlg/tst`, then `filepath` can simply be the name of the file, e.g. `Test("test_basic.tst", rec(width:=50000));`. On Windows, this does not work, but you can drag and drop the `tst` file into your GAP session to obtain its path.
 Consult the [GAP manual](https://docs.gap-system.org/doc/ref/chap7_mj.html#X801051CC86594630) for more information on the GAP function `Test`.
 4. An output of `true` on the terminal signifies that all tests were successful. Some tests run only a few seconds, others may take 10 minutes or longer.
 5. To test the next file, close GAP and start a new session.

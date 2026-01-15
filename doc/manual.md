@@ -5,14 +5,14 @@ This package allows symbolic computations in a free multiplicative conic alterna
 - `ConicAlg_rank` is the number of *indeterminates* `a1, a2, ...`.
 - `Trace_MaxLength` is the maximal length of products that may appear inside the argument of the trace function of $C$. For example, if `Trace_MaxLength = 2`, then `tr(a1a2)` is defined but  `tr(a1a2a1)` is not.
 
-These constants may be set by the user with the following function (after loading the package with `LoadPackage("F4GradedGroups")`):
+These constants may be set by the user with the following function (after loading the package with `LoadPackage("CubicJordanMatrixAlg")`):
 
 ```
-InitF4Graded(comrank, conicrank, tracelength, userVars)
+InitCJMA(comrank, conicrank, tracelength, userVars)
 ```
 Initialises the package with `ComRing_rank := comrank`, `ConicAlg_rank := conicrank`, `Trace_MaxLength := tracelength`. If `userVars = true`, then the following GAP variables are defined for the user's convenience: `t1, t2, ...` for the generators of $k$; `a1, a2, ...` for the generators of $C$; `g1, g2, g3` for the (arbitrary) constants $\gamma_1, \gamma_2, \gamma_3$ in $k$ (see below); `dd` for `Liedd` (see below). If `userVars = false`, then for example the indeterminates in $k$ are still printed as `t1, t2, ...`, but no GAP variables of the same name are defined to easily access these elements of $k$.
 
-High values of `ConicAlg_rank` and `Trace_MaxLength` strongly impact the runtime of computations. All serious computations needed in \[DMW\] work in the setup `InitF4Graded(6, 3, 4, false)` or `InitF4Graded(6, 2, 4, false)`.
+High values of `ConicAlg_rank` and `Trace_MaxLength` strongly impact the runtime of computations. All serious computations needed in \[DMW\] work in the setup `InitCJMA(6, 3, 4, false)` or `InitCJMA(6, 2, 4, false)`.
 
 # Notational conventions
 
@@ -376,6 +376,6 @@ As for `TestEquality`, the user should assure that `ComRingIndet(ComRing_rank)` 
 
 # For advanced users
 
-While the main functions of the package are described above, more functions and their documentation can be found by studying the GAP source files in `F4GradedGroups/gap`.
-Most files are commited to building up the desired structures step by step (similarly as this manual does), and the precise order in which they are loaded can be read off from `F4GradedGroups/init.g`.
+While the main functions of the package are described above, more functions and their documentation can be found by studying the GAP source files in `CubicJordanMatrixAlg/gap`.
+Most files are commited to building up the desired structures step by step (similarly as this manual does), and the precise order in which they are loaded can be read off from `CubicJordanMatrixAlg/init.g`.
 The most complicated tasks are the simplification functions in `simplify.g` and the construction of the trace function in `comring.g`.
