@@ -78,24 +78,24 @@ gap> test := TestSimpleRootParLists();;
 # g3 (tr(a1)tr(a2) - tr(a1a2)) (2*zeta - xi).
 # Hence the whole sum is 0.
 gap> test[1];
-dd_{(1)[11],(g3*tr(a1)*tr(a2)-g3*tr(a1a2))[11]}+dd_{((1)*<identity ...>)[23],((tr(a1)/g2)*a2')[23]}+(1/g2)*dd_{((1)*a1)[23],((1)*a2)[23]}+(1/-g2)*dd_{((1)*a2)[23],((1)*a1')[23]}+(g3*tr(a1)*tr(a2)-g3*tr(a1a2))*xi+(-2*g3*tr(a1)*tr(a2)+2*g3*tr(a1a2))*zeta
+dd_{(1)[11],(g3*tr(a1)*tr(a2)-g3*tr(a1a2))[11]}+dd_{((1)*1_C)[23],((tr(a1)/g2)*a2')[23]}+(1/g2)*dd_{((1)*a1)[23],((1)*a2)[23]}+(1/-g2)*dd_{((1)*a2)[23],((1)*a1')[23]}+(g3*tr(a1)*tr(a2)-g3*tr(a1a2))*xi+(-2*g3*tr(a1)*tr(a2)+2*g3*tr(a1a2))*zeta
 
 # By (1),
 # dd_{1[23],tr(a1)*a2[23]} = dd_{tr(a1)*1[23],a2[23]} = dd_{a1[23],a2[23]} + dd_{a1'[23],a2[23]} 
 gap> test[2];
-dd_{((1)*<identity ...>)[23],((-tr(a1)/g3)*a2)[23]}+(1/g3)*dd_{((1)*a1)[23],((1)*a2)[23]}+(1/g3)*dd_{((1)*a1')[23],((1)*a2)[23]}
+dd_{((1)*1_C)[23],((-tr(a1)/g3)*a2)[23]}+(1/g3)*dd_{((1)*a1)[23],((1)*a2)[23]}+(1/g3)*dd_{((1)*a1')[23],((1)*a2)[23]}
 
 # The dd-summands are precisely
 # 1/(g2g3) * \sum g_i dd_{b_i[jl], b_l'b_j'[jl]}
 # where b1 = 1, b2 = a2, b3 = a1, so the whole sum is 0 by (7).
 gap> test[3];
-dd_{((1)*<identity ...>)[23],((g1/(g2*g3))*(a1'*a2'))[23]}+(1/g2)*dd_{((1)*a1)[12],((1)*a2')[12]}+(1/g3)*dd_{((1)*a2)[31],((1)*a1')[31]}+(g1*tr(a1a2))*xi+(-2*g1*tr(a1a2))*zeta
+dd_{((1)*1_C)[23],((g1/(g2*g3))*(a1'*a2'))[23]}+(1/g2)*dd_{((1)*a1)[12],((1)*a2')[12]}+(1/g3)*dd_{((1)*a2)[31],((1)*a1')[31]}+(g1*tr(a1a2))*xi+(-2*g1*tr(a1a2))*zeta
 
 # Like test[3]: The dd-summands are precisely
 # 1/(g1g2) * \sum g_i dd_{b_i[jl], b_l'b_j'[jl]}
 # where b1 = 1, b2 = a1', b3 = a2', so the whole sum is 0 by (7).
 gap> test[4];
-dd_{((1)*<identity ...>)[23],((1/-g2)*(a2*a1))[23]}+(-g3/(g1*g2))*dd_{((1)*a2')[12],((1)*a1)[12]}+(-1/g1)*dd_{((1)*a1')[31],((1)*a2)[31]}+(-g3*tr(a1a2))*xi+(2*g3*tr(a1a2))*zeta
+dd_{((1)*1_C)[23],((1/-g2)*(a2*a1))[23]}+(-g3/(g1*g2))*dd_{((1)*a2')[12],((1)*a1)[12]}+(-1/g1)*dd_{((1)*a1')[31],((1)*a2)[31]}+(-g3*tr(a1a2))*xi+(2*g3*tr(a1a2))*zeta
 
 # Like test[3]: The dd-summands are precisely
 # 1/(g1g3) * \sum g_i dd_{b_i[jl], b_l'b_j'[jl]}
@@ -103,49 +103,49 @@ dd_{((1)*<identity ...>)[23],((1/-g2)*(a2*a1))[23]}+(-g3/(g1*g2))*dd_{((1)*a2')[
 # g2 tr(a1'a2) (2*zeta - xi)
 # by (7). Thus the whole sums is 0 by (2).
 gap> test[5];
-dd_{((1)*<identity ...>)[23],((1/g3)*(a2'*a1))[23]}+(g2/(g1*g3))*dd_{((1)*a1')[31],((1)*a2')[31]}+(1/g1)*dd_{((1)*a2)[12],((1)*a1)[12]}+(g2*tr(a1)*tr(a2)-g2*tr(a1a2))*xi+(-2*g2*tr(a1)*tr(a2)+2*g2*tr(a1a2))*zeta
+dd_{((1)*1_C)[23],((1/g3)*(a2'*a1))[23]}+(g2/(g1*g3))*dd_{((1)*a1')[31],((1)*a2')[31]}+(1/g1)*dd_{((1)*a2)[12],((1)*a1)[12]}+(g2*tr(a1)*tr(a2)-g2*tr(a1a2))*xi+(-2*g2*tr(a1)*tr(a2)+2*g2*tr(a1a2))*zeta
 
 # Like test[3]: The dd-summands are precisely
 # 1/(g2g3) * \sum g_i dd_{b_i[jl], b_l'b_j'[jl]}
 # where b1 = 1, b2 = a2', b3 = a1', so the whole sum is 0 by (7).
 gap> test[6];
-dd_{((1)*<identity ...>)[23],((g1/(g2*g3))*(a1*a2))[23]}+(1/g3)*dd_{((1)*a2')[31],((1)*a1)[31]}+(1/g2)*dd_{((1)*a1')[12],((1)*a2)[12]}+(g1*tr(a1a2))*xi+(-2*g1*tr(a1a2))*zeta
+dd_{((1)*1_C)[23],((g1/(g2*g3))*(a1*a2))[23]}+(1/g3)*dd_{((1)*a2')[31],((1)*a1)[31]}+(1/g2)*dd_{((1)*a1')[12],((1)*a2)[12]}+(g1*tr(a1a2))*xi+(-2*g1*tr(a1a2))*zeta
 
 # By (1),
 # -tr(a1a2) = -a2a1 - a1'a2' and
 # tr(a2)a1' = a1'a2 + a1'a2'
 gap> test[7];
-(-g1*tr(a1a2)/g2)*<identity ...>+(g1*tr(a2)/g2)*a1'+(g1/g2)*(a2*a1)+(-g1/g2)*(a1'*a2)
+(-g1*tr(a1a2)/g2)*1_C+(g1*tr(a2)/g2)*a1'+(g1/g2)*(a2*a1)+(-g1/g2)*(a1'*a2)
 
 # By (2) and (1),
 # -tr(a1)tr(a2) + tr(a1a2) = -tr(a1a2') = -tr(a2a1') = -a2a1' - a1a2' and
 # tr(a2)a1 = a1a2 + a1a2'
 gap> test[8];
-((-g2*tr(a1)*tr(a2)+g2*tr(a1a2))/g1)*<identity ...>+(g2*tr(a2)/g1)*a1+(-g2/g1)*(a1*a2)+(g2/g1)*(a2*a1')
+((-g2*tr(a1)*tr(a2)+g2*tr(a1a2))/g1)*1_C+(g2*tr(a2)/g1)*a1+(-g2/g1)*(a1*a2)+(g2/g1)*(a2*a1')
 
 # Like test[3]: The dd-summands are precisely
 # 1/(g1g2) * \sum g_i dd_{b_i[jl], b_l'b_j'[jl]}
 # where b1 = a2', b2 = a1', b3 = 1, so the whole sum is 0 by (7).
 gap> test[9];
-dd_{((1)*<identity ...>)[12],((g3/(g1*g2))*(a1*a2))[12]}+(1/g2)*dd_{((1)*a2')[23],((1)*a1)[23]}+(1/g1)*dd_{((1)*a1')[31],((1)*a2)[31]}+(g3*tr(a1a2))*xi+(-2*g3*tr(a1a2))*zeta
+dd_{((1)*1_C)[12],((g3/(g1*g2))*(a1*a2))[12]}+(1/g2)*dd_{((1)*a2')[23],((1)*a1)[23]}+(1/g1)*dd_{((1)*a1')[31],((1)*a2)[31]}+(g3*tr(a1a2))*xi+(-2*g3*tr(a1a2))*zeta
 
 # Like test[3]: The dd-summands are precisely
 # 1/(g2g3) * \sum g_i dd_{b_i[jl], b_l'b_j'[jl]}
 # where b1 = a1, b2 = a2, b3 = 1, so the whole sum is 0 by (7).
 gap> test[10];
-dd_{((1)*<identity ...>)[12],((1/g2)*(a2'*a1'))[12]}+(g1/(g2*g3))*dd_{((1)*a1)[23],((1)*a2')[23]}+(1/g3)*dd_{((1)*a2)[31],((1)*a1')[31]}+(g1*tr(a1a2))*xi+(-2*g1*tr(a1a2))*zeta
+dd_{((1)*1_C)[12],((1/g2)*(a2'*a1'))[12]}+(g1/(g2*g3))*dd_{((1)*a1)[23],((1)*a2')[23]}+(1/g3)*dd_{((1)*a2)[31],((1)*a1')[31]}+(g1*tr(a1a2))*xi+(-2*g1*tr(a1a2))*zeta
 
 # Like test[3]: The dd-summands are precisely
 # -1/(g1g3) * \sum g_i dd_{b_i[jl], b_l'b_j'[jl]}
 # where b1 = a1', b2 = a2', b3 = 1, so the whole sum is 0 by (7).
 gap> test[11];
-dd_{((1)*<identity ...>)[12],((-1/g1)*(a2*a1))[12]}+(-g2/(g1*g3))*dd_{((1)*a2')[31],((1)*a1)[31]}+(1/-g3)*dd_{((1)*a1')[23],((1)*a2)[23]}+(-g2*tr(a1a2))*xi+(2*g2*tr(a1a2))*zeta
+dd_{((1)*1_C)[12],((-1/g1)*(a2*a1))[12]}+(-g2/(g1*g3))*dd_{((1)*a2')[31],((1)*a1)[31]}+(1/-g3)*dd_{((1)*a1')[23],((1)*a2)[23]}+(-g2*tr(a1a2))*xi+(2*g2*tr(a1a2))*zeta
 
 # Like test[3]: The dd-summands are precisely
 # 1/(g1g3) * \sum g_i dd_{b_i[jl], b_l'b_j'[jl]}
 # where b1 = a2, b2 = a1, b3 = 1, so the whole sum is 0 by (7).
 gap> test[12];
-dd_{((1)*<identity ...>)[12],((g3/(g1*g2))*(a1'*a2'))[12]}+(1/g1)*dd_{((1)*a1)[31],((1)*a2')[31]}+(1/g2)*dd_{((1)*a2)[23],((1)*a1')[23]}+(g3*tr(a1a2))*xi+(-2*g3*tr(a1a2))*zeta
+dd_{((1)*1_C)[12],((g3/(g1*g2))*(a1'*a2'))[12]}+(1/g1)*dd_{((1)*a1)[31],((1)*a2')[31]}+(1/g2)*dd_{((1)*a2)[23],((1)*a1')[23]}+(g3*tr(a1a2))*xi+(-2*g3*tr(a1a2))*zeta
 
 # By (1), the sum of the last two summands is
 # (-1/g1)*dd_{((1)*a2)[12],((1)*a1)[12]}+(-1/g1)*dd_{((1)*a2)[12],((1)*a1')[12]}
@@ -158,11 +158,11 @@ dd_{((1)*<identity ...>)[12],((g3/(g1*g2))*(a1'*a2'))[12]}+(1/g1)*dd_{((1)*a1)[3
 # d(1[12], 1[12]) = g1g2(d_1 + d_2).
 # It follows that the whole sum is zero.
 gap> test[13];
-dd_{(1)[11],(g2*tr(a1)*tr(a2))[11]}+dd_{((1)*<identity ...>)[12],((-tr(a1)/g1)*a2)[12]}+dd_{(1)[22],(g2*tr(a1)*tr(a2))[22]}+(-1/g1)*dd_{((1)*a2)[12],((1)*a1)[12]}+(-1/g1)*dd_{((1)*a2)[12],((1)*a1')[12]}
+dd_{(1)[11],(g2*tr(a1)*tr(a2))[11]}+dd_{((1)*1_C)[12],((-tr(a1)/g1)*a2)[12]}+dd_{(1)[22],(g2*tr(a1)*tr(a2))[22]}+(-1/g1)*dd_{((1)*a2)[12],((1)*a1)[12]}+(-1/g1)*dd_{((1)*a2)[12],((1)*a1')[12]}
 
 # Follows from (1)
 gap> test[14];
-dd_{((1)*<identity ...>)[12],((-tr(a1)/g2)*a2)[12]}+(1/g2)*dd_{((1)*a1)[12],((1)*a2)[12]}+(1/g2)*dd_{((1)*a1')[12],((1)*a2)[12]}
+dd_{((1)*1_C)[12],((-tr(a1)/g2)*a2)[12]}+(1/g2)*dd_{((1)*a1)[12],((1)*a2)[12]}+(1/g2)*dd_{((1)*a1')[12],((1)*a2)[12]}
 
 # Test that we are done
 gap> Length(test);

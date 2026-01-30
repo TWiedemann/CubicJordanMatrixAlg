@@ -41,6 +41,28 @@ BindGlobal("ConicAlgMagInvIndet", function(i)
 	return GeneratorsOfMagmaWithOne(ConicAlgMag)[ConicAlg_rank+i];
 end);
 
+
+# ----- Nicer printing for 1 in ConicAlg -----
+
+BindGlobal("_ConicAlgMagObjFam", FamilyObj(One(ConicAlgMag)));
+BindGlobal("_ConicAlgMagOneString", "1_C");
+
+InstallMethod(String, "Custom string for 1 in ConicAlgMag", [IsNonassocWord], function(x)
+	if FamilyObj(x) = _ConicAlgMagObjFam and IsOne(x) then
+		return _ConicAlgMagOneString;
+	else
+		TryNextMethod();
+	fi;
+end);
+
+InstallMethod(PrintObj, "Custom string for 1 in ConicAlgMag", [IsNonassocWord], function(x)
+	if FamilyObj(x) = _ConicAlgMagObjFam then
+		Print(String(x));
+	else
+		TryNextMethod();
+	fi;
+end);
+
 # ----- Constructing elements from representations and list of all elements -----
 
 # mRep: External representation of an element of ConicAlgMag

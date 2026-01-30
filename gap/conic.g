@@ -11,6 +11,27 @@ BindGlobal("ConicAlg", FreeMagmaRing(ComRing, ConicAlgMag));
 BindGlobal("ConicAlgMagEmb", x -> ImageElm(Embedding(ConicAlgMag, ConicAlg), x));
 
 
+# ----- Nicer print for 0 in ConicAlg -----
+
+BindGlobal("_ConicAlgObjFam", FamilyObj(Zero(ConicAlg)));
+BindGlobal("_ConicAlgZeroString", "0_C");
+InstallMethod(String, "Custom string for 0 in ConicAlg", [IsElementOfFreeMagmaRing], function(x)
+	if FamilyObj(x) = _ConicAlgObjFam and IsZero(x) then
+		return _ConicAlgZeroString;
+	else
+		TryNextMethod();
+	fi;
+end);
+
+InstallMethod(PrintObj, "Custom string for 0 in ConicAlg", [IsElementOfFreeMagmaRing], function(x)
+	if FamilyObj(x) = _ConicAlgObjFam then
+		Print(String(x));
+	else
+		TryNextMethod();
+	fi;
+end);
+
+
 # ----- Functions which test requirements and throw errors ---
 
 DeclareOperation("ReqComRingEl", [IsRingElement]);

@@ -57,17 +57,17 @@ BindGlobal("g3", ComRingGamIndet(3));
 BindGlobal("dd", Liedd);
 
 # Simple roots
-# BindGlobal("d1", F4SimpleRoots[1]);
-# BindGlobal("d2", F4SimpleRoots[2]);
-# BindGlobal("d3", F4SimpleRoots[3]);
-# BindGlobal("d4", F4SimpleRoots[4]);
+BindGlobal("d1", F4SimpleRoots[1]);
+BindGlobal("d2", F4SimpleRoots[2]);
+BindGlobal("d3", F4SimpleRoots[3]);
+BindGlobal("d4", F4SimpleRoots[4]);
 
 # Weyl elements
-# BindGlobal("w1", GrpStandardWeylF4(F4SimpleRoots[1]));
-# BindGlobal("w1Inv", GrpStandardWeylF4(F4SimpleRoots[1], -1));
-# BindGlobal("w2", GrpStandardWeylF4(F4SimpleRoots[2]));
-# BindGlobal("w2Inv", GrpStandardWeylF4(F4SimpleRoots[2], -1));
-# BindGlobal("w3", GrpStandardWeylF4(F4SimpleRoots[3]));
-# BindGlobal("w3Inv", GrpStandardWeylF4(F4SimpleRoots[3], -1));
-# BindGlobal("w4", GrpStandardWeylF4(F4SimpleRoots[4]));
-# BindGlobal("w4Inv", GrpStandardWeylF4(F4SimpleRoots[4], -1));
+BindGlobal("w1", GrpStandardWeylF4(F4SimpleRoots[1]));
+BindGlobal("w1Inv", GrpStandardWeylF4(F4SimpleRoots[1], -1));
+BindGlobal("w2", GrpStandardWeylF4(F4SimpleRoots[2]));
+BindGlobal("w2Inv", GrpStandardWeylF4(F4SimpleRoots[2], -1));
+BindGlobal("w3", GrpStandardWeylF4(F4SimpleRoots[3]));
+BindGlobal("w3Inv", GrpStandardWeylF4(F4SimpleRoots[3], -1));
+BindGlobal("w4", GrpStandardWeylF4(F4SimpleRoots[4]));
+BindGlobal("w4Inv", GrpStandardWeylF4(F4SimpleRoots[4], -1));
