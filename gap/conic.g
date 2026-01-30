@@ -167,6 +167,9 @@ BindGlobal("ConicInv", function(a)
 	fi;
 end);
 
+# Different name
+BindGlobal("ConicConj", ConicInv);
+
 # a: Element of ConicAlgMag or of ConicAlg
 # Returns: tr(a) \in ComRing
 BindGlobal("ConicTr", function(a)

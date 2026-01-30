@@ -53,9 +53,10 @@ Returns the `p`-th indeterminate in $C$, which is printed as `ap`. We must have 
 The usual arithmetic operations in GAP for addition and multiplication (but not inversion) are available for elements of $k$.
 
 ```
-ConicInv(a)
+ConicInv(a), ConicConj(a)
 ```
 Returns the conjugate of `a`. This is an element of $C$ which is printed as `a'`.
+`ConicInv` and `ConicConj` are different names for the same function.
 ```
 ConicNorm(a)
 ```
