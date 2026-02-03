@@ -57,17 +57,17 @@ g3 := ComRingGamIndet(3);
 dd := Liedd;
 
 # Simple roots
-d1 := F4SimpleRoots[1];
-d2 := F4SimpleRoots[2];
-d3 := F4SimpleRoots[3];
-d4 := F4SimpleRoots[4];
+# d1 := F4SimpleRoots[1];
+# d2 := F4SimpleRoots[2];
+# d3 := F4SimpleRoots[3];
+# d4 := F4SimpleRoots[4];
 
 # Weyl elements
-w1 := GrpStandardWeylF4(F4SimpleRoots[1]);
-w1Inv := GrpStandardWeylF4(F4SimpleRoots[1], -1);
-w2 := GrpStandardWeylF4(F4SimpleRoots[2]);
-w2Inv := GrpStandardWeylF4(F4SimpleRoots[2], -1);
-w3 := GrpStandardWeylF4(F4SimpleRoots[3]);
-w3Inv := GrpStandardWeylF4(F4SimpleRoots[3], -1);
-w4 := GrpStandardWeylF4(F4SimpleRoots[4]);
-w4Inv := GrpStandardWeylF4(F4SimpleRoots[4], -1);
+# w1 := GrpStandardWeylF4(F4SimpleRoots[1]);
+# w1Inv := GrpStandardWeylF4(F4SimpleRoots[1], -1);
+# w2 := GrpStandardWeylF4(F4SimpleRoots[2]);
+# w2Inv := GrpStandardWeylF4(F4SimpleRoots[2], -1);
+# w3 := GrpStandardWeylF4(F4SimpleRoots[3]);
+# w3Inv := GrpStandardWeylF4(F4SimpleRoots[3], -1);
+# w4 := GrpStandardWeylF4(F4SimpleRoots[4]);
+# w4Inv := GrpStandardWeylF4(F4SimpleRoots[4], -1);
