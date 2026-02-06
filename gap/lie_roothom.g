@@ -163,7 +163,7 @@ InstallMethod(DDRootHomA2, [IsList, IsRingElement, IsBool], function(root, a, no
 	else
 		lambda := One(ComRing);
 	fi;
-    return DDdd(CubicComEl(One(ComRing), i), lambda*CubicConicElMat(i, j, a));
+    return DDdd(CubicComEl(One(ComRing), i), lambda*CubicConicElMat(a, i, j));
 end);
 
 # Default: noGamma = false.
@@ -316,7 +316,7 @@ BindGlobal("LieGensAsModule", function(comIndetNum, conicIndetNum)
 			if i = j then
 				gen := Liedd(CubicComEl(One(ComRing), i), CubicComEl(t1, i));
 			else
-				gen := Liedd(CubicComEl(One(ComRing), i), CubicConicElMat(i, j, a1));
+				gen := Liedd(CubicComEl(One(ComRing), i), CubicConicElMat(a1, i, j));
 			fi;
 			Add(gens, gen);
 		od;
@@ -324,7 +324,7 @@ BindGlobal("LieGensAsModule", function(comIndetNum, conicIndetNum)
 	# Generators of Z_{ij,ji} for i <> j
 	for i in [1..3] do
 		for j in [i+1..3] do
-			Add(gens, Liedd(CubicConicElMat(i, j, a1), CubicConicElMat(j, i, a2)));
+			Add(gens, Liedd(CubicConicElMat(a1, i, j), CubicConicElMat(a2, j, i)));
 		od;
 	od;
 	return gens;

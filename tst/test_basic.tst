@@ -83,13 +83,13 @@ gap> CubicConicEl(a1, 2);
 ((1)*a1)[31]
 gap> CubicConicEl(a1, 3);
 ((1)*a1)[12]
-gap> CubicConicElMat(1, 2, a1);
+gap> CubicConicElMat(a1, 1, 2);
 ((1)*a1)[12]
-gap> CubicConicElMat(2, 1, a1);
+gap> CubicConicElMat(a1, 2, 1);
 ((1)*a1')[12]
-gap> CubicConicElMat(1, 3, a1);
+gap> CubicConicElMat(a1, 1, 3);
 ((1)*a1')[31]
-gap> CubicConicElMat(2, 3, a1);
+gap> CubicConicElMat(a1, 2, 3);
 ((1)*a1)[23]
 gap> cubicGen1 := CubicGenericEl(0);
 (t1)[11]+(t2)[22]+(t3)[33]+((1)*a1)[23]+((1)*a2)[31]+((1)*a3)[12]
@@ -151,11 +151,11 @@ dd_{(t1)[11]+(t2)[22]+(t3)[33]+((1)*a1)[23]+((1)*a2)[31]+((1)*a3)[12],(t4)[11]+(
 ## ApplyDDLaws
 gap> ApplyDDLaws(DDdd(CubicConicEl(a1, 2), CubicComEl(t1, 3)), true);
 dd_{(1)[11],((t1)*a1)[31]}
-gap> ApplyDDLaws(DDdd(CubicConicElMat(1,2, a1), CubicConicElMat(2,3, a2)), true);
+gap> ApplyDDLaws(DDdd(CubicConicElMat(a1, 1,2), CubicConicElMat(a2, 2,3)), true);
 dd_{(1)[11],((g2)*(a2'*a1'))[31]}
-gap> ApplyDDLaws(DDdd(CubicConicElMat(1,2, a1), CubicConicElMat(1,3, a2)), true);
+gap> ApplyDDLaws(DDdd(CubicConicElMat(a1, 1,2), CubicConicElMat(a2, 1,3)), true);
 dd_{(1)[22],((g1)*(a1'*a2))[23]}
-gap> ApplyDDLaws(DDdd(CubicConicElMat(1,2, a1), CubicComEl(t1, 3)), true);
+gap> ApplyDDLaws(DDdd(CubicConicElMat(a1, 1,2), CubicComEl(t1, 3)), true);
 0_{L_0}
 
 ## Embeddings

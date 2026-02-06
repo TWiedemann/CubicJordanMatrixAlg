@@ -164,7 +164,7 @@ end);
 # a: Element of ConicAlg
 # j, l: 1, 2, or 3 such that j <> l
 # Returns: a[jl] \in Cubic
-BindGlobal("CubicConicElMat", function(j, l, a)
+BindGlobal("CubicConicElMat", function(a, j, l)
 	local i;
 	if not (l in [1,2,3] and j in [1,2,3] and l <> j) then
 		return fail;
@@ -183,7 +183,7 @@ BindGlobal("CubicConicElOne", function(i)
 end);
 
 BindGlobal("CubicConicElOneMat", function(i, j)
-	return CubicConicElMat(i, j, One(ConicAlg));
+	return CubicConicElMat(One(ConicAlg), i, j);
 end);
 
 # i, j: Indices 1, 2 or 3
@@ -195,7 +195,7 @@ BindGlobal("CubicElMat", function(i, j, a)
 		return CubicComEl(a, i);
 	elif i <> j then
 		ReqConicAlgEl(a);
-		return CubicConicElMat(i, j, a);
+		return CubicConicElMat(a, i, j);
 	else
 		Error("Invalid input");
 		return fail;
@@ -208,7 +208,7 @@ BindGlobal("CubicElOneMat", function(i, j)
 	if i = j then
 		return CubicComEl(One(ComRing), i);
 	else
-		return CubicConicElMat(i, j, One(ConicAlg));
+		return CubicConicElMat(One(ConicAlg), i, j);
 	fi;
 end);
 
@@ -328,7 +328,7 @@ InstallMethod(CubicAdj, [IsCubicElement], function(A)
 		comEl := A_j*A_l - TwistDiag[j]*TwistDiag[l]*ConicAlgNorm(a_i);
 		result := result + CubicComEl(comEl, i);
 		algEl := -A_i*a_i + TwistDiag[i] * ConicAlgInv(a_j*a_l);
-		result := result + CubicConicElMat(j, l, algEl);
+		result := result + CubicConicElMat(algEl, j, l);
 	od;
 	return result;
 end );
@@ -359,7 +359,7 @@ InstallMethod(CubicCross, [IsCubicElement, IsCubicElement], function(A, B)
 		comEl := A_j*B_l + B_j*A_l - TwistDiag[j]*TwistDiag[l]*ConicAlgNormLin(a_i, b_i);
 		result := result + CubicComEl(comEl, i);
 		algEl := -A_i*b_i - B_i*a_i + TwistDiag[i]*ConicAlgInv(a_j*b_l + b_j*a_l);
-		result := result + CubicConicElMat(j, l, algEl);
+		result := result + CubicConicElMat(algEl, j, l);
 	od;
 	return result;
 end );

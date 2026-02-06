@@ -12,84 +12,84 @@ gap> s1 := ComRingIndet(1);; s2 := ComRingIndet(2);; s3 := ComRingIndet(3);;
 
 ### (i)
 ## { J_jl, J_li, * } (relation for (i,j,l))
-gap> CubicPartMat(JordanD(CubicConicElMat(2, 3, a1), CubicConicElMat(3, 1, a2), CubicConicElMat(1, 2, a3)), 2, 2);
+gap> CubicPartMat(JordanD(CubicConicElMat(a1, 2, 3), CubicConicElMat(a2, 3, 1), CubicConicElMat(a3, 1, 2)), 2, 2);
 g1*g2*g3*tr(a1a2a3)
 
 # This term can be simplified, see the proof in [DMW].
-gap> CubicPartMat(JordanD(CubicConicElMat(2, 3, a1), CubicConicElMat(3, 1, a2), CubicConicElMat(1, 3, a3)), 2, 3);
+gap> CubicPartMat(JordanD(CubicConicElMat(a1, 2, 3), CubicConicElMat(a2, 3, 1), CubicConicElMat(a3, 1, 3)), 2, 3);
 (g1*g3*tr(a2a3))*a1+(-g1*g3)*((a1*a3')*a2')
-gap> CubicPartMat(JordanD(CubicConicElMat(2, 3, a1), CubicConicElMat(3, 1, a2), CubicComEl(s3, 1)), 2, 1);
+gap> CubicPartMat(JordanD(CubicConicElMat(a1, 2, 3), CubicConicElMat(a2, 3, 1), CubicComEl(s3, 1)), 2, 1);
 (g3*t3)*(a1*a2)
 
 ## { J_lj, J_ji, * } (relation for (l,j,i))
-gap> CubicPartMat(JordanD(CubicConicElMat(3, 2, a1), CubicConicElMat(2, 1, a2), CubicConicElMat(1, 2, a3)), 3, 2);
+gap> CubicPartMat(JordanD(CubicConicElMat(a1, 3, 2), CubicConicElMat(a2, 2, 1), CubicConicElMat(a3, 1, 2)), 3, 2);
 (g1*g2*tr(a2a3))*a1+(-g1*g2)*((a1*a3')*a2')
-gap> CubicPartMat(JordanD(CubicConicElMat(3, 2, a1), CubicConicElMat(2, 1, a2), CubicConicElMat(1, 3, a3)), 3, 3);
+gap> CubicPartMat(JordanD(CubicConicElMat(a1, 3, 2), CubicConicElMat(a2, 2, 1), CubicConicElMat(a3, 1, 3)), 3, 3);
 g1*g2*g3*tr(a1a2a3)
-gap> CubicPartMat(JordanD(CubicConicElMat(3, 2, a1), CubicConicElMat(2, 1, a2), CubicComEl(s3, 1)), 3, 1);
+gap> CubicPartMat(JordanD(CubicConicElMat(a1, 3, 2), CubicConicElMat(a2, 2, 1), CubicComEl(s3, 1)), 3, 1);
 (g2*t3)*(a1*a2)
 
 ### (ii)
 ## { J_jj, J_ji, * } (relation for (i,j,l))
-gap> CubicPartMat(JordanD(CubicComEl(s1, 2), CubicConicElMat(2, 1, a2), CubicConicElMat(1, 2, a3)), 2, 2);
+gap> CubicPartMat(JordanD(CubicComEl(s1, 2), CubicConicElMat(a2, 2, 1), CubicConicElMat(a3, 1, 2)), 2, 2);
 g1*g2*t1*tr(a2a3)
-gap> CubicPartMat(JordanD(CubicComEl(s1, 2), CubicConicElMat(2, 1, a2), CubicConicElMat(1, 3, a3)), 2, 3);
+gap> CubicPartMat(JordanD(CubicComEl(s1, 2), CubicConicElMat(a2, 2, 1), CubicConicElMat(a3, 1, 3)), 2, 3);
 (g1*t1)*(a2*a3)
-gap> CubicPartMat(JordanD(CubicComEl(s1, 2), CubicConicElMat(2, 1, a2), CubicComEl(s3, 1)), 2, 1);
+gap> CubicPartMat(JordanD(CubicComEl(s1, 2), CubicConicElMat(a2, 2, 1), CubicComEl(s3, 1)), 2, 1);
 (t1*t3)*a2
 
 ## { J_ll, J_li, * } (relation for (l,j,i))
-gap> CubicPartMat(JordanD(CubicComEl(s1, 3), CubicConicElMat(3, 1, a2), CubicConicElMat(1, 2, a3)), 3, 2);
+gap> CubicPartMat(JordanD(CubicComEl(s1, 3), CubicConicElMat(a2, 3, 1), CubicConicElMat(a3, 1, 2)), 3, 2);
 (g1*t1)*(a2*a3)
-gap> CubicPartMat(JordanD(CubicComEl(s1, 3), CubicConicElMat(3, 1, a2), CubicConicElMat(1, 3, a3)), 3, 3);
+gap> CubicPartMat(JordanD(CubicComEl(s1, 3), CubicConicElMat(a2, 3, 1), CubicConicElMat(a3, 1, 3)), 3, 3);
 g1*g3*t1*tr(a2a3)
-gap> CubicPartMat(JordanD(CubicComEl(s1, 3), CubicConicElMat(3, 1, a2), CubicComEl(s3, 1)), 3, 1);
+gap> CubicPartMat(JordanD(CubicComEl(s1, 3), CubicConicElMat(a2, 3, 1), CubicComEl(s3, 1)), 3, 1);
 (t1*t3)*a2
 
 ### (iii)
 ## { J_ji, J_ii, * } (relation for (i,j,l))
-gap> CubicPartMat(JordanD(CubicConicElMat(2, 1, a1), CubicComEl(s2, 1), CubicConicElMat(1, 2, a3)), 2, 2);
+gap> CubicPartMat(JordanD(CubicConicElMat(a1, 2, 1), CubicComEl(s2, 1), CubicConicElMat(a3, 1, 2)), 2, 2);
 g1*g2*t2*tr(a1a3)
-gap> CubicPartMat(JordanD(CubicConicElMat(2, 1, a1), CubicComEl(s2, 1), CubicConicElMat(1, 3, a3)), 2, 3);
+gap> CubicPartMat(JordanD(CubicConicElMat(a1, 2, 1), CubicComEl(s2, 1), CubicConicElMat(a3, 1, 3)), 2, 3);
 (g1*t2)*(a1*a3)
-gap> CubicPartMat(JordanD(CubicConicElMat(2, 1, a1), CubicComEl(s2, 1), CubicComEl(s3, 1)), 2, 1);
+gap> CubicPartMat(JordanD(CubicConicElMat(a1, 2, 1), CubicComEl(s2, 1), CubicComEl(s3, 1)), 2, 1);
 (t2*t3)*a1
 
 ## { J_li, J_ii, * } (relation for (l,j,i))
-gap> CubicPartMat(JordanD(CubicConicElMat(3, 1, a1), CubicComEl(s2, 1), CubicConicElMat(1, 2, a3)), 3, 2);
+gap> CubicPartMat(JordanD(CubicConicElMat(a1, 3, 1), CubicComEl(s2, 1), CubicConicElMat(a3, 1, 2)), 3, 2);
 (g1*t2)*(a1*a3)
-gap> CubicPartMat(JordanD(CubicConicElMat(3, 1, a1), CubicComEl(s2, 1), CubicConicElMat(1, 3, a3)), 3, 3);
+gap> CubicPartMat(JordanD(CubicConicElMat(a1, 3, 1), CubicComEl(s2, 1), CubicConicElMat(a3, 1, 3)), 3, 3);
 g1*g3*t2*tr(a1a3)
-gap> CubicPartMat(JordanD(CubicConicElMat(3, 1, a1), CubicComEl(s2, 1), CubicComEl(s3, 1)), 3, 1);
+gap> CubicPartMat(JordanD(CubicConicElMat(a1, 3, 1), CubicComEl(s2, 1), CubicComEl(s3, 1)), 3, 1);
 (t2*t3)*a1
 
 ### (iv)
 ## { J_ii, J_ii, * } (relation for (i,j,l) and (l,j,i) simultaneously)
 gap> CubicPartMat(JordanD(CubicComEl(s1, 1), CubicComEl(s2, 1), CubicComEl(s3, 1)), 1, 1);
 2*t1*t2*t3
-gap> CubicPartMat(JordanD(CubicComEl(s1, 1), CubicComEl(s2, 1), CubicConicElMat(1, 2, a3)), 1, 2);
+gap> CubicPartMat(JordanD(CubicComEl(s1, 1), CubicComEl(s2, 1), CubicConicElMat(a3, 1, 2)), 1, 2);
 (t1*t2)*a3
-gap> CubicPartMat(JordanD(CubicComEl(s1, 1), CubicComEl(s2, 1), CubicConicElMat(1, 3, a3)), 1, 3);
+gap> CubicPartMat(JordanD(CubicComEl(s1, 1), CubicComEl(s2, 1), CubicConicElMat(a3, 1, 3)), 1, 3);
 (t1*t2)*a3
 
 ### (v)
 ## { J_ij, J_ji, * } (relation for (i,j,l))
-gap> CubicPartMat(JordanD(CubicConicElMat(1, 2, a1), CubicConicElMat(2, 1, a2), CubicComEl(s3, 1)), 1, 1);
+gap> CubicPartMat(JordanD(CubicConicElMat(a1, 1, 2), CubicConicElMat(a2, 2, 1), CubicComEl(s3, 1)), 1, 1);
 g1*g2*t3*tr(a1a2)
-gap> CubicPartMat(JordanD(CubicConicElMat(1, 2, a1), CubicConicElMat(2, 1, a2), CubicConicElMat(1, 2, a3)), 1, 2);
+gap> CubicPartMat(JordanD(CubicConicElMat(a1, 1, 2), CubicConicElMat(a2, 2, 1), CubicConicElMat(a3, 1, 2)), 1, 2);
 (g1*g2*tr(a2a3))*a1+(g1*g2*tr(a1a2))*a3+(-g1*g2*tr(a1a3'))*a2'
 
 # Not the desired output, but the desired relation is still valid because
 # {a1[ij], as[ji], a3[il]} = {a3[il], a2[ji], a1[ij]} = {a3'[li], a2'[ij], a1'[ji]}
 # = g_j g_i (a3'a2')a1'[li] = g_i g_j a1(a2a3)[il]
 # by the second relation in (i).
-gap> CubicPartMat(JordanD(CubicConicElMat(1, 2, a1), CubicConicElMat(2, 1, a2), CubicConicElMat(1, 3, a3)), 1, 3);
+gap> CubicPartMat(JordanD(CubicConicElMat(a1, 1, 2), CubicConicElMat(a2, 2, 1), CubicConicElMat(a3, 1, 3)), 1, 3);
 (g1*g2*tr(a1a2))*a3+(-g1*g2)*(a2'*(a1'*a3))
 
 ## { J_ji, J_ij, * } (relation for (l,j,i))
-gap> CubicPartMat(JordanD(CubicConicElMat(2, 1, a1), CubicConicElMat(1, 2, a2), CubicComEl(s3, 2)), 2, 2);
+gap> CubicPartMat(JordanD(CubicConicElMat(a1, 2, 1), CubicConicElMat(a2, 1, 2), CubicComEl(s3, 2)), 2, 2);
 g1*g2*t3*tr(a1a2)
-gap> CubicPartMat(JordanD(CubicConicElMat(2, 1, a1), CubicConicElMat(1, 2, a2), CubicConicElMat(2, 3, a3)), 2, 3);
+gap> CubicPartMat(JordanD(CubicConicElMat(a1, 2, 1), CubicConicElMat(a2, 1, 2), CubicConicElMat(a3, 2, 3)), 2, 3);
 (g1*g2*tr(a1a2))*a3+(-g1*g2)*(a2'*(a1'*a3))
-gap> CubicPartMat(JordanD(CubicConicElMat(2, 1, a1), CubicConicElMat(1, 2, a2), CubicConicElMat(2, 1, a3)), 2, 1);
+gap> CubicPartMat(JordanD(CubicConicElMat(a1, 2, 1), CubicConicElMat(a2, 1, 2), CubicConicElMat(a3, 2, 1)), 2, 1);
 (g1*g2*tr(a2a3))*a1+(g1*g2*tr(a1a2))*a3+(-g1*g2*tr(a1a3'))*a2'
