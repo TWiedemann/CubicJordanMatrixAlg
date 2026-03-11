@@ -256,13 +256,12 @@ end);
 # If the last (boolean) input variable is true, then the generator list contains
 # LieY and elements from L_{-1}. Otherwise (and by default) it contains LieX
 # and elements from L_1.
-DeclareOperation("LieGensAsLie", [IsInt, IsInt, IsBool]);
-DeclareOperation("LieGensAsLie", [IsInt, IsInt]);
+DeclareOperation("LieGensAsLie", [IsInt, IsBool]);
+DeclareOperation("LieGensAsLie", [IsInt]);
 
-InstallMethod(LieGensAsLie, [IsInt, IsInt, IsBool],
-	function(comIndetNum, conicIndetNum, var)
-		local a, t, gens, root, coord;
-		t := ComRingIndet(comIndetNum);
+InstallMethod(LieGensAsLie, [IsInt, IsBool],
+	function(conicIndetNum, var)
+		local a, gens, root, coord;
 		a := ConicAlgIndet(conicIndetNum);
 		if var then
 			gens := [LieY];
@@ -276,26 +275,26 @@ InstallMethod(LieGensAsLie, [IsInt, IsInt, IsBool],
 			if root in F4ShortRoots then
 				Add(gens, LieRootHomF4(root, a, true, true));
 			else
-				Add(gens, LieRootHomF4(root, t, true, true));
+				Add(gens, LieRootHomF4(root, One(ComRing), true, true));
 			fi;
 		od;
 		return gens;
 	end);
 
 # Default: var = false.
-InstallMethod(LieGensAsLie, [IsInt, IsInt], function(comIndetNum, conicIndetNum)
-	return LieGensAsLie(comIndetNum, conicIndetNum, false);
+InstallMethod(LieGensAsLie, [IsInt], function(conicIndetNum)
+	return LieGensAsLie(conicIndetNum, false);
 end);
 
 # comIndetNum, conicIndetNum: Numbers of the indeterminates that should be used.
 # Returns: A list of elements of Lie which generate it as a module, provided that
 # g1, g2, g3 are assumed to be invertible.
-# Involves indeterminates t_comIndetNum, a_conicIndetNum, a_{conicIndetNum+1}.
+# Involves indeterminates a_conicIndetNum, a_{conicIndetNum+1}.
 # Uses the formulas d_{a[ij],b[jk]} = TwistDiag[j]*d_{1[ii],ab[kk]} from [DMW]
 # to reduce the number of generators, which is why we have to assume that g1, g2, g3 are invertible.
-BindGlobal("LieGensAsModule", function(comIndetNum, conicIndetNum)
+BindGlobal("LieGensAsModule", function(conicIndetNum)
 	local t1, a1, a2, gens, root, i, j, gen;
-	t1 := ComRingIndet(comIndetNum);
+	t1 := One(ComRing);
 	a1 := ConicAlgIndet(conicIndetNum);
 	a2 := ConicAlgIndet(conicIndetNum + 1);
 	gens := [LieXi, LieZeta];

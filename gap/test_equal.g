@@ -55,59 +55,44 @@ InstallMethod(TestEqualityOnGenList, [IsLieEndo, IsLieEndo, IsList],
 	end
 );
 
-# TestEquality(f, g, comIndetNum, conicIndetNum) calls
-# TestEqualityOnGenList(f, g, LieGensAsLie(comIndetNum, conicIndetNum)).
-# If only one integer n is provided, then TestEquality(f, g, n, n) is called.
-# If no integer is provided, then TestEquality(f, g, ComRing_rank, ConicAlg_rank)
+# TestEquality(f, g, conicIndetNum) calls
+# TestEqualityOnGenList(f, g, LieGensAsLie(conicIndetNum)).
+# If no integer is provided, then TestEquality(f, g, ConicAlg_rank)
 # is called.
-# Uses indeterminates t_comIndetNum and a_conicIndetNum
-DeclareOperation("TestEquality", [IsLieEndo, IsLieEndo, IsInt, IsInt]);
+# Uses indeterminate a_conicIndetNum
 DeclareOperation("TestEquality", [IsLieEndo, IsLieEndo, IsInt]);
 DeclareOperation("TestEquality", [IsLieEndo, IsLieEndo]);
 
-InstallMethod(TestEquality, [IsLieEndo, IsLieEndo, IsInt, IsInt],
-	function(lieEndo1, lieEndo2, comIndetNum, conicIndetNum)
+InstallMethod(TestEquality, [IsLieEndo, IsLieEndo, IsInt],
+	function(lieEndo1, lieEndo2, conicIndetNum)
 		local genList;
-		genList := LieGensAsLie(comIndetNum, conicIndetNum);
+		genList := LieGensAsLie(conicIndetNum);
 		return TestEqualityOnGenList(lieEndo1, lieEndo2, genList);
-	end
-);
-
-InstallMethod(TestEquality, [IsLieEndo, IsLieEndo, IsInt], 
-	function(lieEndo1, lieEndo2, indetNum)
-		return TestEquality(lieEndo1, lieEndo2, indetNum, indetNum);
 	end
 );
 
 InstallMethod(TestEquality, [IsLieEndo, IsLieEndo], 
 	function(lieEndo1, lieEndo2)
-		return TestEquality(lieEndo1, lieEndo2, ComRing_rank, ConicAlg_rank);
+		return TestEquality(lieEndo1, lieEndo2, ConicAlg_rank);
 	end
 );
 
 # Like TestEquality, but uses LieGensAsModule in place of LieGensAsLie.
-# Uses indeterminates t_comIndetNum, a_conicIndetNum AND a_{conicIndetNum+1}
-DeclareOperation("TestEqualityOnModuleGens", [IsLieEndo, IsLieEndo, IsInt, IsInt]);
+# Uses indeterminates a_conicIndetNum AND a_{conicIndetNum+1}
 DeclareOperation("TestEqualityOnModuleGens", [IsLieEndo, IsLieEndo, IsInt]);
 DeclareOperation("TestEqualityOnModuleGens", [IsLieEndo, IsLieEndo]);
 
-InstallMethod(TestEqualityOnModuleGens, [IsLieEndo, IsLieEndo, IsInt, IsInt],
-	function(lieEndo1, lieEndo2, comIndetNum, conicIndetNum)
+InstallMethod(TestEqualityOnModuleGens, [IsLieEndo, IsLieEndo, IsInt],
+	function(lieEndo1, lieEndo2, conicIndetNum)
 		local genList;
-		genList := LieGensAsModule(comIndetNum, conicIndetNum);
+		genList := LieGensAsModule(conicIndetNum);
 		return TestEqualityOnGenList(lieEndo1, lieEndo2, genList);
-	end
-);
-
-InstallMethod(TestEqualityOnModuleGens, [IsLieEndo, IsLieEndo, IsInt], 
-	function(lieEndo1, lieEndo2, indetNum)
-		return TestEqualityOnModuleGens(lieEndo1, lieEndo2, indetNum, indetNum);
 	end
 );
 
 InstallMethod(TestEqualityOnModuleGens, [IsLieEndo, IsLieEndo], 
 	function(lieEndo1, lieEndo2)
-		return TestEqualityOnModuleGens(lieEndo1, lieEndo2, ComRing_rank, ConicAlg_rank-1);
+		return TestEqualityOnModuleGens(lieEndo1, lieEndo2, ConicAlg_rank-1);
 	end
 );
 
