@@ -111,6 +111,9 @@ end);
 
 # Scalar multiplication ComRing x Brown -> Brown
 InstallOtherMethod(\*, "for ComRingElement and BrownElement", [IsRingElement, IsBrownElement], 2, function(comEl, brownEl)
+	if IsInt(comEl) then
+		comEl := comEl * One(ComRing);
+	fi;
 	ReqComRingEl(comEl);
 	return Brown(comEl * UnderlyingElement(brownEl));
 end);

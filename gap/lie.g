@@ -371,6 +371,10 @@ end);
 
 # Scalar multiplication ComRing x Lie -> Lie
 InstallOtherMethod(\*, "for ComRingElement and LieElement", [IsRingElement, IsLieElement], 2, function(comEl, lieEl)
+	if IsInt(comEl) then
+		comEl := comEl*One(ComRing);
+	fi;
+	ReqComRingEl(comEl);
 	return Lie(rec(
 		neg2 := comEl * LiePart(lieEl, -2),
 		neg1 := comEl * LiePart(lieEl, -1),

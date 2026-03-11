@@ -49,10 +49,9 @@ InstallMethod(ReqComRingEl, [IsRingElement], function(a)
 	if _SkipTests then
 		return true;
 	fi;
-	# We only test
+	# We only test whether a is a rational 
 	if not IsRationalFunction(a) then
-		Display(a);
-		Error("Invalid input: Must be in ComRing.");
+		Error("Invalid input: ", a, " must be in ComRing.");
 		return false;
 	fi;
 	return true;
@@ -72,8 +71,7 @@ InstallMethod(ReqConicAlgEl, [IsRingElement], function(a)
 		return true;
 	fi;
 	if not a in ConicAlg then
-		Display(a);
-		Error("Invalid input: Must be in ConicAlg.");
+		Error("Invalid input: ", a, " must be in ConicAlg.");
 		return false;
 	fi;
 	return true;

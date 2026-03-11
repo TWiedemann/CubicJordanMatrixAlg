@@ -223,6 +223,10 @@ end);
 
 # ----- Scalar multiplication ComRing x L0 -> L0 -----
 InstallOtherMethod(\*, "for ComRingElement and L0Element", [IsRingElement, IsL0Element], 2, function(comEl, L0El)
+	if IsInt(comEl) then
+		comEl := comEl * One(ComRing);
+	fi;
+	ReqComRingEl(comEl);
 	return L0(rec(
 		dd := comEl * L0DDPart(L0El),
 		xiCoeff := comEl * L0XiPart(L0El),

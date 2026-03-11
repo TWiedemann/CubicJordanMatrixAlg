@@ -77,6 +77,9 @@ InstallMethod(String, [IsCubicElement], x -> CubicRepToString(UnderlyingElement(
 InstallMethod(\*, "for ComRingElement and CubicElement", [IsRingElement, IsCubicElement], 2, 
 	function(a,b)
 		local rep, productRep;
+		if IsInt(a) then
+			a := a*One(ComRing);
+		fi;
 		ReqComRingEl(a);
 		rep := UnderlyingElement(b);
 		productRep := [];
