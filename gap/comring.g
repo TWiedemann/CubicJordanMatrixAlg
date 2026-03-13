@@ -145,7 +145,8 @@ BindGlobal("_ConicAlgMagTrUncachedOnRep", function(mRep)
 		if left = ConicAlgMagInvOnRep(right) then
 			return 2*ConicAlgMagNormOnRep(left); # tr(aa') = 2n(a)
 		fi;
-		# A "candidate" is a triple [a,b,c] of reps such that tr(mRep) = tr(abc).
+		# A "candidate" is a triple [a,b,c] of reps such that tr(mRep) = tr(abc)
+		# or a pair [a,b] such that tr(mRep) = tr(ab).
 		# Note that tr((ab)c) = tr(a(bc)), so no brackets are necessary.
 		# Compute all candidates
 		if not IsList(left) and not IsList(right) then
