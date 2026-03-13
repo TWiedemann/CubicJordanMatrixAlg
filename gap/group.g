@@ -47,9 +47,7 @@ BindGlobal("GrpOne", LieEndo(LieEndoSpec.One(fail)));
 BindGlobal("GrpZero", LieEndo(LieEndoSpec.Zero(fail)));
 
 # For f \in LieEndo and a \in Lie, we want to write f(a) for the image of a under f.
-InstallMethod(CallFuncList,
-    "Allow function-like syntax for LieEndo",
-    [IsLieEndo, IsList],
+InstallMethod(CallFuncList, "Allow function-like syntax for LieEndo", [IsLieEndo, IsList],
     function(f, args)
         if Length(args) = 1 and IsLieElement(args[1]) then
             return UnderlyingElement(f)(args[1]);
