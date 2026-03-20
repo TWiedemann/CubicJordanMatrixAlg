@@ -1,5 +1,4 @@
 ### Test with Test(filepath)
-### Runtime: ~7 minutes.
 
 ### ----- Init -----
 gap> InitCJMA(6, 2, 4, false);;

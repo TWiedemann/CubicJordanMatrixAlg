@@ -1,5 +1,4 @@
 ### Test with Test(filepath)
-### Runtime: Negligible.
 
 ### This file tests that the root homomorphisms in the automorphism group satisfy
 ### the desired F4-commutator relations.

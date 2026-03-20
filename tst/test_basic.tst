@@ -1,7 +1,6 @@
 ### Test with Test(filepath, rec( width := 500000 ))
 
 ### This file tests the main functions in the user interface.
-### Runtime: Negligible.
 
 ### ----- Init -----
 gap> InitCJMA(6, 6, 3, false);;

@@ -1,6 +1,5 @@
 ### Test with Test(filepath)
 ### This file tests that the trilinear brace on the Jordan algebra adheres to the desired formulas.
-### Runtime: Negligible.
 
 ### ----- Init -----
 gap> InitCJMA(6, 3, 4, false);;
