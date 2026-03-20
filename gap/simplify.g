@@ -174,6 +174,7 @@ end);
 # This function is not called by Simplify because it usually makes the representation of t
 # more complicated, but sometimes an element b of ConicAlg can be reduced to 0 by
 # applying WithoutTraces to all ComRing-coefficients inside b.
+# Indeed, it is not used at all.
 DeclareOperation("WithoutTraces", [IsRationalFunction]);
 InstallMethod(WithoutTraces, [IsRationalFunction], function(t)
 	local coeffList, result, i, magEl, comEl;
