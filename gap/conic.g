@@ -39,8 +39,10 @@ DeclareOperation("ReqComRingEl", [IsList]);
 DeclareOperation("ReqConicAlgEl", [IsRingElement]);
 DeclareOperation("ReqConicAlgEl", [IsList]);
 
-# For runtime reasons, we only test whether an element is a rational function
+# For runtime reasons, ReqComRingEl only tests whether an element is a rational function
 # to determine whether it lies (or rather, can possibly lie) in ComRing.
+# Similarly, ReqConicAlgEl only tests whether an element is an element of a free
+# magma ring.
 # Since these functions are essentially only a safeguard against inputting
 # elements of ConicAlg where elements of ComRing are required (and vice versa),
 # this is sufficient.
@@ -49,7 +51,7 @@ InstallMethod(ReqComRingEl, [IsRingElement], function(a)
 	if _SkipTests then
 		return true;
 	fi;
-	# We only test whether a is a rational 
+	# We only test whether a is a rational function
 	if not IsRationalFunction(a) then
 		Error("Invalid input: ", a, " must be in ComRing.");
 		return false;
@@ -70,7 +72,8 @@ InstallMethod(ReqConicAlgEl, [IsRingElement], function(a)
 	if _SkipTests then
 		return true;
 	fi;
-	if not a in ConicAlg then
+	# We only test whether a lies in a free magma ring
+	if not IsElementOfFreeMagmaRing(a) then
 		Error("Invalid input: ", a, " must be in ConicAlg.");
 		return false;
 	fi;
