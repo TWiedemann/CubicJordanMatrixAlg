@@ -5,7 +5,8 @@ BindGlobal("_SanitizeImmediately", true);
 # If true, the tests which check whether elements lie in ComRing or ConicAlg are skipped
 BindGlobal("_SkipTests", false);
 # If true, the values of ConicAlgMagTr are precomputed and cached.
-BindGlobal("_CacheTrace", true);
+# Somewhat surprisingly, the effect on the runtime is minimal.
+BindGlobal("_CacheTrace", false);
 
 # ---- Precomputed information ----
 # Dictionary with precomputed values for all traces. Will be initalised later, mostly in init.g.
