@@ -234,6 +234,11 @@ CubicNegToLieEmb(cub)
 ```
 Returns the elements `ad_{cub}^+` and `ad_{cub}^-` of $L$, respectively.
 ```
+adPos(cub)
+adNeg(cub)
+```
+These are alternative names for `CubicPosToLieEmb` and `CubicNegToLieEmb`.
+```
 L0CubicPosPart(l0)
 L0CubicNegPart(l0)
 ```

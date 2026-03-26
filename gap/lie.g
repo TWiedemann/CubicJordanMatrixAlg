@@ -197,6 +197,9 @@ DeclareOperation(
 );
 DeclareOperation("CubicPosToLieEmb", [IsCubicElement]);
 DeclareOperation("CubicNegToLieEmb", [IsCubicElement]);
+# More user-friendly alternative names
+BindGlobal("adPos", CubicPosToLieEmb);
+BindGlobal("adNeg", CubicNegToLieEmb);
 
 # L0 -> Lie_0
 InstallMethod(L0ToLieEmb, [IsL0Element], function(L0el)
