@@ -124,11 +124,11 @@ gap> last = JordanD(cubicGen1, cubicGen1, cubicGen2);
 true
 
 ### ----- Brown algebra -----
-gap> brown1 := BrownElFromTuple(t1, cubicGen1, cubicGen2, t2);
+gap> brown1 := BrownEl(t1, cubicGen1, cubicGen2, t2);
 [ t1, (t1)[11]+(t2)[22]+(t3)[33]+((1)*a1)[23]+((1)*a2)[31]+((1)*a3)[12], (t4)[11]+(t5)[22]+(t6)[33]+((1)*a4)[23]+((1)*a5)[31]+((1)*a6)[12], t2 ]
 gap> t1*brown1;
 [ t1^2, (t1^2)[11]+(t1*t2)[22]+(t1*t3)[33]+((t1)*a1)[23]+((t1)*a2)[31]+((t1)*a3)[12], (t1*t4)[11]+(t1*t5)[22]+(t1*t6)[33]+((t1)*a4)[23]+((t1)*a5)[31]+((t1)*a6)[12], t1*t2 ]
-gap> brown1 + BrownElFromTuple(t2, CubicZero, CubicConicEl(a1, 1), t3);
+gap> brown1 + BrownEl(t2, CubicZero, CubicConicEl(a1, 1), t3);
 [ t1+t2, (t1)[11]+(t2)[22]+(t3)[33]+((1)*a1)[23]+((1)*a2)[31]+((1)*a3)[12], (t4)[11]+(t5)[22]+(t6)[33]+((1)*a1+(1)*a4)[23]+((1)*a5)[31]+((1)*a6)[12], t2+t3 ]
 
 ### ----- L_0 -----

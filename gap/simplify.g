@@ -255,7 +255,7 @@ end);
 # Applies WithoutTraces to all ConicAlg-components
 DeclareOperation("WithoutTraces", [IsBrownElement]);
 InstallMethod(WithoutTraces, [IsBrownElement], function(brownEl)
-	return BrownElFromTuple(
+	return BrownEl(
 		BrownElPart(brownEl, 1),
 		WithoutTraces(BrownElPart(brownEl, 2)),
 		WithoutTraces(BrownElPart(brownEl, 3)),
@@ -273,7 +273,7 @@ InstallMethod(Simplify, [IsBrownElement], function(brownEl)
 		t[i] := Simplify(BrownElComPart(brownEl, i));
 		cub[i] := Simplify(BrownElCubicPart(brownEl, i));
 	od;
-	return BrownElFromTuple(t[1], cub[1], cub[2], t[2]);
+	return BrownEl(t[1], cub[1], cub[2], t[2]);
 end);
 
 ## -------- DD --------

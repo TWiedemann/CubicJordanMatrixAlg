@@ -32,8 +32,8 @@ InstallMethod(String, [IsBrownElement], x -> _BrownRepToString(UnderlyingElement
 
 BindGlobal("BrownZero", Brown(BrownSpec.Zero(fail)));
 
-DeclareOperation("BrownElFromTuple", [IsRingElement, IsCubicElement, IsCubicElement, IsRingElement]);
-InstallMethod(BrownElFromTuple, [IsRingElement, IsCubicElement, IsCubicElement, IsRingElement],
+DeclareOperation("BrownEl", [IsRingElement, IsCubicElement, IsCubicElement, IsRingElement]);
+InstallMethod(BrownEl, [IsRingElement, IsCubicElement, IsCubicElement, IsRingElement],
 	function(a, b, c, d)
 		if not ReqComRingEl([a,d]) then
 			return fail;
@@ -43,17 +43,18 @@ InstallMethod(BrownElFromTuple, [IsRingElement, IsCubicElement, IsCubicElement, 
 	end
 );
 
+
 # i: Integer.
 # Returns: A list of the generic basic elements of Brown, using indeterminates a_i and t_i.
 BindGlobal("BrownGensAsModule", function(i)
 	local t, result, gen;
 	t := ComRingIndet(i);
 	result := [];
-	Add(result, BrownElFromTuple(t, CubicZero, CubicZero, Zero(ComRing)));
-	Add(result, BrownElFromTuple(Zero(ComRing), CubicZero, CubicZero, t));
+	Add(result, BrownEl(t, CubicZero, CubicZero, Zero(ComRing)));
+	Add(result, BrownEl(Zero(ComRing), CubicZero, CubicZero, t));
 	for gen in CubicGensAsModule(i) do
-		Add(result, BrownElFromTuple(Zero(ComRing), gen, CubicZero, Zero(ComRing)));
-		Add(result, BrownElFromTuple(Zero(ComRing), CubicZero, gen, Zero(ComRing)));
+		Add(result, BrownEl(Zero(ComRing), gen, CubicZero, Zero(ComRing)));
+		Add(result, BrownEl(Zero(ComRing), CubicZero, gen, Zero(ComRing)));
 	od;
 	return result;
 end);

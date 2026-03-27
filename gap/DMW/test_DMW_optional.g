@@ -86,8 +86,8 @@ TestG2WeylFormulas := function()
 	# Define phibs as w(bLie), a product of exponential automorphisms
 	bCub := t1*CubicComEl(t1, 1) + CubicComEl(One(ComRing), 2) + CubicComEl(One(ComRing), 3);
 	bCubInv := CubicNorm(bCub)^-1 * CubicAdj(bCub);
-	bLie := LieBrownNegElFromTuple(Zero(ComRing), bCub, CubicZero, Zero(ComRing));
-	bInvLie := LieBrownPosElFromTuple(Zero(ComRing), CubicZero, -bCubInv, Zero(ComRing));
+	bLie := BrownNegEl(Zero(ComRing), bCub, CubicZero, Zero(ComRing));
+	bInvLie := BrownPosEl(Zero(ComRing), CubicZero, -bCubInv, Zero(ComRing));
 	phiMid := F4Exp(-bLie);
 	phiMidInv := F4Exp(bLie);
 	phiR := F4Exp(-bInvLie);
@@ -102,16 +102,16 @@ TestG2WeylFormulas := function()
 	testList := [];
 	# e_{(0,a,0,0)_+}^\phibs = e_{-a^\iota}
 	aCub := CubicConicEl(a1, 1);
-	aLie1 := LieBrownPosElFromTuple(Zero(ComRing), aCub, CubicZero, Zero(ComRing));
+	aLie1 := BrownPosEl(Zero(ComRing), aCub, CubicZero, Zero(ComRing));
 	aLie2 := CubicNegToLieEmb(-iota(aCub));
 	Add(testList, [F4Exp(aLie1), F4Exp(aLie2)]);
 	# e_{(0,0,a',0)_+}^\phibs = e_{(0,-t(a')^\iota, 0, 0)_-}
-	aLie1 := LieBrownPosElFromTuple(Zero(ComRing), CubicZero, aCub, Zero(ComRing));
-	aLie2 := LieBrownNegElFromTuple(Zero(ComRing), -t*iotainv(aCub), CubicZero, Zero(ComRing));
+	aLie1 := BrownPosEl(Zero(ComRing), CubicZero, aCub, Zero(ComRing));
+	aLie2 := BrownNegEl(Zero(ComRing), -t*iotainv(aCub), CubicZero, Zero(ComRing));
 	Add(testList, [F4Exp(aLie1), F4Exp(aLie2)]);
 	# e_{(0,a,0,0)_-}^\phibs = e_{(0,0, -t^{-1} a^\iota, 0)_+}
-	aLie1 := LieBrownNegElFromTuple(Zero(ComRing), aCub, CubicZero, Zero(ComRing));
-	aLie2 := LieBrownPosElFromTuple(Zero(ComRing), CubicZero, -t^-1*iota(aCub), Zero(ComRing));
+	aLie1 := BrownNegEl(Zero(ComRing), aCub, CubicZero, Zero(ComRing));
+	aLie2 := BrownPosEl(Zero(ComRing), CubicZero, -t^-1*iota(aCub), Zero(ComRing));
 	Add(testList, [F4Exp(aLie1), F4Exp(aLie2)]);
 	# Perform actual tests
 	for list in testList do

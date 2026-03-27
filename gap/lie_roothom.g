@@ -90,9 +90,9 @@ InstallMethod(BrownRootHom, [IsList, IsRingElement, IsBool], function(subroot, a
 		return fail;
 	fi;
 	if subroot = [1,1,1] then
-		return BrownElFromTuple(Zero(ComRing), CubicZero, CubicZero, a);
+		return BrownEl(Zero(ComRing), CubicZero, CubicZero, a);
 	elif subroot = [-1, -1, -1] then
-		return BrownElFromTuple(a, CubicZero, CubicZero, Zero(ComRing));
+		return BrownEl(a, CubicZero, CubicZero, Zero(ComRing));
 	elif Sum(subroot) = 1 then # Root space lies in Cubic'
 		l := Position(subroot, -1);
 		if l <> fail then # Long root
@@ -103,7 +103,7 @@ InstallMethod(BrownRootHom, [IsList, IsRingElement, IsBool], function(subroot, a
 			l := Position(subroot, 1);
 			cub := CubicRootHomShort(l, a, -1, noGamma);
 		fi;
-		return BrownElFromTuple(Zero(ComRing), CubicZero, cub, Zero(ComRing));
+		return BrownEl(Zero(ComRing), CubicZero, cub, Zero(ComRing));
 	else # Root space lies in Cubic
 		l := Position(subroot, 1);
 		if l <> fail then # Long root
@@ -114,7 +114,7 @@ InstallMethod(BrownRootHom, [IsList, IsRingElement, IsBool], function(subroot, a
 			l := Position(subroot, -1);
 			cub := CubicRootHomShort(l, a, 1, noGamma);
 		fi;
-		return BrownElFromTuple(Zero(ComRing), cub, CubicZero, Zero(ComRing));
+		return BrownEl(Zero(ComRing), cub, CubicZero, Zero(ComRing));
 	fi;
 end);
 

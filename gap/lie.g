@@ -188,11 +188,11 @@ DeclareOperation("L0ToLieEmb", [IsL0Element]);
 DeclareOperation("BrownPosToLieEmb", [IsBrownElement]);
 DeclareOperation("BrownNegToLieEmb", [IsBrownElement]);
 DeclareOperation(
-	"LieBrownPosElFromTuple",
+	"BrownPosEl",
 	[IsRingElement, IsCubicElement, IsCubicElement, IsRingElement]
 );
 DeclareOperation(
-	"LieBrownNegElFromTuple",
+	"BrownNegEl",
 	[IsRingElement, IsCubicElement, IsCubicElement, IsRingElement]
 );
 DeclareOperation("CubicPosToLieEmb", [IsCubicElement]);
@@ -221,19 +221,19 @@ end);
 
 # [ComRing, Cubic, Cubic', ComRing] -> Lie_1
 InstallMethod(
-	LieBrownPosElFromTuple,
+	BrownPosEl,
 	[IsRingElement, IsCubicElement, IsCubicElement, IsRingElement], 
 	function(a, b, c, d)
-		return BrownPosToLieEmb(BrownElFromTuple(a, b, c, d));
+		return BrownPosToLieEmb(BrownEl(a, b, c, d));
 	end
 );
 
 # [ComRing, Cubic, Cubic', ComRing] -> Lie_{-1}
 InstallMethod(
-	LieBrownNegElFromTuple,
+	BrownNegEl,
 	[IsRingElement, IsCubicElement, IsCubicElement, IsRingElement], 
 	function(a, b, c, d)
-		return BrownNegToLieEmb(BrownElFromTuple(a, b, c, d));
+		return BrownNegToLieEmb(BrownEl(a, b, c, d));
 	end
 );
 

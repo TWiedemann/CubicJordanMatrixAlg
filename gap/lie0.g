@@ -318,7 +318,7 @@ InstallMethod(L0ElAsEndo, [IsL0Element, IsInt], function(L0El, i)
 				newB2 := newB2 + coeff*(-JordanD(c2, c, b2) + CubicBiTr(c, c2)*b2);
 				newMu := newMu + coeff*(mu*CubicBiTr(c, c2));
 			od;
-			result := BrownElFromTuple(newLam, newB, newB2, newMu);
+			result := BrownEl(newLam, newB, newB2, newMu);
 			# Action of xi and zeta. This is the only part where i is relevant.
 			result := result + xi*XiEndo(brownEl, i) + zeta*ZetaEndo(brownEl, i);
 			return result;

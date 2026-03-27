@@ -104,7 +104,7 @@ InstallMethod(GrpRootHomF4NonDiv, [IsList, IsRingElement, IsBool], function(root
 	local rootG2, lieXCoeff, lieNeg1, lie0, lieDDCoeffList, lieXiCoeff, lieZetaCoeff,
 		liePos1, lieYCoeff, result, rho, b, bBrown, bLie, b2, c, c2, nu, scalar,
 		list, lieCubicNeg, lieCubicPos, aLie, aBrown, lam, mu, nextSummand,
-		aCubic, aCubic2, sign, brown, LieBrownElFromTuple, liehom;
+		aCubic, aCubic2, sign, brown, LieBrownEl, liehom;
 	if root in F4LongRoots then
 		ReqComRingEl(a);
 	elif root in F4ShortRoots then
@@ -173,19 +173,19 @@ InstallMethod(GrpRootHomF4NonDiv, [IsList, IsRingElement, IsBool], function(root
 			## Action on L0
 			# Action on xi and zeta
 			result := result - lieXiCoeff*aLie;
-			result := result + lieZetaCoeff*LieBrownPosElFromTuple(lam, CubicZero, -b2, -2*mu);
+			result := result + lieZetaCoeff*BrownPosEl(lam, CubicZero, -b2, -2*mu);
 			# Action on Cubic
 			c := lieCubicPos;
 			result := Sum([
 				result,
-				-LieBrownPosElFromTuple(Zero(ComRing), lam*c, CubicCross(c,b), CubicBiTr(c, b2)),
+				-BrownPosEl(Zero(ComRing), lam*c, CubicCross(c,b), CubicBiTr(c, b2)),
 				- CubicBiTr(c, CubicAdj(b))*LieY
 			]);
 			# Action on Cubic'
 			c2 := lieCubicNeg;
 			result := Sum([
 				result,
-				LieBrownPosElFromTuple(CubicBiTr(b,c2), CubicCross(c2,b2), mu*c2, Zero(ComRing)),
+				BrownPosEl(CubicBiTr(b,c2), CubicCross(c2,b2), mu*c2, Zero(ComRing)),
 				- CubicBiTr(CubicAdj(b2), c2)*LieY
 			]);
 			# Action on DD
@@ -196,7 +196,7 @@ InstallMethod(GrpRootHomF4NonDiv, [IsList, IsRingElement, IsBool], function(root
 				c2 := list[3];
 				result := Sum([
 					result,
-					scalar*LieBrownPosElFromTuple(
+					scalar*BrownPosEl(
 						lam*CubicBiTr(c, c2),
 						-JordanD(c, c2, b) + CubicBiTr(c, c2)*b,
 						JordanD(c2, c, b2) - CubicBiTr(c, c2)*b2,
@@ -216,7 +216,7 @@ InstallMethod(GrpRootHomF4NonDiv, [IsList, IsRingElement, IsBool], function(root
 				(rho*lam - CubicBiTr(b, c2))*(LieXi - LieZeta),
 				(CubicBiTr(c, b2) - nu*mu)*LieZeta,
 				CubicPosToLieEmb(rho*b - CubicCross(c2, b2) + mu*c),
-				LieBrownPosElFromTuple(
+				BrownPosEl(
 					-rho*lam^2 - CubicBiTr(CubicAdj(b), c),
 					JordanU(b, c2) + nu*CubicAdj(b2),
 					-rho*CubicAdj(b) - JordanU(b2, c),
@@ -226,10 +226,10 @@ InstallMethod(GrpRootHomF4NonDiv, [IsList, IsRingElement, IsBool], function(root
 			]);
 			## Action on L_{-2}
 			nextSummand := Sum([
-				LieBrownNegElFromTuple(lam, b, b2, mu),
+				BrownNegEl(lam, b, b2, mu),
 				CubicNegToLieEmb(-CubicAdj(b)),
 				CubicPosToLieEmb(-CubicAdj(b2)),
-				LieBrownPosElFromTuple(-CubicNorm(b), CubicZero, CubicZero, CubicNorm(b2))
+				BrownPosEl(-CubicNorm(b), CubicZero, CubicZero, CubicNorm(b2))
 			]);
 			result := result + lieXCoeff*nextSummand;
 			return result;
@@ -251,19 +251,19 @@ InstallMethod(GrpRootHomF4NonDiv, [IsList, IsRingElement, IsBool], function(root
 			## Action on L0
 			# Action on xi and zeta
 			result := result + lieXiCoeff*aLie;
-			result := result + lieZetaCoeff*LieBrownNegElFromTuple(2*lam, b, CubicZero, -mu);
+			result := result + lieZetaCoeff*BrownNegEl(2*lam, b, CubicZero, -mu);
 			# Action on Cubic
 			c := lieCubicPos;
 			result := Sum([
 				result,
-				-LieBrownNegElFromTuple(Zero(ComRing), lam*c, CubicCross(c,b), CubicBiTr(c, b2)),
+				-BrownNegEl(Zero(ComRing), lam*c, CubicCross(c,b), CubicBiTr(c, b2)),
 				- CubicBiTr(c, CubicAdj(b))*LieX
 			]);
 			# Action on Cubic'
 			c2 := lieCubicNeg;
 			result := Sum([
 				result,
-				LieBrownNegElFromTuple(CubicBiTr(b,c2), CubicCross(c2,b2), mu*c2, Zero(ComRing)),
+				BrownNegEl(CubicBiTr(b,c2), CubicCross(c2,b2), mu*c2, Zero(ComRing)),
 				- CubicBiTr(CubicAdj(b2), c2)*LieX
 			]);
 			# Action on DD
@@ -274,7 +274,7 @@ InstallMethod(GrpRootHomF4NonDiv, [IsList, IsRingElement, IsBool], function(root
 				c2 := list[3];
 				result := Sum([
 					result,
-					scalar*LieBrownNegElFromTuple(
+					scalar*BrownNegEl(
 						lam*CubicBiTr(c, c2),
 						-JordanD(c, c2, b) + CubicBiTr(c, c2)*b,
 						JordanD(c2, c, b2) - CubicBiTr(c, c2)*b2,
@@ -294,7 +294,7 @@ InstallMethod(GrpRootHomF4NonDiv, [IsList, IsRingElement, IsBool], function(root
 				(lam*rho - CubicBiTr(b, c2))*LieZeta,
 				(CubicBiTr(c, b2) - mu*nu)*(LieXi - LieZeta),
 				CubicPosToLieEmb(-rho*b + CubicCross(b2, c2) - mu*c),
-				LieBrownNegElFromTuple(
+				BrownNegEl(
 					rho*lam^2 + CubicBiTr(c, CubicAdj(b)),
 					-JordanU(b, c2) - nu*CubicAdj(b2),
 					rho*CubicAdj(b) + JordanU(b2, c),
@@ -304,10 +304,10 @@ InstallMethod(GrpRootHomF4NonDiv, [IsList, IsRingElement, IsBool], function(root
 			]);
 			## Action on L_2
 			nextSummand := Sum([
-				-LieBrownPosElFromTuple(lam, b, b2, mu),
+				-BrownPosEl(lam, b, b2, mu),
 				CubicNegToLieEmb(-CubicAdj(b)),
 				CubicPosToLieEmb(-CubicAdj(b2)),
-				LieBrownNegElFromTuple(-CubicNorm(b), CubicZero, CubicZero, CubicNorm(b2))
+				BrownNegEl(-CubicNorm(b), CubicZero, CubicZero, CubicNorm(b2))
 			]);
 			result := result + lieYCoeff*nextSummand;
 			return result;
@@ -319,16 +319,16 @@ InstallMethod(GrpRootHomF4NonDiv, [IsList, IsRingElement, IsBool], function(root
 			for sign in [1, -1] do
 				if sign = 1 then
 					brown := liePos1;
-					LieBrownElFromTuple := LieBrownPosElFromTuple;
+					LieBrownEl := BrownPosEl;
 				else
 					brown := lieNeg1;
-					LieBrownElFromTuple := LieBrownNegElFromTuple;
+					LieBrownEl := BrownNegEl;
 				fi;
 				lam := BrownElComPart(brown, 1);
 				b := BrownElCubicPart(brown, 1);
 				b2 := BrownElCubicPart(brown, 2);
 				mu := BrownElComPart(brown, 2);
-				result := result + LieBrownElFromTuple(
+				result := result + LieBrownEl(
 					Zero(ComRing),
 					lam*aCubic,
 					CubicCross(aCubic, b) + lam*CubicAdj(aCubic),
@@ -357,16 +357,16 @@ InstallMethod(GrpRootHomF4NonDiv, [IsList, IsRingElement, IsBool], function(root
 			for sign in [1, -1] do
 				if sign = 1 then
 					brown := liePos1;
-					LieBrownElFromTuple := LieBrownPosElFromTuple;
+					LieBrownEl := BrownPosEl;
 				else
 					brown := lieNeg1;
-					LieBrownElFromTuple := LieBrownNegElFromTuple;
+					LieBrownEl := BrownNegEl;
 				fi;
 				lam := BrownElComPart(brown, 1);
 				b := BrownElCubicPart(brown, 1);
 				b2 := BrownElCubicPart(brown, 2);
 				mu := BrownElComPart(brown, 2);
-				result := result + LieBrownElFromTuple(
+				result := result + LieBrownEl(
 					-CubicBiTr(b, aCubic2) + CubicBiTr(CubicAdj(aCubic2), b2) - mu*CubicNorm(aCubic2),
 					-CubicCross(aCubic2, b2) + mu*CubicAdj(aCubic2),
 					-mu*aCubic2,

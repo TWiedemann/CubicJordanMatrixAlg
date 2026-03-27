@@ -149,12 +149,17 @@ Returns $D_{\text{cub1}, \text{cub2}}(\text{cub3}) = \{\text{cub1}, \text{cub2},
 
 # The Brown algebra
 
-We refer to the $k$-module $B = (k, J, J', k)$ as the *Brown algebra* because, if $2$ is invertible in $k$, then it has the structure of a structurable algebra that is known under this name.
+We refer to the $k$-module $B = (k, J, J', k)$ as the *Brown algebra* because,
+if $2$ and $3$ are invertible in $k$, then it has the structure of a
+structurable algebra that is known under this name.
 It parametrises the $1$- and $(-1)$-parts of the Lie algebra that we construct in \[DMW\].
 
-Note that while elements of $B$ are internally represented and also printed as lists `[t, cub1, cub2, s]`, they are not lists in the GAP sense. Thus for an element `brown` of $B$, we have `IsList(brown) = false` and `brown[1]` is not a well-defined expression.
+Note that while elements of $B$ are internally represented and also printed
+as lists `[t, cub1, cub2, s]`, they are not lists in the GAP sense.
+Thus for an element `brown` of $B$, we have `IsList(brown) = false`
+and `brown[1]` is not a well-defined expression.
 ```
-BrownElFromTuple(t, cub1, cub2, s)
+BrownEl(t, cub1, cub2, s)
 ```
 Returns the element `[ t, cub1, cub2, s ]` of $B$. 
 ```
@@ -206,8 +211,8 @@ BrownNegToLieEmb(brown)
 ```
 Returns the element `brown_+` of $L_1$ or `brown_-` of $L_{-1}$, respectively.
 ```
-LieBrownPosElFromTuple(t, cub1, cub2, s)
-LieBrownNegElFromTuple(t, cub1, cub2, s)
+BrownPosEl(t, cub1, cub2, s)
+BrownNegEl(t, cub1, cub2, s)
 ```
 Returns the element `[t, cub1, cub2, s]_+` of $L_1$ or `[t, cub1, cub2, s]_-` of $L_{-1}$, respectively.
 
