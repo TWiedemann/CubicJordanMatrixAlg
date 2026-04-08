@@ -5,7 +5,7 @@
 
 # Init
 gap> InitCJMA(6, 2, 4, false);;
-gap> RereadPackage("CubicJordanMatrixAlg", "gap/DMW/test_DMW.g");;
+gap> ReadPackage("CubicJordanMatrixAlg", "gap/DMW/test_DMW.g");;
 
 # Test claim about length of roots for pairs a, b for which a+b is a root
 gap> TestF4RootLengthSum();

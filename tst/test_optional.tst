@@ -2,7 +2,7 @@
 
 ### ----- Init -----
 gap> InitCJMA(6, 3, 4, false);;
-gap> RereadPackage("CubicJordanMatrixAlg", "gap/DMW/test_DMW_optional.g");;
+gap> ReadPackage("CubicJordanMatrixAlg", "gap/DMW/test_DMW_optional.g");;
 gap> TestGrpRootHoms();
 true
 gap> TestNon00GrpRootHomExp();

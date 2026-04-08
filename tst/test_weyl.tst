@@ -2,7 +2,7 @@
 
 ### ----- Init -----
 gap> InitCJMA(6, 2, 4, false);;
-gap> RereadPackage("CubicJordanMatrixAlg", "gap/DMW/test_DMW.g");;
+gap> ReadPackage("CubicJordanMatrixAlg", "gap/DMW/test_DMW.g");;
 
 ### Test that all elements w_a for a in F4 are indeed reflections. Takes 4 minutes.
 gap> TestAllReflections();

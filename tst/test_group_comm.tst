@@ -5,7 +5,7 @@
 
 ### Init
 gap> InitCJMA(6, 3, 4, false);;
-gap> RereadPackage("CubicJordanMatrixAlg", "gap/DMW/test_DMW.g");;
+gap> ReadPackage("CubicJordanMatrixAlg", "gap/DMW/test_DMW.g");;
 
 # Element is trivial because
 # n(a2)*a1 = a1*n(a2) = a1*(a2*a2') = (a1*a2)*a2',
