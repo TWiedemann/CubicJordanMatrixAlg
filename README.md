@@ -24,7 +24,7 @@ gap> LoadPackage("PackageManager");
 ```
 gap> InstallPackage("https://github.com/TWiedemann/CubicJordanMatrixAlg.git");
 ```
-This will will install the package into your local GAP package directory.
+This will install the package into your local GAP package directory.
 You can find the location of this directory on your system by calling
 ```
 gap> GAPInfo.PackageDirectories;
