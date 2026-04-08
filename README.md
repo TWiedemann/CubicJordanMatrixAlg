@@ -56,8 +56,9 @@ gap> LoadPackage("CubicJordanMatrixAlg");
 gap> InitCJMA();
 ```
 
-For details, see [`doc/manual.md`](https://github.com/TWiedemann/CubicJordanMatrixAlg/blob/main/doc/manual.md).
-Usage examples may also be found in (the test file) `tst/test_basic.tst`.
+Now you can perform computations with this package.
+For details, see either [`doc/manual.md`](https://github.com/TWiedemann/CubicJordanMatrixAlg/blob/main/doc/manual.md) for a comprehensive description or
+simply have a look at the usage examples in (the test file) `tst/test_basic.tst`.
 
 # Verification of the claims in \[DMW\] (Tests)
 
