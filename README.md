@@ -1,17 +1,27 @@
 # Introduction
 
-This [GAP](https://www.gap-system.org/) package allows basic symbolic computation in
-free multiplicative conic alternative algebras (over free commutative rings, that is, polynomial rings)
+The [GAP](https://www.gap-system.org/) package `CubicJordanMatrixAlg`
+allows basic symbolic computation in
+free multiplicative conic alternative algebras
+(over free commutative rings, that is, polynomial rings)
 and, as the main application, in cubic Jordan matrix algebras over them.
 In other words, it provides a framework to prove that certain identities hold in any multiplicative conic alternative algebra over any commutative ring.
-It does this deriving these identities from a set of known identities in such objects.
-It also supports similar computations in the Lie algebra and the group of automorphisms
-that are constructed in the preprint \[DMW\] [*From cubic norm pairs to $G_2$- and $F_4$-graded groups and Lie algebras*](https://arxiv.org/abs/2602.06147)
-from the cubic Jordan matrix algebra of
-an arbitrary multiplicative conic alternative algebra.
-It cannot prove any identity in the objects described above (which seems to be a hopeless task),
+It does this by deriving these identities from a set of known identities in such objects.
+
+In the preprint \[DMW\] [*From cubic norm pairs to $G_2$- and $F_4$-graded groups and Lie algebras*](https://arxiv.org/abs/2602.06147), two objects are constructed
+from the cubic Jordan matrix algebra of an arbitrary multiplicative conic alternative algebra:
+* A Lie algebra $L$ (with a grading by the root system $F_4$).
+* A group $G$ of automorphisms of $L$ (which also has a grading by $F_4$).
+ contains a construction of a Lie algebra
+
+`CubicJordanMatrixAlg` also supports computations in $L$ and $G$. In fact, it was developed
+for this purpose, and is used to establish several computational results in \[DMW\].
+
+`CubicJordanMatrixAlg` cannot prove any valid identity in the objects described above
+(which seems to be a hopeless task),
 but it is powerful enough to prove all identities that are needed in \[DMW\].
-The basic underlying principles of this package are described in \[DMW, 9.3\].
+The basic underlying principles of this package are described in \[DMW, Section 9.3\].
+
 
 # Installation
 
