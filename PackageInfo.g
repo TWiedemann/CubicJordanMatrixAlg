@@ -7,7 +7,7 @@ SetPackageInfo( rec(
 
 PackageName := "CubicJordanMatrixAlg",
 Subtitle := "Symbolic computation in cubic Jordan matrix algebras",
-Version := "1.0.2",
+Version := "1.0.6",
 Date := "25/03/2026", # dd/mm/yyyy format
 License := "GPL-3.0-or-later",
 
