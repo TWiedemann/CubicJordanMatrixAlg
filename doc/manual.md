@@ -15,6 +15,24 @@ Initialises the package with `ComRing_rank := comrank`, `ConicAlg_rank := conicr
 High values of `ConicAlg_rank` and `Trace_MaxLength` strongly impact the time 
 needed for initialisation with `InitCJMA`. All serious computations needed in \[DMW\] work in the setup `InitCJMA(6, 3, 4, false)` or `InitCJMA(6, 2, 4, false)`.
 
+It is possible to reset the values of these constants with another call
+to `InitCJMA`. However, this will issue a few GAP warnings (see below) and may lead to unsafe
+behaviour, and is hence not recommended. In particular, re-initialisation will redefine
+all algebraic structures that are set up in the package, and hence elements of these structures
+that were
+defined before re-initialisation are not compatible with those defined afterwards.
+For example:
+```
+gap> InitCJMA();
+gap> a := a1+a2;;
+gap> InitCJMA(); # issues GAP warnings
+#W NewRepresentation "CubicElementRep" in Reread. Change of Super-rep not handled
+[More GAP warnings]
+gap> b := a+a1; # a was defined before re-initialisation, a1 was defined afterwards
+Error, no method found! For debugging hints type ?Recovery from NoMethodFound
+[...]
+```
+
 # Notational conventions
 
 In the following, we denote elements of $k$ by `t, s, r`, elements of $C$ by `a, b, c`, elements of the cubic Jordan matrix algebra by `cub`, elements of the Brown algebra $B$ by `brown`, elements of `DD` by `ddEl`, elements of $L_0$ by `l0`, elements of $L$ by `lie` and elements of `LieEndo` by `f, g`.
