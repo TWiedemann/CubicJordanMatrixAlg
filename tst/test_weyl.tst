@@ -5,7 +5,7 @@ gap> START_TEST(".tst");
 gap> InitCJMA(6, 2, 4, false);;
 gap> ReadPackage("CubicJordanMatrixAlg", "gap/DMW/test_DMW.g");;
 
-### Test that all elements w_a for a in F4 are indeed reflections. Takes 4 minutes.
+### Test that all elements w_a for a in F4 are indeed reflections.
 gap> TestAllReflections();
 true
 
@@ -60,7 +60,7 @@ true
 ## (1) tr(a)*1_C = a+a'
 ## (2) tr(ab') = tr(a)tr(b) - tr(ab)
 ## (3) dd(a[ij],1[ji]) = dd(1[ij],a[ji])
-## (4) dd(1[ij], 1[ji]) = g_i g_j (d_i + f_j)
+## (4) dd(1[ij], 1[ji]) = g_i g_j (d_i + d_j)
 ## (Follows from dd(a[ij],a'[ji]) = g_i g_j n(a) (d_i + d_j))
 ## (5) dd(a[ij], b'[ji]) + dd(b[ij], a'[ji]) = g_i g_j tr(ab') (dd(1[ii],1[ii])+dd(1[jj],1[jj]))
 ## (6) d_1 + d_2 + d_3 = 2*zeta - xi
