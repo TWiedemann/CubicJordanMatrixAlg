@@ -1,4 +1,4 @@
-### The root system F4 and the rea
+### The root system F4 and the real 4-dimensional vector space F4Vec containing it
 
 # ----- Basic setup: Global variables -----
 
