@@ -20,7 +20,8 @@ for this purpose, and is used to establish several computational results in \[DM
 `CubicJordanMatrixAlg` cannot prove any valid identity in the objects described above
 (which seems to be a hopeless task),
 but it is powerful enough to prove all identities that are needed in \[DMW\].
-The basic underlying principles of this package are described in \[DMW, Section 9.3\].
+The basic underlying principles of this package are described in \[DMW, Section 9.3\]
+and in the preprint \[Wie26\] [*Symbolic computation in cubic Jordan matrix algebras and in related structures*](https://arxiv.org/abs/2604.13809).
 
 
 # Installation
