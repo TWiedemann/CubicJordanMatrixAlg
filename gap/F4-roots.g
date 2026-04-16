@@ -126,7 +126,7 @@ end);
 # Returns: True if \sigma(a_1...a_k) = \sigma(b_1...b_m), otherwise false
 BindGlobal("F4ReflProdEqual", function(rootList1, rootList2)
 	local root;
-	for root in F4Roots do
+	for root in F4SimpleRoots do
 		if F4ReflProd(root, rootList1) <> F4ReflProd(root, rootList2) then
 			return false;
 		fi;
