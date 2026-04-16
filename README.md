@@ -12,7 +12,6 @@ In the preprint \[DMW\] [*From cubic norm pairs to $G_2$- and $F_4$-graded group
 from the cubic Jordan matrix algebra of an arbitrary multiplicative conic alternative algebra:
 * A Lie algebra $L$ (with a grading by the root system $F_4$).
 * A group $G$ of automorphisms of $L$ (which also has a grading by $F_4$).
- contains a construction of a Lie algebra
 
 `CubicJordanMatrixAlg` also supports computations in $L$ and $G$. In fact, it was developed
 for this purpose, and is used to establish several computational results in \[DMW\].
