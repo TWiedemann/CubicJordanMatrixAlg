@@ -2,6 +2,7 @@
 ### This file tests that the trilinear brace on the Jordan algebra adheres to the desired formulas.
 
 ### ----- Init -----
+gap> START_TEST("test_jordan_brace.tst");
 gap> InitCJMA(6, 3, 4, false);;
 gap> a1 := ConicAlgIndet(1);; a2 := ConicAlgIndet(2);; a3 := ConicAlgIndet(3);;
 gap> s1 := ComRingIndet(1);; s2 := ComRingIndet(2);; s3 := ComRingIndet(3);;
@@ -92,3 +93,6 @@ gap> CubicPartMat(JordanD(CubicConicElMat(a1, 2, 1), CubicConicElMat(a2, 1, 2), 
 (g1*g2*tr(a1a2))*a3+(-g1*g2)*(a2'*(a1'*a3))
 gap> CubicPartMat(JordanD(CubicConicElMat(a1, 2, 1), CubicConicElMat(a2, 1, 2), CubicConicElMat(a3, 2, 1)), 2, 1);
 (g1*g2*tr(a2a3))*a1+(g1*g2*tr(a1a2))*a3+(-g1*g2*tr(a1a3'))*a2'
+
+#
+gap> STOP_TEST("test_jordan_brace.tst");

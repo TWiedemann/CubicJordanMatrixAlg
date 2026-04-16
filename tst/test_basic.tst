@@ -3,6 +3,7 @@
 ### This file tests the main functions in the user interface.
 
 ### ----- Init -----
+gap> START_TEST("test_basic.tst");
 gap> InitCJMA(6, 6, 3, false);;
 
 ### ----- Basic elements -----
@@ -202,3 +203,6 @@ gap> Liedd(cubicGen1, cubicGen2);
 dd_{(t1)[11]+(t2)[22]+(t3)[33]+((1)*a1)[23]+((1)*a2)[31]+((1)*a3)[12],(t4)[11]+(t5)[22]+(t6)[33]+((1)*a4)[23]+((1)*a5)[31]+((1)*a6)[12]}
 gap> last = L0dd(cubicGen1, cubicGen2);
 false
+
+#
+gap> STOP_TEST("test_basic.tst");

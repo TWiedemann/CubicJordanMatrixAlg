@@ -1,6 +1,7 @@
 ### Test with Test(filepath)
 
 ### ----- Init -----
+gap> START_TEST(".tst");
 gap> InitCJMA(6, 2, 4, false);;
 gap> ReadPackage("CubicJordanMatrixAlg", "gap/DMW/test_DMW.g");;
 
@@ -166,3 +167,6 @@ dd_{((1)*1_C)[12],((-tr(a1)/g2)*a2)[12]}+(1/g2)*dd_{((1)*a1)[12],((1)*a2)[12]}+(
 # Test that we are done
 gap> Length(test);
 14
+
+#
+gap> STOP_TEST("test_weyl.tst");

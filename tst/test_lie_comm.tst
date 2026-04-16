@@ -4,6 +4,7 @@
 ### - That the claimed Chevalley-type bases (for F4 and G2) are indeed Chevalley-type bases.
 
 # Init
+gap> START_TEST("test_lie_comm.tst");
 gap> InitCJMA(6, 2, 4, false);;
 gap> ReadPackage("CubicJordanMatrixAlg", "gap/DMW/test_DMW.g");;
 
@@ -25,3 +26,6 @@ true
 # Test that c(a,b) = -c(a,b) for all roots a, b for which a+b is also a root
 gap> TestChevStrucConstSigns();
 true
+
+#
+gap> STOP_TEST("test_lie_comm.tst");

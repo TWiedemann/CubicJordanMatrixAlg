@@ -40,6 +40,7 @@ AbstractHTML   :=  "",
 PackageDoc := rec(
   BookName  := "CubicJordanMatrixAlg",
   ArchiveURLSubset := ["doc"],
+  # Actually, the package does not provide these html, pdf and six files
   HTMLStart := "doc/chap0_mj.html",
   PDFFile   := "doc/manual.pdf",
   SixFile   := "doc/manual.six",
@@ -55,7 +56,11 @@ Dependencies := rec(
 
 AvailabilityTest := ReturnTrue,
 
-# TestFile := "tst/testall.g",
+# The most extensive test. It is also the "highest-level" test: It involves computations
+# in the F4-graded group, which involves computations in the F4-graded Lie algebra,
+# which involves computations in the cubic norm structure, which involves computations
+# in Conic and ComRing.
+TestFile := "tst/test_weyl.tst",
 
 #Keywords := [ "TODO" ],
 
