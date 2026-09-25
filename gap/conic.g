@@ -88,7 +88,7 @@ end);
 
 # ----- Constructors for indeterminates -----
 
-BindGlobal("ConicAlgIndet", function(i)
+InstallMethod(ConicAlgIndet, [ IsInt ], function(i)
 	return ConicAlgMagEmb(ConicAlgMagIndet(i));
 end);
 
@@ -158,7 +158,7 @@ end);
 
 # a: Element of ConicAlgMag or of ConicAlg
 # Returns: a'
-BindGlobal("ConicInv", function(a)
+InstallMethod(ConicInv, [ IsObject ], function(a)
 	if a in ConicAlg then
 		return ConicAlgInv(a);
 	elif a in ConicAlgMag then
@@ -169,11 +169,11 @@ BindGlobal("ConicInv", function(a)
 end);
 
 # Different name
-BindGlobal("ConicConj", ConicInv);
+InstallMethod(ConicConj, [ IsObject ], ConicInv);
 
 # a: Element of ConicAlgMag or of ConicAlg
 # Returns: tr(a) \in ComRing
-BindGlobal("ConicTr", function(a)
+InstallMethod(ConicTr, [ IsObject ], function(a)
 	if a in ConicAlg then
 		return ConicAlgTr(a);
 	elif a in ConicAlgMag then
@@ -185,7 +185,7 @@ end);
 
 # a: Element of ConicAlgMag or of ConicAlg
 # Returns: n(a) \in ComRing
-BindGlobal("ConicNorm", function(a)
+InstallMethod(ConicNorm, [ IsObject ], function(a)
 	if a in ConicAlg then
 		return ConicAlgNorm(a);
 	elif a in ConicAlgMag then
@@ -197,7 +197,7 @@ end);
 
 # a,b: Element of ConicAlgMag or of ConicAlg (both in the same)
 # Returns: n(a,b) \in ComRing
-BindGlobal("ConicNormLin", function(a,b)
+InstallMethod(ConicNormLin, [ IsObject, IsObject ], function(a,b)
 	if a in ConicAlg and b in ConicAlg then
 		return ConicAlgNormLin(a,b);
 	elif a in ConicAlgMag and b in ConicAlgMag then

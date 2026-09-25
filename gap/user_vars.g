@@ -21,31 +21,31 @@ fi;
 if ComRing_rank > 0 then
     t1 := ComRingIndet(1);
 fi;
-if ComRing_rank > 0 then
+if ComRing_rank > 1 then
     t2 := ComRingIndet(2);
 fi;
-if ComRing_rank > 0 then
+if ComRing_rank > 2 then
     t3 := ComRingIndet(3);
 fi;
-if ComRing_rank > 0 then
+if ComRing_rank > 3 then
     t4 := ComRingIndet(4);
 fi;
-if ComRing_rank > 0 then
+if ComRing_rank > 4 then
     t5 := ComRingIndet(5);
 fi;
-if ComRing_rank > 0 then
+if ComRing_rank > 5 then
     t6 := ComRingIndet(6);
 fi;
-if ComRing_rank > 0 then
+if ComRing_rank > 6 then
     t7 := ComRingIndet(7);
 fi;
-if ComRing_rank > 0 then
+if ComRing_rank > 7 then
     t8 := ComRingIndet(8);
 fi;
-if ComRing_rank > 0 then
+if ComRing_rank > 8 then
     t9 := ComRingIndet(9);
 fi;
-if ComRing_rank > 0 then
+if ComRing_rank > 9 then
     t10 := ComRingIndet(10);
 fi;
 

@@ -145,10 +145,6 @@ BindGlobal("L0Zeta", L0(rec(
 	cubicNeg := CubicZero
 )));
 
-DeclareOperation("CubicPosToL0Emb", [IsCubicElement]);
-DeclareOperation("CubicNegToL0Emb", [IsCubicElement]);
-DeclareOperation("DDToL0Emb", [IsDDElement]);
-
 # a: Element of Cubic.
 # Returns: ad_a^+ \in L0.
 InstallMethod(CubicPosToL0Emb, [IsCubicElement], function(a)
@@ -187,18 +183,11 @@ end);
 
 # cubicEl1, cubicEl2: Elements of Cubic.
 # Returns: dd_{cubicEl1, cubicEl2} \in L0.
-DeclareOperation("L0dd", [IsCubicElement, IsCubicElement]);
 InstallMethod(L0dd, [IsCubicElement, IsCubicElement], function(cubicEl1, cubicEl2)
 	return DDToL0Emb(DDdd(cubicEl1, cubicEl2));
 end);
 
 # ---- Getter functions for parts of elements of L0 ----
-
-DeclareOperation("L0XiPart", [IsL0Element]);
-DeclareOperation("L0ZetaPart", [IsL0Element]);
-DeclareOperation("L0CubicPosPart", [IsL0Element]);
-DeclareOperation("L0CubicNegPart", [IsL0Element]);
-DeclareOperation("L0DDPart", [IsL0Element]);
 
 InstallMethod(L0XiPart, [IsL0Element], function(L0El)
 	return UnderlyingElement(L0El).xiCoeff;

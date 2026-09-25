@@ -146,7 +146,6 @@ BindGlobal("DDZero", DD([]));
 
 # cubicEl1, cubicEl2: Elements of Cubic.
 # Returns: dd_{cubicEl1, cubicEl2} \in DD.
-DeclareOperation("DDdd", [IsCubicElement, IsCubicElement]);
 InstallMethod(DDdd, [IsCubicElement, IsCubicElement], function(cubicEl1, cubicEl2)
 	if IsZero(cubicEl1) or IsZero(cubicEl2) then
 		return DDZero;

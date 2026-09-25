@@ -78,7 +78,6 @@ InstallMethod(ComRingSimplifyTr, [IsRationalFunction], function(a)
 	return Value(a, _TrSubIndetList, _TrSubValueList, One(ComRing));
 end);
 
-DeclareOperation("Simplify", [IsRationalFunction]);
 InstallMethod(Simplify, [IsRationalFunction], function(a)
 	return ComRingCancel(ComRingSimplifyTr(a));
 end);
@@ -203,7 +202,6 @@ end);
 # Returns: Mathematically the same element, but simplified: First apply
 # MakeTraces repeatedly until it no longer changes the input, and then
 # apply Simplify to all ComRing-coefficients.
-DeclareOperation("Simplify", [IsElementOfFreeMagmaRing]);
 InstallMethod(Simplify, [IsElementOfFreeMagmaRing], function(a)
 	local coeffMagList, resultCoeffList, resultMagList, i, help, aNew;
 	# Apply MakeTraces until it no longer changes the result
@@ -238,7 +236,6 @@ InstallMethod(WithoutTraces, [IsCubicElement], function(cubEl)
 end);
 
 # Applies Simplify to all components.
-DeclareOperation("Simplify", [IsCubicElement]);
 InstallMethod(Simplify, [IsCubicElement], function(cubEl)
 	local t, a, i;
 	t := [];
@@ -264,7 +261,6 @@ InstallMethod(WithoutTraces, [IsBrownElement], function(brownEl)
 end);
 
 # Applies Simplify to all components.
-DeclareOperation("Simplify", [IsBrownElement]);
 InstallMethod(Simplify, [IsBrownElement], function(brownEl)
 	local t, cub, i;
 	t := [];
@@ -617,7 +613,6 @@ end);
 
 # Applies Simplify to all components.
 # Does NOT apply ApplyDDLaws because the output would be in L0, not in DD.
-DeclareOperation("Simplify", [IsDDElement]);
 InstallMethod(Simplify, [IsDDElement], function(ddEl)
 	local coeffList, resultCoeffList, list;
 	coeffList := DDCoeffList(ddEl);
@@ -645,7 +640,6 @@ InstallMethod(WithoutTraces, [IsL0Element], function(l0El)
 end);
 
 # Applies Simplify to all components and applies ApplyDDLaws to the DD-part.
-DeclareOperation("Simplify", [IsL0Element]);
 InstallMethod(Simplify, [IsL0Element], function(L0El)
 	local pos, neg, zeta, xi, dd, l0;
 	pos := L0CubicPosPart(L0El);
@@ -685,7 +679,7 @@ InstallMethod(WithoutTraces, [IsLieElement], function(lieEl)
 end);
 
 # Applies Simplify to all components.
-DeclareOperation("Simplify", [IsLieElement]);
+
 InstallMethod(Simplify, [IsLieElement], function(lieEl)
 	local parts, i;
 	parts := [];
@@ -697,8 +691,7 @@ end);
 
 ## -------- LieEndo --------
 
-# Applies Simplifie to result before returning it
-DeclareOperation("Simplify", [IsLieEndo]);
+# Applies Simplify to result before returning it
 InstallMethod(Simplify, [IsLieEndo], function(lieEndo)
 	return LieEndo(
 		function(lieEl)

@@ -183,23 +183,9 @@ InstallMethod(
 BindGlobal("LieX", LieElFromTuple(One(ComRing), BrownZero, L0Zero, BrownZero, Zero(ComRing)));
 BindGlobal("LieY", LieElFromTuple(Zero(ComRing), BrownZero, L0Zero, BrownZero, One(ComRing)));
 
-DeclareOperation("DDToLieEmb", [IsDDElement]);
-DeclareOperation("L0ToLieEmb", [IsL0Element]);
-DeclareOperation("BrownPosToLieEmb", [IsBrownElement]);
-DeclareOperation("BrownNegToLieEmb", [IsBrownElement]);
-DeclareOperation(
-	"BrownPosEl",
-	[IsRingElement, IsCubicElement, IsCubicElement, IsRingElement]
-);
-DeclareOperation(
-	"BrownNegEl",
-	[IsRingElement, IsCubicElement, IsCubicElement, IsRingElement]
-);
-DeclareOperation("CubicPosToLieEmb", [IsCubicElement]);
-DeclareOperation("CubicNegToLieEmb", [IsCubicElement]);
 # More user-friendly alternative names
-BindGlobal("adPos", CubicPosToLieEmb);
-BindGlobal("adNeg", CubicNegToLieEmb);
+InstallMethod(adPos, [ IsCubicElement ], CubicPosToLieEmb);
+InstallMethod(adNeg, [ IsCubicElement ], CubicNegToLieEmb);
 
 # L0 -> Lie_0
 InstallMethod(L0ToLieEmb, [IsL0Element], function(L0el)
@@ -249,7 +235,6 @@ end);
 
 # cubicEl1, cubicEl2: Elements of Cubic.
 # Returns: dd_{cubicEl1, cubicEl2} \in Lie.
-DeclareOperation("Liedd", [IsCubicElement, IsCubicElement]);
 InstallMethod(Liedd, [IsCubicElement, IsCubicElement], function(cubicEl1, cubicEl2)
 	return L0ToLieEmb(L0dd(cubicEl1, cubicEl2));
 end);
@@ -277,7 +262,6 @@ end);
 
 # ----- Getter functions for components of elements of Lie -----
 
-DeclareOperation("LiePart", [IsLieElement, IsInt]);
 InstallMethod(LiePart, [IsLieElement, IsInt], function(lieEl, i)
 	if i = -2 then
 		return UnderlyingElement(lieEl).neg2;

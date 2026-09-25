@@ -40,11 +40,20 @@ AbstractHTML   :=  "",
 PackageDoc := rec(
   BookName  := "CubicJordanMatrixAlg",
   ArchiveURLSubset := ["doc"],
-  # Actually, the package does not provide these html, pdf and six files
-  HTMLStart := "doc/chap0_mj.html",
+  HTMLStart := "doc/chap0.html",
   PDFFile   := "doc/manual.pdf",
   SixFile   := "doc/manual.six",
   LongTitle := "Symbolic computation in cubic Jordan matrix algebras",
+),
+
+AutoDoc := rec(
+  autodoc := rec(
+    scan_dirs := [ ],
+    files := [ "doc/manual.autodoc", "gap/declarations.gd" ],
+  ),
+  scaffold := rec(
+    includes := [ ],
+  ),
 ),
 
 Dependencies := rec(

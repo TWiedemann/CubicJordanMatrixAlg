@@ -1,8 +1,9 @@
+ReadPackage("CubicJordanMatrixAlg", "gap/declarations.gd");
 # InitCJMA(a,b,c,d) initialises the setup of the package with
 # ComRing_rank := a, ConicAlg_rank := b, Trace_MaxLength := c and defines
 # the variables in user_vargs.g if d = true.
 # InitCJMA() uses (6,4,4,true) as the default values for (a,b,c,d).
-DeclareGlobalFunction("InitCJMA");
+
 InstallGlobalFunction(InitCJMA, function(args...)
 	local comrank, conicrank, tracelength, s, userVars;
 	# Set default values for ComRing_rank, ConicAlg_rank, Trace_MaxLength

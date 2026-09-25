@@ -173,9 +173,6 @@ end);
 
 ## -------- Root homomorphisms in Lie --------
 
-DeclareOperation("LieRootHomF4", [IsList, IsRingElement, IsBool, IsBool]);
-DeclareOperation("LieRootHomF4", [IsList, IsRingElement]);
-
 # List of roots whose root homomorphisms get an additional minus sign
 
 BindGlobal("_MinusSignRootsLong", Difference(

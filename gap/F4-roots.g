@@ -106,7 +106,7 @@ end);
 
 # argRoot, reflRoot: Roots in F4
 # Returns: argRoot^{\sigma_reflRoot}, the reflection along reflRoot applied to argRoot
-BindGlobal("F4Refl", function(argRoot, reflRoot)
+InstallMethod(F4Refl, [ IsList, IsList ], function(argRoot, reflRoot)
 	return argRoot - F4CartanInt(argRoot, reflRoot)*reflRoot;
 end);
 
@@ -136,6 +136,6 @@ end);
 
 # root: Element of F4Roots or [0,0,0,0]
 # Returns: The corresponding root in G2
-BindGlobal("F4RootG2Coord", function(root)
+InstallMethod(F4RootG2Coord, [ IsList ], function(root)
 	return [root[1], Sum(root)/2];
 end);

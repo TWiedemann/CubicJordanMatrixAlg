@@ -35,7 +35,7 @@ end);
 # ----- Indeterminates
 
 # t_i \in ComRing, represents arbitrary element of ComRing
-BindGlobal("ComRingIndet", function(i)
+InstallMethod(ComRingIndet, [ IsInt ], function(i)
 	return Indeterminate(ComRingBaseRing, _ComRingIndetName(i));
 end);
 
@@ -45,7 +45,7 @@ BindGlobal("ComRingNormIndet", function(i)
 end);
 
 # g_i \in ComRing, represents \gamma_i
-BindGlobal("ComRingGamIndet", function(i)
+InstallMethod(ComRingGamIndet, [ IsInt ], function(i)
 	return Indeterminate(ComRingBaseRing, ComRingGamIndetName(i));
 end);
 

@@ -32,7 +32,6 @@ InstallMethod(String, [IsBrownElement], x -> _BrownRepToString(UnderlyingElement
 
 BindGlobal("BrownZero", Brown(BrownSpec.Zero(fail)));
 
-DeclareOperation("BrownEl", [IsRingElement, IsCubicElement, IsCubicElement, IsRingElement]);
 InstallMethod(BrownEl, [IsRingElement, IsCubicElement, IsCubicElement, IsRingElement],
 	function(a, b, c, d)
 		if not ReqComRingEl([a,d]) then
@@ -60,11 +59,6 @@ BindGlobal("BrownGensAsModule", function(i)
 end);
 
 # ----- Getter functions for coefficients of elements of Brown -----
-
-DeclareOperation("BrownElTuple", [IsBrownElement]);
-DeclareOperation("BrownElPart", [IsBrownElement, IsInt]);
-DeclareOperation("BrownElComPart", [IsBrownElement, IsInt]);
-DeclareOperation("BrownElCubicPart", [IsBrownElement, IsInt]);
 
 # brownEl: Element of Brown.
 # Returns: List [a, b, c, d] of the entries of brownEl

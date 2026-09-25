@@ -1,0 +1,139 @@
+@Chapter Introduction
+This package allows symbolic computations in a free multiplicative conic alternative algebra $C$ on generators <C>a1, a2, ...</C> over a free commutative ring $k$ on generators <C>t1, t2, ...</C>.
+
+@Section Initialisation
+For technical reasons, three constants that must be set during initialisation limit the ring elements that may arise during runtime:
+* <C>ComRing_rank</C> is the number of <E>indeterminates</E> <C>t1, t2, ...</C>. If for example <C>ComRing_rank = 3</C>, then <C>t1, t2, t3</C> are defined but <C>t4</C> is not.
+* <C>ConicAlg_rank</C> is the number of <E>indeterminates</E> <C>a1, a2, ...</C>.
+* <C>Trace_MaxLength</C> is the maximal length of products that may appear inside the argument of the trace function of $C$. For example, if <C>Trace_MaxLength = 2</C>, then <C>tr(a1a2)</C> is defined but  <C>tr(a1a2a1)</C> is not.<P/>
+These constants may be set by the user with the following function (after loading the package with <C>LoadPackage("CubicJordanMatrixAlg")</C>):<P/>
+@BeginExampleSession
+gap> InitCJMA();
+gap> a := a1+a2;;
+gap> InitCJMA(); # issues GAP warnings
+#W NewRepresentation "CubicElementRep" in Reread. Change of Super-rep not handled
+[More GAP warnings]
+gap> b := a+a1; # a was defined before re-initialisation, a1 was defined afterwards
+Error, no method found! For debugging hints type ?Recovery from NoMethodFound
+[...]
+@EndExampleSession
+
+@Section Notational conventions
+Throughout this documentation, we use the following conventions:
+* Elements of $k$ are denoted by <C>t, s, r</C>.
+* Elements of $C$ are denoted by <C>a, b, c</C>.
+* Elements of the cubic Jordan matrix algebra are denoted by <C>cub</C>.
+* Elements of the Brown algebra $B$ are denoted by <C>brown</C>.
+* Elements of <C>DD</C> are denoted by <C>ddEl</C>.
+* Elements of $L_0$ are denoted by <C>l0</C>.
+* Elements of $L$ are denoted by <C>lie</C>.
+* Elements of <C>LieEndo</C> are denoted by <C>f, g</C>.
+* We denote by <C>i, j, l</C> integers in <C>[1,2,3]</C> and by <C>p</C> arbitrary integers.<P/>
+
+@Section For advanced users
+While the main functions of the package are described in this documentation,
+more functions and their documentation can be found by studying the GAP source files in <C>CubicJordanMatrixAlg/gap</C>.
+Most files are commited to building up the desired structures step by step (similarly as this manual does),
+and the precise order in which they are loaded can be read off from <C>CubicJordanMatrixAlg/init.g</C>.
+The most complicated tasks are the simplification functions in <C>simplify.g</C>
+and the construction of the trace function in <C>comring.g</C>.<P/>
+
+@Chapter The commutative ring $k$
+Internally, we use the name <C>ComRing</C> for the commutative ring $k$.<P/>
+<C>+, *, ^-1</C>
+The usual arithmetic operations in GAP for addition, multiplication and inversion are available for elements of $k$.<P/>
+
+@Chapter The multiplicative conic alternative algebra $C$
+Internally, we use the name <C>ConicAlg</C> for the multiplicative conic alternative $k$-algebra $C$.<P/>
+<C>+, *, ^-1</C>
+The usual arithmetic operations in GAP for addition and multiplication (but not inversion) are available for elements of $k$.<P/>
+
+@Chapter The cubic Jordan matrix algebra
+Internally, we use the name <C>Cubic</C> for the cubic Jordan matrix algebra $J \coloneqq\text{Her}_3(C, \Gamma)$.<P/>
+@Section Elements of the cubic Jordan matrix algebra
+<C>+, *</C>
+The usual GAP operations for addition $+: J \times J \to J$ and scalar multiplication $\cdot: k \times J \to J$ are available on $J$.<P/>
+
+@Section The cubic norm structure
+$J$ has the structure of a cubic norm structure, whose structural maps can be computed as follows.<P/>
+
+@Section The Jordan algebra structure
+$J$ has the structure of a quadratic Jordan algebra, whose structural maps can be computed as follows.<P/>
+
+
+@Chapter The Brown algebra
+We refer to the $k$-module $B = (k, J, J', k)$ as the <E>Brown algebra</E> because, if $2$ and $3$ are invertible in $k$, then it has the structure of a structurable algebra that is known under this name. It parametrises the $1$- and $(-1)$-parts of the Lie algebra that we construct in [DMW].<P/>
+Note that while elements of $B$ are internally represented and also printed as lists <C>[t, cub1, cub2, s]</C>, they are not lists in the GAP sense. Thus for an element <C>brown</C> of $B$, we have <C>IsList(brown) = false</C> and <C>brown[1]</C> is not a well-defined expression.<P/>
+
+@Chapter The Lie algebra
+@Section Operations
+The Lie algebra $L$ that we construct from $J$ is, as a $k$-module, a direct sum $\bigoplus_{i=-2}^2 L_i$. We refer to it as <C>Lie</C> in the documentation and in our naming conventions.<P/>
+<C>+, *</C>
+As usual in GAP, the sum and Lie bracket of two elements of $L$ can be computed as <C>lie1 + lie2</C> and <C>lie1 * lie2</C>, respectively. Further, the scalar multiplication $k \times L \to L$ can also be computed using <C>*</C>.<P/>
+@Section The parts $L_{-2}$ and $L_2$
+The $k$-submodules $L_{-2}$ and $L_2$ are isomorphic to $k$.<P/>
+<List><Item><C>LieX</C></Item><Item><C>LieY</C></Item></List>
+The generators of $L_{-2}$ and $L_2$, respectively. They are denoted by $x$ and $y$ in [DMW]. They are printed as <C>x</C> and <C>y</C>.<P/>
+
+@Section The parts $L_{-1}$ and $L_1$
+The $k$-submodules $L_{-1}$ and $L_1$ are isomorphic to the Brown algebra $B$. However, just like elements of $B$ are not lists in the GAP sense, we strictly distinguish between elements of $B$, $L_{-1}$ and $L_1$. Elements of $L_{-1}$ and $L_1$ are printed as <C>[t, cub1, cub2, s]_-</C> and <C>[t, cub1, cub2, s]_+</C>, respectively. For example, <C>[ t1, a1[23], a2[12], t1+t2 ]_+</C> is an element of $L_1$.<P/>
+
+@Section The Lie subalgebra $L_0$
+The subalgebra $L_0$ of $L$ is itself the direct sum of three components $L_{0,-1}, Z, L_{0,1}$. Again, we internally distinguish between elements of $L_0$ and their embedding into $L$.<P/>
+
+@Section The $L_0$ components
+The $k$-submodules $L_{0,-1}$ and $L_{0,1}$ are isomorphic to the cubic Jordan matrix algebra $J$. Again, we strictly distinguish between elements of $J$, $L_{0,-1}$ and $L_{0,1}$. For an element <C>cub</C> of $J$, the corresponding elements of $L_{0,-1}$ and $L_{0,1}$ are printed as <C>ad_{cub}^-</C> and <C>ad_{cub}^+</C>, respectively. While we internally distinguish between elements of $L_{0,\pm 1}$ and their embeddings into $L$, they are printed in the same way.<P/>
+
+@Section The parts $Z$ and `DD`
+We refer to the $k$-module $\langle \mathbf{d}_{a,b} \mid a \in J, b \in J' \rangle$ (which is unnamed in [DMW]) as <C>DD</C> in (the documentation of) this GAP package. The $k$-module $Z$ is the (not necessarily direct) sum of <C>DD</C> with $k \xi + k\zeta$. Again, we internally distinguish between elements of <C>DD</C> and their embedding into $L_0$ and $L$.<P/>
+<List>
+<Item><C>LieXi</C></Item>
+<Item><C>L0Xi</C></Item>
+<Item><C>LieZeta</C></Item>
+<Item><C>L0Zeta</C></Item>
+</List>
+The elements $\xi$ and $\zeta$ regarded as elements of $L$ or of $L_0$, respectively. They are printed as <C>xi</C> and <C>zeta</C>.<P/>
+
+@Section Root homomorphisms
+We represent a root in $G_2$ (respectively, $F_4$) as a list with two (respectively, four) elements, each of which is an integer in the range <C>[-2, -1, 0, 1, 2]</C>. This representation corresponds precisely to Figures 1 and 3 in [DMW].<P/>
+<List>
+<Item><C>F4Roots</C></Item>
+<Item><C>F4ShortRoots</C></Item>
+<Item><C>F4LongRoots</C></Item>
+<Item><C>G2Roots</C></Item>
+<Item><C>G2ShortRoots</C></Item>
+<Item><C>G2LongRoots</C></Item>
+</List>
+Lists of all (resp. all short reps. all long) roots in $F_4$ (resp. $G_2$).<P/>
+<C>F4SimpleRoots</C>
+The system <C>[[1,1,-1,-1], [-2, 0, 0, 0], [1, -1, 0, 0], [0, 1, 1, 0]</C> of simple roots in $F_4$. This is precisely $\Delta_F = (\delta_1, \delta_2, \delta_3, \delta_4)$ in [DMW, 11.1].<P/>
+
+
+@Chapter The automorphism group
+The $F_4$-graded group constructed in [DMW] is a group of automorphisms of $L$. This package provides the internal structure <C>LieEndo</C> to perform computations with automorphisms of $L$.<P/>
+<C>f(lie)</C>
+For an element <C>f</C> of <C>LieEndo</C> and <C>lie</C> in $L$, <C>f(lie)</C> is the image of <C>lie</C> under <C>f</C>.<P/>
+<C>f+g, f*g</C>
+For two elements <C>f</C> and <C>g</C> of <C>LieEndo</C>, <C>f+g</C> and <C>f*g</C> are the elements of <C>LieEndo</C> that map <C>lie</C> to <C>f(lie) + g(lie)</C> and <C>f(g(lie))</C>, respectively.<P/>
+
+@Chapter Trivial elements
+<List>
+<Item><C>Zero(ComRing)</C></Item>
+<Item><C>Zero(ConicAlg)</C></Item>
+<Item><C>BrownZero</C></Item>
+<Item><C>DDZero</C></Item>
+<Item><C>L0Zero</C></Item>
+<Item><C>LieZero</C></Item>
+<Item><C>GrpZero</C></Item>
+</List>
+The zero elements in $k$, $C$, $B$, <C>DD</C>, $L_0$, $L$, <C>LieEndo</C>, respectively.<P/>
+<C>GrpOne</C>
+The identity element in <C>LieEndo</C>.<P/>
+
+@Chapter Simplification and equality tests
+Let <C>u, v</C> be two element of $k$ (or of $C$, $B$, <C>DD</C>, $L_0$ or $L$, but not of <C>LieEndo</C> which is handled somewhat differently). Then <C>u = v</C> evaluates to <C>true</C> if and only if the internal representations of <C>u</C> and <C>v</C> coincide. In particular, if it evaluates to <C>true</C>, then <C>u</C> and <C>v</C> are certainly equal (in the mathematical sense, i.e. regarded as elements of a "free" mathematical structure). If for example <C>u</C>, <C>v</C> lies in $C$, this means that for any multiplicative conic alternative algebra $\tilde{C}$ over any commutative ring $\tilde{k}$, the identity <C>u = v</C> holds whenever <C>a1, a2, ...</C> are replaced by arbitrary elements of $\tilde{C}$ and <C>t1, t2, ...</C> are replaced by arbitrary elements of $\tilde{k}$.<P/>
+However, it <C>u = v</C> evaluates to <C>false</C>, then this does not prove that <C>u</C> and <C>v</C> are not equal (in the mathematical sense). The following key function of this package aims to mitigate this problem:<P/>
+
+@Chapter Testing equality of automorphism of $L$
+For elements of <C>LieEndo</C>, equality tests with <C>=</C> are useless: Even <C>GrpRootHomF4(F4Root, z) = GrpRootHomF4(F4Root, z)</C> evaluates to <C>false</C> for technical reasons. Instead, the following functions should be used.<P/>
+

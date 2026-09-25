@@ -94,7 +94,7 @@ end);
 # i: 1, 2, or 3
 # Returns: u \in Conic such that u[jl] is the jl-summand of cubicEl where ijl is
 # the unique cyclic permutation starting from i
-BindGlobal("CubicConicPart", function(cubicEl, i)
+InstallMethod(CubicConicPart, [ IsCubicElement, IsInt ], function(cubicEl, i)
 	if i in [1,2,3] then
 		return UnderlyingElement(cubicEl)[2][i];
 	else
@@ -104,7 +104,7 @@ BindGlobal("CubicConicPart", function(cubicEl, i)
 end);
 
 # Returns: t \in ComRing such that t[ii] is the ii-summand of cubicEl.
-BindGlobal("CubicComPart", function(cubicEl, i)
+InstallMethod(CubicComPart, [ IsCubicElement, IsInt ], function(cubicEl, i)
 	if i in [1,2,3] then
 		return UnderlyingElement(cubicEl)[1][i];
 	else
@@ -135,7 +135,6 @@ BindGlobal("CubicZero", Cubic([
 # i: 1, 2, or 3
 # t: Element of ComRing
 # Returns: The element t[ii] of Cubic.
-DeclareOperation("CubicComEl", [IsRingElement, IsInt]);
 InstallMethod(CubicComEl, [IsRingElement, IsInt], function(t, i)
 	local comList, conicList;
 	ReqComRingEl(t);
@@ -154,7 +153,7 @@ end);
 # i: 1, 2, or 3
 # a: Element of ConicAlg
 # Returns: The element a[jl] of Cubic if [i, j, l] is the cyclic permutation starting from i.
-BindGlobal("CubicConicEl", function(a, i)
+InstallMethod(CubicConicEl, [ IsRingElement, IsInt ], function(a, i)
 	local comList, conicList;
 	if not ReqConicAlgEl(a) then
 		return fail;
@@ -195,7 +194,7 @@ end);
 # i, j: Indices 1, 2 or 3
 # a: Element of ComRing or ConicAlg
 # Returns: a[ij] \in Cubic
-BindGlobal("CubicEl", function(a, i, j)
+InstallMethod(CubicEl, [ IsRingElement, IsInt, IsInt ], function(a, i, j)
 	if i = j then
 		ReqComRingEl(a);
 		return CubicComEl(a, i);
@@ -218,15 +217,20 @@ BindGlobal("CubicElOne", function(i, j)
 	fi;
 end);
 
+
 # t1, t2, t3: Elements of ComRing
 # a1, a2, a3: Elements of ConicAlg
 # Returns: t1[11] + t2[22] + t3[33] + a1[23] + a2[31] + a3[12]
-BindGlobal("CubicElFromTuple", function(t1, t2, t3, a1, a2, a3)
-	return Sum([
-		CubicComEl(t1, 1), CubicComEl(t2, 2), CubicComEl(t3, 3),
-		CubicConicEl(a1, 1), CubicConicEl(a2, 2), CubicConicEl(a3, 3)
-	]);
-end);
+InstallMethod(
+	CubicElFromTuple,
+	[ IsRingElement, IsRingElement, IsRingElement, IsRingElement, IsRingElement, IsRingElement ],
+	function(t1, t2, t3, a1, a2, a3)
+		return Sum([
+			CubicComEl(t1, 1), CubicComEl(t2, 2), CubicComEl(t3, 3),
+			CubicConicEl(a1, 1), CubicConicEl(a2, 2), CubicConicEl(a3, 3)
+		]);
+	end
+);
 
 # i: Integer
 # Returns: Put p := 3i+1, q := 3i+2, r := 3i+3. Then the output is
@@ -284,11 +288,6 @@ end);
 
 
 # ----- Structural maps of the cubic norm structure ------
-
-DeclareOperation("CubicNorm", [IsCubicElement]);
-DeclareOperation("CubicAdj", [IsCubicElement]);
-DeclareOperation("CubicCross", [IsCubicElement, IsCubicElement]);
-DeclareOperation("CubicBiTr", [IsCubicElement, IsCubicElement]);
 
 # A: Element of Cubic.
 # Returns: N(A) \in ComRing, the norm of A.
@@ -391,9 +390,6 @@ end );
 
 # ------- Structural maps of the Jordan algebra Cubic ----
 
-DeclareOperation("JordanU", [IsCubicElement, IsCubicElement]);
-DeclareOperation("JordanULin", [IsCubicElement, IsCubicElement, IsCubicElement]);
-DeclareOperation("JordanD", [IsCubicElement, IsCubicElement, IsCubicElement]);
 
 # a, b: Elements of Cubic. (More precisely, a \in Cubic, b \in Cubic').
 # Returns: U_a(b)

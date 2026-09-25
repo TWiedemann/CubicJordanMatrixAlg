@@ -405,24 +405,14 @@ InstallMethod(GrpRootHomF4Div, [IsList, IsRingElement], function(root, a)
 	return F4Exp(LieRootHomF4(root, a));
 end);
 
-DeclareOperation("GrpRootHomF4", [IsList, IsRingElement, IsBool]);
-DeclareOperation("GrpRootHomF4", [IsList, IsRingElement]);
-# Install method for GrpRootHomF4 later because it uses GrpWeylF4
-
 # root: Root in F4.
-# sign (optional argument): 1 or -1. Default 1.
+# sign: 1 or -1. Default 1.
 # Returns: The standard Weyl element corresponding to root if sign=1, and its inverse otherwise.
-BindGlobal("GrpStandardWeylF4", function(root, sign...)
+InstallMethod(GrpStandardWeylF4, [IsList, IsInt], function(root, sign)
 	local inv, one;
 	# Handle optional argument
-	if Length(sign) = 0 then
-		sign := 1;
-	else
-		sign := sign[1];
-		if not sign in [1,-1] then
-			Error("Incorrect argument for GrpStandardWeylF4");
-			return fail;
-		fi;
+	if not sign in [1, -1] then
+		return fail;
 	fi;
 	if root in F4LongRoots then
 		one := One(ComRing);
@@ -434,6 +424,8 @@ BindGlobal("GrpStandardWeylF4", function(root, sign...)
 	inv := GrpRootHomF4(-root, -sign*one);
 	return inv * GrpRootHomF4(root, sign*one) * inv;
 end);
+
+InstallMethod(GrpStandardWeylF4, [IsList], root -> GrpStandardWeylF4(root, 1));
 
 # root: Root in F4.
 # a: Element of ConicAlg if root is short and element of ComRing if root is long.

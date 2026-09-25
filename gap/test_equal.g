@@ -7,7 +7,6 @@
 # Returns: If lieEl1 can be proven to be equal to lieEl2 using Simplify, returns true.
 # Otherwise returns false, but they may still be equal.
 # If print = true, additional information is printed for the parts which are not equal.
-DeclareOperation("TestEquality", [IsLieElement, IsLieElement, IsBool]);
 InstallMethod(TestEquality, [IsLieElement, IsLieElement, IsBool], function(lieEl1, lieEl2, print)
 	local diff, isEqual, i, part;
 	diff := Simplify(lieEl1 - lieEl2);
@@ -24,7 +23,6 @@ InstallMethod(TestEquality, [IsLieElement, IsLieElement, IsBool], function(lieEl
 	return isEqual;
 end);
 
-DeclareOperation("TestEquality", [IsLieElement, IsLieElement]);
 InstallMethod(TestEquality, [IsLieElement, IsLieElement], function(lieEl1, lieEl2)
 	return TestEquality(lieEl1, lieEl2, false);
 end);
@@ -60,9 +58,6 @@ InstallMethod(TestEqualityOnGenList, [IsLieEndo, IsLieEndo, IsList],
 # If no integer is provided, then TestEquality(f, g, ConicAlg_rank)
 # is called.
 # Uses indeterminate a_conicIndetNum
-DeclareOperation("TestEquality", [IsLieEndo, IsLieEndo, IsInt]);
-DeclareOperation("TestEquality", [IsLieEndo, IsLieEndo]);
-
 InstallMethod(TestEquality, [IsLieEndo, IsLieEndo, IsInt],
 	function(lieEndo1, lieEndo2, conicIndetNum)
 		local genList;
@@ -149,6 +144,6 @@ BindGlobal("TestEqualityPiecesOnList", function(relations)
 end);
 
 # Like TestEqualityPiecesOnList, but only one relation "term1=term2" is tested.
-BindGlobal("TestEqualityPieces", function(term1, term2)
+InstallMethod(TestEqualityPieces, [ IsObject, IsObject ], function(term1, term2)
 	return TestEqualityPiecesOnList([[term1, term2]]);
 end);
