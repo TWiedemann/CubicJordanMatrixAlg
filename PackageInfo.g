@@ -46,15 +46,7 @@ PackageDoc := rec(
   LongTitle := "Symbolic computation in cubic Jordan matrix algebras",
 ),
 
-AutoDoc := rec(
-  autodoc := rec(
-    scan_dirs := [ ],
-    files := [ "doc/manual.autodoc", "gap/declarations.gd" ],
-  ),
-  scaffold := rec(
-    includes := [ ],
-  ),
-),
+AutoDoc := rec(),
 
 Dependencies := rec(
   GAP := ">= 4.15",
