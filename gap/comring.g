@@ -127,8 +127,8 @@ end);
 # element of ConicAlgMag. In most cases, this is an indeterminate in ComRing,
 # but it need not be. E.g. tr(One(ConicAlgMag)) = 2*One(ComRing).
 # We use the relations described in _ConicAlgMagTrCandidates and _PullNorm.
-DeclareGlobalName("_ConicAlgMagTrUncachedOnRep");
-BindGlobal("_ConicAlgMagTrUncachedOnRep", function(mRep)
+DeclareGlobalName("ConicAlgMagTrOnRep");
+BindGlobal("ConicAlgMagTrOnRep", function(mRep)
 	local indetName, varName, inv, left, right, candidates, list, min, StringFromRep;
 	indetName := "tr(";
 	inv := ConicAlgMagInvOnRep;
@@ -160,7 +160,7 @@ BindGlobal("_ConicAlgMagTrUncachedOnRep", function(mRep)
 				list := _PullNorm(left[1], left[2], right);
 				if list <> fail then
 					# Pull out norms: E.g. tr(aa'b) = n(a)tr(b). Apply recursion to compute tr(b).
-					return ConicAlgMagNormOnRep(list[1]) * _ConicAlgMagTrUncachedOnRep(list[2]);
+					return ConicAlgMagNormOnRep(list[1]) * ConicAlgMagTrOnRep(list[2]);
 				else
 					# No pulling out of norms is possible
 					candidates := Concatenation(
@@ -172,7 +172,7 @@ BindGlobal("_ConicAlgMagTrUncachedOnRep", function(mRep)
 				# As above, but with left and right switched
 				list := _PullNorm(left, right[1], right[2]);
 				if list <> fail then
-					return ConicAlgMagNormOnRep(list[1]) * _ConicAlgMagTrUncachedOnRep(list[2]);
+					return ConicAlgMagNormOnRep(list[1]) * ConicAlgMagTrOnRep(list[2]);
 				else
 					candidates := Concatenation(
 						candidates, _ConicAlgMagTrCandidates(left, right[1], right[2])
@@ -195,22 +195,7 @@ BindGlobal("_ConicAlgMagTrUncachedOnRep", function(mRep)
 end);
 
 # magEl: Element of ConicAlgMag
-# Returns: Its trace (an element of ComRing). No caching.
-BindGlobal("_ConicAlgMagTrUncached", function(magEl)
-	return _ConicAlgMagTrUncachedOnRep(ExtRepOfObj(magEl));
-end);
-
-# rep: Representation of an element of ConicAlgMag
-# Returns: Its precomputed trace (an element of ComRing), which we cache.
-BindGlobal("ConicAlgMagTrOnRep", function(rep)
-	if _CacheTrace then
-		return LookupDictionary(_TrDict, rep);
-	else
-		return _ConicAlgMagTrUncachedOnRep(rep);
-	fi;
-end);
-
-# Same as _ConicAlgMagTrUncached, but returns the precomputed, cached result.
+# Returns: Its trace (an element of ComRing).
 BindGlobal("ConicAlgMagTr", function(magEl)
 	return ConicAlgMagTrOnRep(ExtRepOfObj(magEl));
 end);
@@ -222,24 +207,19 @@ BindGlobal("ConicAlgMagNormLin", function(a, b)
 	return ConicAlgMagTr(ConicAlgMagInv(a)*b);
 end);
 
-# _ComRingGamIndetNum := []; # Contains the indeterminate number of gamma_i at position i (not used)
-
 # This function does the following:
-# - Initialises the dictionary _TrDict (see constants.g for a documentation).
 # - Initialises the list _ComRingIndetInfo (see constants.g for a documentation).
 # - Every indeterminate that may appear in ComRing is created once, and this always happens
 # in the same order (for a fixed choice of ConigAlg_rank and Trace_MaxLength). Every indeterminate
 # is assigned a number by GAP the first time it is used. Calling this function ensures that
 # the indeterminates are always initialised in the same order and hence always have the same
-# internal number. This guarantees that they are always printed in the same order. Hence it
-# is necessary to call this function even if _CacheTrace = false.
-BindGlobal("_InitTrDict", function()
+# internal number. This guarantees that they are always printed in the same order.
+BindGlobal("_InitIndeterminates", function()
 	local maxIndetNum, magEl, magEls, magElsReps, magElRep, trace, polyRep, monomial, i, j;
 	BindGlobal("_ComRingIndetInfo", []);
 	# Initialise all the other indeterminates of ComRing in the desired order
 	for i in [1..3] do
 		ComRingGamIndet(i); # Initialise indeterminate
-		# _ComRingGamIndetNum[i] := i;
 		Add(_ComRingIndetInfo, ["g", i]);
 	od;
 	for i in [1..ComRing_rank] do
@@ -250,24 +230,20 @@ BindGlobal("_InitTrDict", function()
 		ComRingNormIndet(i); # Initialise indeterminate
 		Add(_ComRingIndetInfo, ["n", ConicAlgMagIndet(i)]);
 	od;
-	## Initialise dictionary
+	## Initialise indeterminates in ComRing
 	# maxIndetNum will be increased whenever a new indeterminate is created
 	maxIndetNum := 3 + ComRing_rank + ConicAlg_rank;
 	# List of all elements of ConicAlgMag up to length Trace_MaxLength
 	magEls := Concatenation(_AllConicAlgMagEls(Trace_MaxLength));
 	magEls := Concatenation([One(ConicAlgMag)], magEls);
 	magElsReps := List(magEls, x -> ExtRepOfObj(x));
-	# New lookup dictionary for keys such as magElsReps[1]. All keys
-	# have to lie in magElsReps.
-	BindGlobal("_TrDict", NewDictionary(magElsReps[1], true, magElsReps));
 	for i in [1..Length(magEls)] do
 		magEl := magEls[i];
 		magElRep := magElsReps[i];
-		trace := _ConicAlgMagTrUncached(magEl);
-		AddDictionary(_TrDict, magElRep, trace);
+		trace := ConicAlgMagTr(magEl);
 		## Update maxIndetNum
-		polyRep := ExtRepNumeratorRatFun(trace); # rep of the polynomial trace
-		# Iterate through all monomials in trace
+		polyRep := ExtRepNumeratorRatFun(trace); # rep of the polynomial `trace`
+		# Iterate through all monomials in `trace`
 		for i in [1..Length(polyRep)/2] do
 			monomial := polyRep[2*i - 1];
 			# Iterate through all indeterminate numbers in monomial
@@ -283,5 +259,5 @@ BindGlobal("_InitTrDict", function()
 	return maxIndetNum;
 end);
 
-BindGlobal("_ComRingNumIndets", _InitTrDict());
+BindGlobal("_ComRingNumIndets", _InitIndeterminates());
 BindGlobal("ComRing", FunctionField(ComRingBaseRing, _ComRingNumIndets));
