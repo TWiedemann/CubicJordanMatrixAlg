@@ -5,6 +5,14 @@ BindGlobal("_SanitizeImmediately", true);
 # If true, the tests which check whether elements lie in ComRing or ConicAlg are skipped
 BindGlobal("_SkipTests", false);
 
+## ---- Symbols ----
+BindGlobal("_ConicConjSymbol", "'");
+BindGlobal("_ConicIndetDefaultSymbol", "a");
+BindGlobal("_ComRingIndetDefaultSymbol", "t");
+
+## ---- Integers ----
+BindGlobal("_DefaultMaxTrLength", 4);
+
 # ---- Precomputed information ----
 # Dictionary with precomputed values for all traces. Will be initalised later, mostly in init.g.
 # _TrDict has as keys the representations of elements of ConicAlgMag and as objects their traces,

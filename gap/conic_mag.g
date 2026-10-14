@@ -4,26 +4,28 @@
 
 # ----- Indeterminates and their names -----
 
+# symbol: String.
 # i: Integer.
-# Returns: Name of the i-th indeterminate in ConicAlg
-BindGlobal("_ConicAlgIndetName", function(i)
-	return Concatenation("a", String(i));
+# Returns: Name of the i-th indeterminate in ConicAlg(Mag).
+BindGlobal("_ConicAlgIndetName", function(symbol, i)
+	return Concatenation(symbol, String(i));
 end);
 
+# symbol: String.
 # i: Integer.
-# Returns: Name of the conjugate of the i-th indeterminate in ConicAlg
-BindGlobal("_ConicAlgInvIndetName", function(i)
-	return Concatenation("a", String(i), "'");
+# Returns: Name of the conjugate of the i-th indeterminate in ConicAlg(Mag).
+BindGlobal("_ConicAlgInvIndetName", function(symbol, i)
+	return Concatenation(symbol, String(i), _ConicConjSymbol);
 end);
 
 # Returns: The list of all strings which appear as indeterminate names in ConicAlg
-BindGlobal("_ConicAlgIndetNames", function()
+BindGlobal("_ConicAlgIndetNames", function(symbol, rank)
 	local ConicAlgIndetNames, i;
 	ConicAlgIndetNames := [];
-	for i in [1..ConicAlg_rank] do
+	for i in [1..rank] do
 		Add(ConicAlgIndetNames, _ConicAlgIndetName(i));
 	od;
-	for i in [1..ConicAlg_rank] do
+	for i in [1..rank] do
 		Add(ConicAlgIndetNames, _ConicAlgInvIndetName(i)); # Conjugation
 	od;
 	return ConicAlgIndetNames;
@@ -31,14 +33,51 @@ end);
 
 # ----- ConicAlgMag and its generators ----- 
 
-BindGlobal("ConicAlgMag", FreeMagmaWithOne(_ConicAlgIndetNames()));
+DeclareOperation("ConicAlgMag", [IsInt, IsString]);
+DeclareOperation("ConicAlgMag", [IsInt]);
 
-BindGlobal("ConicAlgMagIndet", function(i)
-	return GeneratorsOfMagmaWithOne(ConicAlgMag)[i];
+InstallMethod(ConicAlgMagma, [IsInt, IsString], function(rank, varName)
+	local magma, fam;
+	magma := FreeMagmaWithOne(_ConicAlgIndetNames(varName, rank));
+	fam := FamilyObj(magma);
+	fam!.conicMagma := magma;
+	fam!.conicIndetName := varName;
+	fam!.conicRank := rank;
+	return magma;
 end);
 
-BindGlobal("ConicAlgMagInvIndet", function(i)
-	return GeneratorsOfMagmaWithOne(ConicAlgMag)[ConicAlg_rank+i];
+InstallMethod(ConicAlgMagma, [IsInt], function(rank)
+	return ConicAlgMagma(rank, _ConicIndetDefaultSymbol);
+end);
+
+# BindGlobal("ConicAlgMag", FreeMagmaWithOne(_ConicAlgIndetNames()));
+
+InstallMethod("ConicRank", [IsMagma], function(magma)
+	local fam;
+	fam := FamilyObj(magma);
+	if "conicRank" in NamesOfComponents(magma) then
+		return fam!.conicRank;
+	else
+		Error("Magma must be magma of a conic algebra");
+	fi;
+end);
+
+InstallMethod("ConicIndetName", [IsMagma], function(magma)
+	local fam;
+	fam := FamilyObj(magma);
+	if "conicIndetName" in NamesOfComponents(magma) then
+		return fam!.conicRank;
+	else
+		Error("Magma must be magma of a conic algebra");
+	fi;
+end);
+
+BindGlobal("ConicAlgMagIndet", function(magma, i)
+	return GeneratorsOfMagmaWithOne(magma)[i];
+end);
+
+BindGlobal("ConicAlgMagInvIndet", function(magma, i)
+	return GeneratorsOfMagmaWithOne(magma)[ConicRank(magma)+i];
 end);
 
 

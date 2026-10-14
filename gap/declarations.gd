@@ -27,6 +27,14 @@ DeclareOperation("ComRingGamIndet", [ IsInt ]);
 #! @ChapterInfo The multiplicative conic alternative algebra $C$, Functions
 DeclareOperation("ConicAlgIndet", [ IsInt ]);
 
+# TODO
+DeclareOperation("ConicAlgebra", [IsInt, IsInt, IsInt, IsString, IsString]);
+DeclareOperation("ConicAlgebra", [IsInt, IsInt, IsInt]);
+DeclareOperation("ConicAlgebra", [IsInt, IsInt]);
+
+DeclareOperation("ConicRank", [ IsObject ]);
+DeclareOperation("ConicIndetName", [ IsObject ]);
+
 #! @Arguments a
 #! @Description
 #! Returns the conjugate of <C>a</C>. This is an element of $C$ which is printed as <C>a'</C>.

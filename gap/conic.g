@@ -6,6 +6,12 @@
 
 # ----- Definition of ConicAlg -----
 
+InstallMethod(ConicAlgebra, [IsInt, IsInt, IsInt, IsString, IsString], 
+	function(conicRank, comRingRank, maxTrLength conicVarName, comRingVarName)
+
+	end
+);
+
 BindGlobal("ConicAlg", FreeMagmaRing(ComRing, ConicAlgMag));
 
 BindGlobal("ConicAlgMagEmb", x -> ImageElm(Embedding(ConicAlgMag, ConicAlg), x));
