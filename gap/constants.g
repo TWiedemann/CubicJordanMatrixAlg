@@ -9,6 +9,7 @@ BindGlobal("_SkipTests", false);
 BindGlobal("_ConicConjSymbol", "'");
 BindGlobal("_ConicIndetDefaultSymbol", "a");
 BindGlobal("_ComRingIndetDefaultSymbol", "t");
+BindGlobal("_ConicDefaultOneString", "1_C");
 
 ## ---- Integers ----
 BindGlobal("_DefaultMaxTrLength", 4);

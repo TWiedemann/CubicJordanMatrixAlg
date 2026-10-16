@@ -7,6 +7,7 @@
 #! then GAP variables <C>t1 := ComRingIndet(1), ...</C> are defined.
 #! @ChapterInfo The commutative ring $k$, Functions
 DeclareOperation("ComRingIndet", [ IsInt ]);
+DeclareOperation("ComRingIndet", [ IsObject, IsInt ]);
 
 #! @Arguments i
 #! @Description
@@ -18,6 +19,7 @@ DeclareOperation("ComRingIndet", [ IsInt ]);
 #! then GAP variables <C>g1 := ComRingGamIndet(1), ...</C> are defined.
 #! @ChapterInfo The commutative ring $k$, Functions
 DeclareOperation("ComRingGamIndet", [ IsInt ]);
+DeclareOperation("ComRingGamIndet", [ IsObject, IsInt ]);
 
 #! @Arguments p
 #! @Description
@@ -26,11 +28,15 @@ DeclareOperation("ComRingGamIndet", [ IsInt ]);
 #! true</C>, then GAP variables <C>a1 := ConicAlgIndet(1), ...</C> are available.
 #! @ChapterInfo The multiplicative conic alternative algebra $C$, Functions
 DeclareOperation("ConicAlgIndet", [ IsInt ]);
+DeclareOperation("ConicAlgIndet", [ IsObject, IsInt ]);
 
-# TODO
 DeclareOperation("ConicAlgebra", [IsInt, IsInt, IsInt, IsString, IsString]);
 DeclareOperation("ConicAlgebra", [IsInt, IsInt, IsInt]);
 DeclareOperation("ConicAlgebra", [IsInt, IsInt]);
+DeclareOperation("ComRingOfConicAlgebra", [IsObject]);
+DeclareOperation("ConicAlgMagma", [IsInt]);
+DeclareOperation("ConicAlgMagma", [IsInt, IsString]);
+DeclareOperation("ConicAlgMagma", [IsInt, IsString, IsString]);
 
 DeclareOperation("ConicRank", [ IsObject ]);
 DeclareOperation("ConicIndetName", [ IsObject ]);
