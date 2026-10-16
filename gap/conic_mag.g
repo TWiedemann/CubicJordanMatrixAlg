@@ -34,11 +34,12 @@ end);
 
 # ----- ConicAlgMag and its generators ----- 
 
-InstallMethod(ConicAlgMagma, [IsInt, IsString, IsString], function(rank, varName, oneName)
+InstallMethod(ConicAlgMagma, [IsInt, IsString, IsString], function(rank, varName, oneName, zeroName)
 	local magma, fam;
 	magma := FreeMagmaWithOne(_ConicAlgIndetNames(varName, rank));
 	fam := FamilyObj(magma);
 	fam!.conicOneName := oneName;
+	fam!.conicZeroName := zeroName;
 	fam!.conicMagma := magma;
 	fam!.conicIndetName := varName;
 	fam!.conicRank := rank;
@@ -46,7 +47,7 @@ InstallMethod(ConicAlgMagma, [IsInt, IsString, IsString], function(rank, varName
 end);
 
 InstallMethod(ConicAlgMagma, [IsInt, IsString], function(rank, varName)
-	return ConicAlgMagma(rank, varName, _ConicDefaultOneString);
+	return ConicAlgMagma(rank, varName, _ConicDefaultOneString, _ConicDefaultZeroString);
 end);
 
 InstallMethod(ConicAlgMagma, [IsInt], function(rank)

@@ -216,58 +216,57 @@ BindGlobal("ConicAlgMagNormLin", function(a, b)
 	return ConicAlgMagTr(ConicAlgMagInv(a)*b);
 end);
 
-# TODO: Document the return and input values.
-# This function does the following:
-# - Initialises the list comRingIndetInfo (see constants.g for a documentation).
-# - Every indeterminate that may appear in ComRing is created once, and this always happens
-# in the same order (for a fixed choice of ConigAlg_rank and Trace_MaxLength). Every indeterminate
-# is assigned a number by GAP the first time it is used. Calling this function ensures that
-# the indeterminates are always initialised in the same order and hence always have the same
-# internal number. This guarantees that they are always printed in the same order.
-BindGlobal("_InitIndeterminates", function(magma, comRank)
-	local maxIndetNum, magEl, magEls, magElsReps, magElRep, trace, polyRep, monomial, i, j, magma;
+# magma: Conic algebra magma.
+# comRank, maxTrLenth: Integers.
+# comIndetSym: String.
+# This function initialises all indeterminates in the commutative base ring of
+# the conic algebra over magma. The number of indeterminates is determined by
+# comRank (the number of indeterminates comIndetSym_1, ...) and trMaxLength (the maximal
+# length of trace indeterminates). This initialisation step ensures that these
+# indeterminates are always printed in the same order (because they are always initialised
+# in the same order).
+# Returns: [indetList, comRingIndetInfo] where indetList is a list of all indeterminates
+# in the commutative ring (in the order in which they are initialised) and comRingIndetInfo
+# is a list of the same length such that comRingIndetInfo[i] contains information
+# about the i-th indeterminate. Each entry of the latter
+# is a list [ type, info ] where type is one of the strings "g", "t", "n", "tr"
+# and info is additional information: For t_i and g_i, info is i. For n(x) and tr(x),
+# info is x (as an element of magma).
+BindGlobal("_InitComRingIndeterminates", function(magma, comRank, comIndetSym, maxTrLength)
+	local maxIndetNum, magEl, magEls, magElsReps, magElRep, trace, polyRep, monomial, i, j
+		conicRank, indetList;
 	conicRank := ConicRank(magma);
+	indetList := [];
 	comRingIndetInfo := [];
-	# Initialise all the other indeterminates of ComRing in the desired order
+	## Initialise all indeterminates of ComRing in the desired order
 	for i in [1..3] do
-		ComRingGamIndet(i); # Initialise indeterminate
+		Add(indetList, ComRingGamIndet(i)); # Initialise indeterminate
 		Add(comRingIndetInfo, ["g", i]);
 	od;
 	for i in [1..comRank] do
-		ComRingIndet(i); # Initialise indeterminate
+		Add(indetList, ComRingIndet(comIndetSym, i)); # Initialise indeterminate
 		Add(comRingIndetInfo, ["t", i]);
 	od;
 	for i in [1..conicRank] do
-		ComRingNormIndet(magma,i); # Initialise indeterminate
+		Add(indetList, ComRingNormIndet(magma,i)); # Initialise indeterminate
 		Add(comRingIndetInfo, ["n", ConicAlgMagIndet(magma,i)]);
 	od;
-	## Initialise indeterminates in ComRing
-	# maxIndetNum will be increased whenever a new indeterminate is created
-	maxIndetNum := 3 + comRank + conicRank;
-	# List of all elements of ConicAlgMag up to length Trace_MaxLength
-	magEls := Concatenation(_AllConicAlgMagEls(magma,Trace_MaxLength));
+	## Initialise trace indeterminates in ComRing
+	# List of all elements of ConicAlgMag up to length maxTrLength
+	magEls := Concatenation(_AllConicAlgMagEls(magma, maxTrLength));
 	magEls := Concatenation([One(magma)], magEls);
 	magElsReps := List(magEls, x -> ExtRepOfObj(x));
 	for i in [1..Length(magEls)] do
 		magEl := magEls[i];
 		magElRep := magElsReps[i];
 		trace := ConicAlgMagTr(magEl);
-		## Update maxIndetNum
 		polyRep := ExtRepNumeratorRatFun(trace); # rep of the polynomial `trace`
-		# Iterate through all monomials in `trace`
-		for i in [1..Length(polyRep)/2] do
-			monomial := polyRep[2*i - 1];
-			# Iterate through all indeterminate numbers in monomial
-			for j in [1..Length(monomial)/2] do
-				if monomial[2*j-1] > maxIndetNum then
-					# A new indeterminate has occured. It must be tr(magEl).
-					maxIndetNum :=  monomial[2*j - 1];
-					Add(comRingIndetInfo, ["tr", magEl]);
-				fi;
-			od;
-		od;
+		if Length(polyRep) = 2 then
+			Add(indetList, trace);
+			Add(comRingIndetInfo, ["tr", magEl]);
+		fi;
 	od;
-	return [maxIndetNum, comRingIndetInfo];
+	return [indetList, comRingIndetInfo];
 end);
 
 # TODO: Remove this.

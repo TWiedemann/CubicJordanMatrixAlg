@@ -13,21 +13,12 @@ BindGlobal("_ComRingGamIndetSymbol", "g");
 BindGlobal("_ConicIndetDefaultSymbol", "a");
 BindGlobal("_ComRingIndetDefaultSymbol", "t");
 BindGlobal("_ConicDefaultOneString", "1_C");
+BindGlobal("_ConicDefaultZeroString", "0_C");
 
 ## ---- Integers ----
 BindGlobal("_DefaultMaxTrLength", 4);
 
 # ---- Precomputed information ----
-# Dictionary with precomputed values for all traces. Will be initalised later, mostly in init.g.
-# _TrDict has as keys the representations of elements of ConicAlgMag and as objects their traces,
-# which are elements of ComRing.
-DeclareGlobalName("_TrDict");
-# List with information about the indeterminates of ComRing in the order in which they
-# appear in ComRing. I.e. _ComRingIndetInfo[i] contains information about the i-th indeterminate.
-# Each entry is a list [ type, info ] where type is one of the strings "g", "t", "n", "tr"
-# and info is additional information: For t_i and g_i, info is i. For n(x) and tr(x),
-# info is x (as an element of ConicAlgMag)
-DeclareGlobalName("_ComRingIndetInfo");
 # _ComRingTraceIndets: List of all indeterminates of the form tr(a) \in ComRing with a \in ConicAlgMag.
 # _ConicAlgTraces: List of the "corresponding" elements a+a' in ConicAlg.
 # Used by WithoutTraces().

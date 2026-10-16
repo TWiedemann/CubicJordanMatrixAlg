@@ -4,25 +4,123 @@
 ### Technically, ConicAlg is a free magma ring over the free magma ConicAlgMag
 ### whose coefficient ring is ComRing.
 
-# ----- Legacy global ConicAlg definition -----
+# ----- Constructors for conic algebras -----
 
-BindGlobal("ConicAlg", FreeMagmaRing(ComRing, Collections(FamilyObj(One(ComRing)))!.conicMagma));
-Collections(FamilyObj(Zero(ConicAlg)))!.conicAlgebra := ConicAlg;
-FamilyObj(Collections(FamilyObj(Zero(ConicAlg)))!.conicMagma)!.conicAlgebra := ConicAlg;
+InstallMethod(ConicAlgebra, [IsInt, IsInt, IsInt, IsString, IsString, IsString, IsString],
+	function(comRank, conicRank, maxTrLength, comSym, conicSym, zeroSym, oneSym)
+		local magma, initInfo, comRingIndets, comRingIndetInfo, comRing, conicAlg;
+		magma := ConicAlgMagma(conicRank, conicSym, oneSym);
+		initInfo := _InitComRingIndeterminates(magma, comRank, comSym, maxTrLength);
+		comRingIndets := initInfo[1];
+		comRingIndetInfo := initInfo[2];
+		comRing := FunctionField(ComRingBaseRing, comRingIndets);
+		conicAlg := FreeMagmaRing(ComRing, magma);
+		# Store information in families
+		famConicAlg := FamilyObj(conicAlg);
+		famConicAlgMag := FamilyObj(Magma);
+		famConicAlg!.conicAlg := conicAlg;
+		famConicAlg!.conicAlgMagFamily := famConicAlgMag;
+		# Additional information to be stored in the family object of magma
+		famConicAlgMag!.comRingRank := comRank;
+		famConicAlgMag!.maxTrLength := maxTrLength;
+		famConicAlgMag!.comRingIndetName := comSym;
+		famConicAlgMag!.conicZeroName := zeroSym;
+		famConicAlgMag!.conicAlgMagEmbedding := x -> ImageElm(Embedding(magma, conicAlg), x);
+		famConicAlgMag!.comRingIndetInfo := comRingIndetInfo;
+		return conicAlg;
+	end
+);
 
-BindGlobal("ConicAlgMagEmb", function(x)
+InstallMethod(ConicAlgebra, [IsInt, IsInt, IsInt, IsString, IsString],
+	function(comRank, conicRank, maxTrLength, comSym, conicSym)
+		return ConicAlgebra(
+			comRank, conicRank, maxTrLength, comSym, conicSym,
+			_ConicDefaultZeroString, _ConicDefaultOneString
+		);
+	end
+);
+
+InstallMethod(ConicAlgebra, [IsInt, IsInt, IsInt], function(comRing, conicRank, maxTrLength)
+	return ConicAlgebra(
+		comRing, conicRank, maxTrLength, _ComRingIndetDefaultSymbol, _ConicIndetDefaultSymbol
+	);
+);
+
+InstallMethod(ConicAlgebra, [IsInt, IsInt], function(comRing, conicRank)
+	return ConicAlgebra(
+		comRing, conicRank, _DefaultMaxTrLength, _ComRingIndetDefaultSymbol, _ConicIndetDefaultSymbol
+	);
+);
+
+# ----- Getter functions for information stored in conic algebra -----
+
+InstallMethod(ConicAlgebra, [IsElementOfFreeMagmaRing], function(a)
 	local fam;
-	fam := FamilyObj(x);
-	return ImageElm(Embedding(fam!.conicMagma, fam!.conicAlgebra), x);
+	fam := CollectionsFamily(FamilyObj(a));
+	if IsBound(fam!.conicAlgebra) then
+		return fam!.conicAlgebra;
+	else
+		Error("Must be an element of a conic algebra");
+	fi;
 end);
 
+InstallMethod(ConicAlgMagma, [IsFreeMagmaRing], function(C)
+	return UnderlyingMagma(C);
+end);
 
-# ----- Nicer print for 0 in ConicAlg -----
+InstallMethod(ComRingOfConicAlg, [IsFreeMagmaRing], LeftActingDomain);
 
-BindGlobal("_ConicAlgZeroString", "0_C");
+InstallMethod(ConicRank, [IsFreeMagmaRing], C -> ConicRank(ConicAlgMagma(C)));
+
+InstallMethod(ComRingRank, [IsFreeMagmaRing], function(C)
+	local fam;
+	fam := FamilyObj(ConicAlgMag(C));
+	if IsBound(fam!.comRingRank) then
+		return fam!.comRingRank;
+	else
+		Error("Magma ring must be a conic algebra");
+	fi;
+end);
+
+InstallMethod(ConicIndetName, [IsFreeMagmaRing], C -> ConicIndetName(ConicAlgMagma(C)));
+
+InstallMethod(ComRingIndetName, [IsFreeMagmaRing], function(C)
+	local fam;
+	fam := FamilyObj(ConicAlgMag(C));
+	if IsBound(fam!.comRingIndetName) then
+		return fam!.comRingIndetName;
+	else
+		Error("Magma ring must be a conic algebra");
+	fi;
+end);
+
+InstallMethod(ConicAlgMaxTrLength, [IsFreeMagmaRing], function(C)
+	local fam;
+	fam := FamilyObj(ConicAlgMag(C));
+	if IsBound(fam!.maxTrLength) then
+		return fam!.maxTrLength;
+	else
+		Error("Magma ring must be a conic algebra");
+	fi;
+end);
+
+InstallMethod(ConicAlgMagEmbedding, [IsFreeMagmaRing], function(C)
+	local fam;
+	fam := FamilyObj(ConicAlgMag(C));
+	if IsBound(fam!.conicAlgMagEmbedding) then
+		return fam!.conicAlgMagEmbedding;
+	else
+		Error("Magma ring must be a conic algebra");
+	fi;
+end);
+
+# ----- Nicer printing for 0 in ConicAlg -----
+
 InstallMethod(String, "Custom string for 0 in ConicAlg", [IsElementOfFreeMagmaRing], function(x)
-	if IsBound(Collections(FamilyObj(x))!.conicAlgebra) and IsZero(x) then
-		return _ConicAlgZeroString;
+	local fam;
+	fam := CollectionsFamily(FamilyObj(x));
+	if IsBound(fam!.conicAlgMagFamily) and IsZero(x) then
+		return fam!.conicAlgMagFamily!.conicZeroName;
 	else
 		TryNextMethod();
 	fi;
@@ -35,7 +133,6 @@ InstallMethod(PrintObj, "Custom string for 0 in ConicAlg", [IsElementOfFreeMagma
 		TryNextMethod();
 	fi;
 end);
-
 
 # ----- Functions which test requirements and throw errors ---
 
@@ -93,21 +190,33 @@ end);
 
 # ----- Constructors for indeterminates -----
 
-InstallMethod(ConicAlgIndet, [ IsInt ], function(i)
-	return ConicAlgMagEmb(ConicAlgMagIndet(Collections(FamilyObj(Zero(ConicAlg)))!.conicMagma, i));
+InstallMethod(ConicAlgIndet, [ IsFreeMagmaRing, IsInt ], function(conicAlg, i)
+	emb := ConicAlgMagEmbedding(conicAlg);
+	magma := ConicAlgMagma(conicAlg);
+	return emb(ConicAlgMagIndet(magma, i));
 end);
 
 BindGlobal("ConicAlgInvIndet", function(i)
-	return ConicAlgMagEmb(ConicAlgMagInvIndet(Collections(FamilyObj(Zero(ConicAlg)))!.conicMagma, i));
+	emb := ConicAlgMagEmbedding(conicAlg);
+	magma := ConicAlgMagma(conicAlg);
+	return emb(ConicAlgMagInvIndet(magma, i));
 end);
 
 # ----- Conjugation, trace, norm on ConicAlg -----
 
+# 
 # a: Element of ConicAlg.
 # Returns: The conjugate a' of a.
-# magFunc: A function ConicAlgMag -> ComRing.
-# Returns: The linear extension ConicAlg -> Comring of magFunc.
-BindGlobal("ConicAlgFunctionalFromMagFunctional", function(magFunc)
+BindGlobal("ConicAlgInv", [IsElementOfFreeMagmaRing], function(a)
+	ReqConicAlgEl(a);
+	return ChangeRingElByMagmaTrans(ConicAlgebra(a), a, ConicAlgMagInv);
+end);
+
+# comRing: A commutative ring.
+# magmaRing: A magma ring over comRing.
+# magFunc: A function UnderlyingMagma(magmaRing) -> comRing.
+# Returns: The linear extension of magFunc to magmaRing.
+BindGlobal("ConicAlgFunctionalFromMagFunctional", function(magmaRing, comRing, magFunc)
 	return function(a)
 		local coeffList, result, i, magmaEl, coeff;
 		coeffList := CoefficientsAndMagmaElements(a);
@@ -121,7 +230,12 @@ BindGlobal("ConicAlgFunctionalFromMagFunctional", function(magFunc)
 	end;
 end);
 
-BindGlobal("ConicAlgTr", ConicAlgFunctionalFromMagFunctional(ConicAlgMagTr));
+BindGlobal("ConicAlgTr", function(a)
+	local conicAlg, comRing;
+	conicAlg := ConicAlgebra(a);
+	comRing := ComRingOfConicAlg(a);
+	return ConicAlgFunctionalFromMagFunctional(conicAlg, comRing, ConicAlgMagTr)(a);
+end);
 
 # a, b: Elements of ConicAlg.
 # Returns: n(a,b) := n(a+b) - n(a) - n(b).
@@ -133,12 +247,12 @@ end);
 
 # a: Element of ConicAlg.
 # Returns: Its norm n(a), an element of ComRing.
-# Use that n(\sum_i c_i m_i) = \sum_i c_i^2 n(m_i) + sum_{i<j} c_i c_j n(m_i, m_j)
+# Uses that n(\sum_i c_i m_i) = \sum_i c_i^2 n(m_i) + sum_{i<j} c_i c_j n(m_i, m_j)
 BindGlobal("ConicAlgNorm", function(a)
 	local coeffList, result, i, j, magmaEl, magmaEl2, coeff, coeff2;
 	ReqConicAlgEl(a);
 	coeffList := CoefficientsAndMagmaElements(a);
-	result := Zero(ComRing);
+	result := Zero(ComRingOfConicAlg(ConicAlgebra(a)));
 	for i in [1..Length(coeffList)/2] do
 		magmaEl := coeffList[2*i - 1]; # \in ConicAlgMag
 		coeff := coeffList[2*i]; # \in ComRing
@@ -147,8 +261,7 @@ BindGlobal("ConicAlgNorm", function(a)
 		for j in [i+1..Length(coeffList)/2] do
 			magmaEl2 := coeffList[2*j - 1]; # \in ConicAlgMag
 			coeff2 := coeffList[2*j]; # \in ComRing
-
-			result := result + coeff*coeff2 * ConicAlgMagNormLin(magmaEl, magmaEl2); # tr(x_i x_j') = linearisation of norm
+			result := result + coeff*coeff2 * ConicAlgMagNormLin(magmaEl, magmaEl2);
 		od;
 	od;
 	return result;
@@ -161,7 +274,7 @@ end);
 InstallMethod(ConicInv, [ IsObject ], function(a)
 	if IsElementOfFreeMagmaRing(a) then
 		return ConicAlgInv(a);
-	elif IsNonassocWord(a) and IsBound(FamilyObj(a)!.conicRank) then
+	elif IsNonassocWord(a) then
 		return ConicAlgMagInv(a);
 	else
 		return fail;
@@ -176,7 +289,7 @@ InstallMethod(ConicConj, [ IsObject ], ConicInv);
 InstallMethod(ConicTr, [ IsObject ], function(a)
 	if IsElementOfFreeMagmaRing(a) then
 		return ConicAlgTr(a);
-	elif IsNonassocWord(a) and IsBound(FamilyObj(a)!.conicRank) then
+	elif IsNonassocWord(a) then
 		return ConicAlgMagTr(a);
 	else
 		return fail;
@@ -188,7 +301,7 @@ end);
 InstallMethod(ConicNorm, [ IsObject ], function(a)
 	if IsElementOfFreeMagmaRing(a) then
 		return ConicAlgNorm(a);
-	elif IsNonassocWord(a) and IsBound(FamilyObj(a)!.conicRank) then
+	elif IsNonassocWord(a) then
 		return ConicAlgMagNorm(a);
 	else
 		return fail;
@@ -200,7 +313,7 @@ end);
 InstallMethod(ConicNormLin, [ IsObject, IsObject ], function(a,b)
 	if IsElementOfFreeMagmaRing(a) and IsElementOfFreeMagmaRing(b) and FamilyObj(a) = FamilyObj(b) then
 		return ConicAlgNormLin(a,b);
-	elif IsNonassocWord(a) and IsNonassocWord(b) and FamilyObj(a) = FamilyObj(b) and IsBound(FamilyObj(a)!.conicRank) then
+	elif IsNonassocWord(a) and IsNonassocWord(b) and FamilyObj(a) = FamilyObj(b) then
 		return ConicAlgMagNormLin(a,b);
 	else
 		return fail;
@@ -214,18 +327,19 @@ end);
 # and such that b has no summand of the form s*One(ConicAlg) for s \in ComRing
 BindGlobal("ConicAlgSplitOne", function(a)
 	local coeffList, i, magEl, t;
+	conicAlg := ConicAlgebra(a);
 	coeffList := CoefficientsAndMagmaElements(a);
 	# Look for summand t*One(ConicAlg)
 	for i in [1..Length(coeffList)/2] do
 		magEl := coeffList[2*i-1];
-		if magEl = One(Collections(FamilyObj(a))!.conicMagma) then
+		if IsOne(magEl)  then
 			# Summand t*One(ConicAlg) found
 			t := coeffList[2*i];
-			return [t, a - t*One(ConicAlg)];
+			return [t, a - t*One(conicAlg)];
 		fi;
 	od;
 	# No summand t*One(ConicAlg) found
-	return [Zero(ComRing), a];
+	return [Zero(ComRingOfConicAlg(conicAlg)), a];
 end);
 
 # twist: Element of the twisting group of (ComRing, ConicAlg), i.e., one of
@@ -238,8 +352,9 @@ BindGlobal("TwistGrpAct", function(twist, a)
 	else
 		a := twist[1]*a;
 		if twist[2] = -1 then
-			a := ConicAlgInv(a);
+			return ConicAlgInv(a);
+		else
+			return a;
 		fi;
-		return a;
 	fi;
 end);

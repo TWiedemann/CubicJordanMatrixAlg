@@ -34,14 +34,20 @@ DeclareOperation("ConicAlgIndet", [ IsObject, IsInt ]);
 DeclareOperation("ConicAlgebra", [IsInt, IsInt, IsInt, IsString, IsString]);
 DeclareOperation("ConicAlgebra", [IsInt, IsInt, IsInt]);
 DeclareOperation("ConicAlgebra", [IsInt, IsInt]);
+DeclareOperation("ConicAlgebra", [IsElementOfFreeMagmaRing]);
 DeclareOperation("ComRingOfConicAlgebra", [IsRing]);
 DeclareOperation("ConicAlgMagma", [IsInt]);
 DeclareOperation("ConicAlgMagma", [IsInt, IsString]);
 DeclareOperation("ConicAlgMagma", [IsInt, IsString, IsString]);
 DeclareOperation("ConicAlgMagma", [IsNonassocWord]);
+DeclareOperation("ConicAlgMagma", [IsFreeMagmaRing]);
+
+DeclareOperation("ComRingOfConicAlg", [IsFreeMagmaRing]);
 
 DeclareOperation("ConicRank", [ IsObject ]);
 DeclareOperation("ConicIndetName", [ IsObject ]);
+DeclareOperation("ComRingRank", [ IsObject ]);
+DeclareOperation("ComRingIndetName", [ IsObject ]);
 
 #! @Arguments a
 #! @Description
