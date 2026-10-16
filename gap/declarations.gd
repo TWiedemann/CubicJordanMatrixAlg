@@ -448,7 +448,7 @@ DeclareOperation("Simplify", [ IsObject ]);
 #! <C>ConicAlgIndet(ConicAlg_rank)</C>). The user should assure that these indeterminates do
 #! not occur in the definition of <C>g</C> and <C>h</C>.
 #! @ChapterInfo Simplification and equality tests, Functions
-DeclareOperation("TestEquality", [ IsObject, IsObject, IsObject ]);
+DeclareOperation("TestEquality", [ IsFreeMagmaRing, IsObject, IsObject, IsObject ]);
 
 #! @Description
 #! Returns <C>true</C> if <C>lie1</C>, <C>lie2</C> can be proven to represent the same elements
@@ -464,7 +464,7 @@ DeclareOperation("TestEquality", [ IsObject, IsObject, IsObject ]);
 #! <C>ConicAlgIndet(ConicAlg_rank)</C>). The user should assure that these indeterminates do
 #! not occur in the definition of <C>g</C> and <C>h</C>.
 #! @ChapterInfo Testing equality of automorphism of $L$, Functions
-DeclareOperation("TestEquality", [ IsObject, IsObject ]);
+DeclareOperation("TestEquality", [ IsFreeMagmaRing, IsObject, IsObject ]);
 
 #! @Arguments g, h
 #! @Description
@@ -477,7 +477,7 @@ DeclareOperation("TestEquality", [ IsObject, IsObject ]);
 #! <C>ConicAlgIndet(ConicAlg_rank)</C> do not occur in the definition of <C>g</C> and
 #! <C>h</C>.
 #! @ChapterInfo Testing equality of automorphism of $L$, Functions
-DeclareOperation("TestEqualityPieces", [ IsObject, IsObject ]);
+DeclareOperation("TestEqualityPieces", [ IsFreeMagmaRing, IsObject, IsObject ]);
 
 #! @Arguments [comrank, conicrank, tracelength, userVars]
 #! @Description

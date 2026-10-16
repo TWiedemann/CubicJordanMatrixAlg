@@ -13,7 +13,7 @@ InstallMethod(TestEquality, [IsLieElement, IsLieElement, IsBool], function(lieEl
 	isEqual := true;
 	for i in [-2..2] do
 		part := LiePart(diff, i);
-		if not IsZero(part) and not IsZero(WithoutTraces(part)) then
+		if not IsZero(part) and not (i in [-1..1] and IsZero(WithoutTraces(part))) then
 			isEqual := false;
 			if print then
 				Print(String(i), " part: ", part, "\n");
@@ -55,51 +55,51 @@ InstallMethod(TestEqualityOnGenList, [IsLieEndo, IsLieEndo, IsList],
 
 # TestEquality(f, g, conicIndetNum) calls
 # TestEqualityOnGenList(f, g, LieGensAsLie(conicIndetNum)).
-# If no integer is provided, then TestEquality(f, g, ConicAlg_rank)
+# If no integer is provided, then TestEquality(f, g, ConicRank)
 # is called.
 # Uses indeterminate a_conicIndetNum
-InstallMethod(TestEquality, [IsLieEndo, IsLieEndo, IsInt],
-	function(lieEndo1, lieEndo2, conicIndetNum)
+InstallMethod(TestEquality, [IsFreeMagmaRing, IsLieEndo, IsLieEndo, IsInt],
+	function(conicAlg, lieEndo1, lieEndo2, conicIndetNum)
 		local genList;
 		genList := LieGensAsLie(conicIndetNum);
 		return TestEqualityOnGenList(lieEndo1, lieEndo2, genList);
 	end
 );
 
-InstallMethod(TestEquality, [IsLieEndo, IsLieEndo], 
-	function(lieEndo1, lieEndo2)
-		return TestEquality(lieEndo1, lieEndo2, ConicAlg_rank);
+InstallMethod(TestEquality, [IsFreeMagmaRing, IsLieEndo, IsLieEndo], 
+	function(conicAlg, lieEndo1, lieEndo2)
+		return TestEquality(lieEndo1, lieEndo2, ConicRank(conicAlg));
 	end
 );
 
 # Like TestEquality, but uses LieGensAsModule in place of LieGensAsLie.
 # Uses indeterminates a_conicIndetNum AND a_{conicIndetNum+1}
-DeclareOperation("TestEqualityOnModuleGens", [IsLieEndo, IsLieEndo, IsInt]);
-DeclareOperation("TestEqualityOnModuleGens", [IsLieEndo, IsLieEndo]);
+DeclareOperation("TestEqualityOnModuleGens", [IsFreeMagmaRing, IsLieEndo, IsLieEndo, IsInt]);
+DeclareOperation("TestEqualityOnModuleGens", [IsFreeMagmaRing, IsLieEndo, IsLieEndo]);
 
-InstallMethod(TestEqualityOnModuleGens, [IsLieEndo, IsLieEndo, IsInt],
-	function(lieEndo1, lieEndo2, conicIndetNum)
+InstallMethod(TestEqualityOnModuleGens, [IsFreeMagmaRing, IsLieEndo, IsLieEndo, IsInt],
+	function(conicAlg, lieEndo1, lieEndo2, conicIndetNum)
 		local genList;
 		genList := LieGensAsModule(conicIndetNum);
-		return TestEqualityOnGenList(lieEndo1, lieEndo2, genList);
+		return TestEqualityOnGenList(conicAlg, lieEndo1, lieEndo2, genList);
 	end
 );
 
-InstallMethod(TestEqualityOnModuleGens, [IsLieEndo, IsLieEndo], 
-	function(lieEndo1, lieEndo2)
-		return TestEqualityOnModuleGens(lieEndo1, lieEndo2, ConicAlg_rank-1);
+InstallMethod(TestEqualityOnModuleGens, [IsFreeMagmaRing, IsLieEndo, IsLieEndo], 
+	function(conicAlg, lieEndo1, lieEndo2)
+		return TestEqualityOnModuleGens(lieEndo1, lieEndo2, ConicRank(conicAlg)-1);
 	end
 );
 
 # relations: A list of lists [g1, g2] where g1, g2 are automorphisms of Lie.
 # Returns: A list of all elements of ComRing, ConicAlg and L0 which have to be proven
 # by hand to be zero to verify that g1 = g2 for all [g1, g2] \in relations.
-# Uses indeterminates t_{ComRing_rank}, a_{ConicAlg_rank}.
-BindGlobal("TestEqualityPiecesOnList", function(relations)
+# Uses indeterminates t_{ComRingRank}, a_{ConicRank}.
+BindGlobal("TestEqualityPiecesOnList", function(conicAlg, relations)
 	local rel, test, error, part, i, j, result, part2, summands, summand, a;
 	result := [];
 	for rel in relations do
-		test := TestEquality(rel[1], rel[2]);
+		test := TestEquality(conicAlg, rel[1], rel[2]);
 		if test <> true then
 			for error in test do
 				# error[1] contains the Lie algebra generator on which rel[1] and rel[2]
@@ -144,6 +144,6 @@ BindGlobal("TestEqualityPiecesOnList", function(relations)
 end);
 
 # Like TestEqualityPiecesOnList, but only one relation "term1=term2" is tested.
-InstallMethod(TestEqualityPieces, [ IsObject, IsObject ], function(term1, term2)
-	return TestEqualityPiecesOnList([[term1, term2]]);
+InstallMethod(TestEqualityPieces, [ IsFreeMagmaRing, IsObject, IsObject ], function(conicAlg, term1, term2)
+	return TestEqualityPiecesOnList(conicAlg, [[term1, term2]]);
 end);

@@ -253,13 +253,13 @@ end);
 # If the last (boolean) input variable is true, then the generator list contains
 # LieY and elements from L_{-1}. Otherwise (and by default) it contains LieX
 # and elements from L_1.
-DeclareOperation("LieGensAsLie", [IsInt, IsBool]);
-DeclareOperation("LieGensAsLie", [IsInt]);
+DeclareOperation("LieGensAsLie", [IsFreeMagmaRing, IsInt, IsBool]);
+DeclareOperation("LieGensAsLie", [IsFreeMagmaRing, IsInt]);
 
-InstallMethod(LieGensAsLie, [IsInt, IsBool],
-	function(conicIndetNum, var)
+InstallMethod(LieGensAsLie, [IsFreeMagmaRing, IsInt, IsBool],
+	function(conicAlg, conicIndetNum, var)
 		local a, gens, root, coord;
-		a := ConicAlgIndet(conicIndetNum);
+		a := ConicAlgIndet(conicAlg, conicIndetNum);
 		if var then
 			gens := [LieY];
 			coord := -1;
@@ -289,11 +289,11 @@ end);
 # Involves indeterminates a_conicIndetNum, a_{conicIndetNum+1}.
 # Uses the formulas d_{a[ij],b[jk]} = TwistDiag[j]*d_{1[ii],ab[kk]} from [DMW]
 # to reduce the number of generators, which is why we have to assume that g1, g2, g3 are invertible.
-BindGlobal("LieGensAsModule", function(conicIndetNum)
+BindGlobal("LieGensAsModule", function(conicAlg, conicIndetNum)
 	local t1, a1, a2, gens, root, i, j, gen;
 	t1 := One(ComRing);
-	a1 := ConicAlgIndet(conicIndetNum);
-	a2 := ConicAlgIndet(conicIndetNum + 1);
+	a1 := ConicAlgIndet(conicAlg, conicIndetNum);
+	a2 := ConicAlgIndet(conicAlg, conicIndetNum + 1);
 	gens := [LieXi, LieZeta];
 	## For generators outside DD, we can simply use the naive root homomorphisms
 	for root in F4Roots do

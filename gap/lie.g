@@ -245,11 +245,11 @@ BindGlobal("LieXi", L0ToLieEmb(L0Xi));
 # comRingIndetNum, conicAlgIndetNum: Integers.
 # Returns: A list of "generic generators" of L_0000 using the indeterminates
 # t_{comIndetNum}, a_{conicIndetNum}, a_{conicIndetNum+1}.
-BindGlobal("Lie0000Gens", function(comIndetNum, conicIndetNum)
+BindGlobal("Lie0000Gens", function(conicAlg, comIndetNum, conicIndetNum)
 	local t1, a1, a2, result, i, j;
-	t1 := ComRingIndet(comIndetNum);
-	a1 := ConicAlgIndet(conicIndetNum);
-	a2 := ConicAlgIndet(conicIndetNum+1);
+	t1 := ComRingIndet(conicAlg, comIndetNum);
+	a1 := ConicAlgIndet(conicAlg, conicIndetNum);
+	a2 := ConicAlgIndet(conicAlg, conicIndetNum+1);
 	result := [t1*LieXi, t1*LieZeta];
 	for i in [1,2,3] do
 		Add(result, Liedd(CubicComEl(One(ComRing), i), CubicComEl(t1, i)));

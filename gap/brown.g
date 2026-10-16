@@ -45,13 +45,13 @@ InstallMethod(BrownEl, [IsRingElement, IsCubicElement, IsCubicElement, IsRingEle
 
 # i: Integer.
 # Returns: A list of the generic basic elements of Brown, using indeterminates a_i and t_i.
-BindGlobal("BrownGensAsModule", function(i)
+BindGlobal("BrownGensAsModule", function(conicAlg, i)
 	local t, result, gen;
-	t := ComRingIndet(i);
+	t := ComRingIndet(conicAlg, i);
 	result := [];
 	Add(result, BrownEl(t, CubicZero, CubicZero, Zero(ComRing)));
 	Add(result, BrownEl(Zero(ComRing), CubicZero, CubicZero, t));
-	for gen in CubicGensAsModule(i) do
+	for gen in CubicGensAsModule(conicAlg, i) do
 		Add(result, BrownEl(Zero(ComRing), gen, CubicZero, Zero(ComRing)));
 		Add(result, BrownEl(Zero(ComRing), CubicZero, gen, Zero(ComRing)));
 	od;

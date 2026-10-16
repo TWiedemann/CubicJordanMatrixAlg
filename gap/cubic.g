@@ -241,8 +241,8 @@ BindGlobal("CubicGenericEl", function(conicAlg, i)
 		return fail;
 	else
 		return CubicElFromTuple(
-			ComRingIndet(3*i+1), ComRingIndet(3*i+2), ComRingIndet(3*i+3),
-			ConicAlgIndet(3*i+1), ConicAlgIndet(3*i+2), ConicAlgIndet(3*i+3)
+			ComRingIndet(conicAlg, 3*i+1), ComRingIndet(conicAlg, 3*i+2), ComRingIndet(conicAlg, 3*i+3),
+			ConicAlgIndet(conicAlg, 3*i+1), ConicAlgIndet(conicAlg, 3*i+2), ConicAlgIndet(conicAlg, 3*i+3)
 		);
 	fi;
 end);
@@ -250,10 +250,10 @@ end);
 # i: Integer.
 # Returns: A list of the six generic basic elements of Cubic,
 # using indeterminates a_i and t_i.
-BindGlobal("CubicGensAsModule", function(i)
+BindGlobal("CubicGensAsModule", function(conicAlg, i)
 	local a, t;
-	t := ComRingIndet(i);
-	a := ConicAlgIndet(i);
+	t := ComRingIndet(conicAlg, i);
+	a := ConicAlgIndet(conicAlg, i);
 	return [
 		CubicComEl(t, 1), CubicComEl(t, 2), CubicComEl(t, 2),
 		CubicConicEl(a, 1), CubicConicEl(a, 2), CubicConicEl(a, 3)

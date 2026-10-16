@@ -75,7 +75,9 @@ end);
 # of length up to 3)
 DeclareOperation("ComRingSimplifyTr", [IsRationalFunction]);
 InstallMethod(ComRingSimplifyTr, [IsRationalFunction], function(a)
-	return Value(a, _TrSubIndetList, _TrSubValueList, One(ComRing));
+	local fam;
+	fam := CollectionsFamily(FamilyObj(a));
+	return Value(a, fam!.trSubIndetList, fam!.trSubValueList, One(ComRing));
 end);
 
 InstallMethod(Simplify, [IsRationalFunction], function(a)
@@ -91,7 +93,9 @@ DeclareOperation("MakeTraces", [IsElementOfFreeMagmaRing]);
 InstallMethod(MakeTraces, [IsElementOfFreeMagmaRing], function(a)
 	local magCoeffList, aCoeffs, aMags, aMagReps, resultMagList, resultCoeffList,
 			i, mag1, magRep1, coeff1, magRep1Inv, j, magRep2, lMagRep1, lMagRep1Inv,
-			rMagRep1, rMagRep1Inv, lMagRep2, rMagRep2, trace, mag;
+			rMagRep1, rMagRep1Inv, lMagRep2, rMagRep2, trace, mag, fam, magma;
+	conicAlg := ConicAlgebra(a);
+	magma := ConicAlgMagma(conicAlg);
 	magCoeffList := CoefficientsAndMagmaElements(a);
 	aCoeffs := magCoeffList{[2,4..Length(magCoeffList)]};
 	aMags := magCoeffList{[1,3..Length(magCoeffList)-1]};
@@ -103,16 +107,16 @@ InstallMethod(MakeTraces, [IsElementOfFreeMagmaRing], function(a)
 		mag1 := aMags[i];
 		magRep1 := aMagReps[i];
 		coeff1 := aCoeffs[i];
-		magRep1Inv := ConicAlgMagInvOnRep(magRep1);
+		magRep1Inv := ConicAlgMagInvOnRep(magma, magRep1);
 		if IsZero(coeff1) then
 			continue;
 		fi;
 		if IsList(magRep1) then
 			# Decompose mag1 = lMag1 * rMag1, magRep1 = [ lMagRep1, rMagRep1 ]
 			lMagRep1 := magRep1[1];
-			lMagRep1Inv := ConicAlgMagInvOnRep(lMagRep1);
+			lMagRep1Inv := ConicAlgMagInvOnRep(magma, lMagRep1);
 			rMagRep1 := magRep1[2];
-			rMagRep1Inv := ConicAlgMagInvOnRep(rMagRep1);
+			rMagRep1Inv := ConicAlgMagInvOnRep(magma, rMagRep1);
 		fi;
 		# Look for second summand to merge with
 		for j in [i+1..Length(aCoeffs)] do
@@ -120,8 +124,8 @@ InstallMethod(MakeTraces, [IsElementOfFreeMagmaRing], function(a)
 			# Look for occurence of b+b'
 			if magRep2 = magRep1Inv then
 				# Create new summand coeff1*tr(magRep1)*One(ConicAlg)
-				Add(resultMagList, One(ConicAlgMag));
-				Add(resultCoeffList, coeff1*ConicAlgMagTrOnRep(magRep1));
+				Add(resultMagList, One(magma));
+				Add(resultCoeffList, coeff1*ConicAlgMagTrOnRep(magma,magRep1));
 				# Subtract coeff1 from the coefficients of mag1 and mag2
 				# and go to next summand mag1
 				aCoeffs[i] := Zero(ComRing);
@@ -141,12 +145,12 @@ InstallMethod(MakeTraces, [IsElementOfFreeMagmaRing], function(a)
 				trace := fail;
 				if lMagRep1 = lMagRep2 and rMagRep1Inv = rMagRep2 then
 					# We can merge cb+cb' = tr(b)c
-					trace := ConicAlgMagTrOnRep(rMagRep1);
-					mag := ConicAlgMagElFromRep(lMagRep1);
+					trace := ConicAlgMagTrOnRep(magma, rMagRep1);
+					mag := ConicAlgMagElFromRep(magma, lMagRep1);
 				elif rMagRep1 = rMagRep2 and lMagRep1Inv = lMagRep2 then
 					# We can merge bc+b'c = tr(b)c
-					trace := ConicAlgMagTrOnRep(lMagRep1);
-					mag := ConicAlgMagElFromRep(rMagRep1);
+					trace := ConicAlgMagTrOnRep(magma, lMagRep1);
+					mag := ConicAlgMagElFromRep(magma, rMagRep1);
 				fi;
 				if trace <> fail then
 					# Create new summand coeff1*trace*mag
@@ -168,32 +172,35 @@ InstallMethod(MakeTraces, [IsElementOfFreeMagmaRing], function(a)
 	return ElementOfMagmaRing(FamilyObj(a), Zero(ComRing), resultCoeffList, resultMagList);
 end);
 
-# t: Element of ComRing.
-# Returns: The element of ConicAlg obtained from t by replacing each occurence of tr(a) inside t by a+a'.
+# t: Element of ComRingOfConicAlg(conicAlg).
+# Returns: The element of conicAlg obtained from t by replacing each occurence of tr(a) inside t by a+a'.
 # This function is not called by Simplify because it usually makes the representation of t
 # more complicated, but sometimes an element b of ConicAlg can be reduced to 0 by
 # applying WithoutTraces to all ComRing-coefficients inside b.
 # Indeed, it is not used at all.
-DeclareOperation("WithoutTraces", [IsRationalFunction]);
-InstallMethod(WithoutTraces, [IsRationalFunction], function(t)
+DeclareOperation("WithoutTraces", [IsFreeMagmaRing, IsRationalFunction]);
+InstallMethod(WithoutTraces, [IsRationalFunction], function(conicAlg, t)
 	local coeffList, result, i, magEl, comEl;
 	ReqComRingEl(t);
-	return Value(t, _ComRingTraceIndets, _ConicAlgTraces, One(ConicAlg));
+	fam := FamilyObj(conicAlg);
+	return Value(t, fam!.traceIndets, fam!.traceValues, One(ConicAlg));
 end);
 
 # a: Element of ConicAlg.
 # Returns: The element obtained from a by applying WithoutTraces to all ComRing-coefficients.
 # The output lies in ConicAlg.
 DeclareOperation("WithoutTraces", [IsElementOfFreeMagmaRing]);
-InstallMethod(WithoutTraces, [IsElementOfFreeMagmaRing], function(a)
-	local coeffList, result, i, magEl, comEl;
+InstallMethod(WithoutTraces, [IsElementOfFreeMagmaRing], function(conicAlg, a)
+	local coeffList, result, i, magEl, comEl, conicAlg, emb;
 	ReqConicAlgEl(a);
+	conicAlg := ConicAlgebra(a);
+	emb := ConicAlgMagEmbedding(conicAlg);
 	coeffList := CoefficientsAndMagmaElements(a);
 	result := Zero(ConicAlg);
 	for i in [1..Length(coeffList)/2] do
 		magEl := coeffList[2*i - 1];
 		comEl := coeffList[2*i];
-		result := result + WithoutTraces(comEl) * ConicAlgMagEmb(magEl);
+		result := result + WithoutTraces(conicAlg, comEl) * emb(magEl);
 	od;
 	return result;
 end);
@@ -338,7 +345,9 @@ end);
 # from ComRing is pulled into the coefficient from ConicAlg (via c*dd_{1,a} = dd_{1,c*a}).
 BindGlobal("_ApplyDDLaws_OnSummands_int2", function(i1, j1, a, i2, j2, b)
 	local i, j, coeffs, lConic, rConic, aCoeffList, aCoeff, bCoeff, bCoeffList,
-		aMag, bMag, aTwist, p, q, c;
+		aMag, bMag, aTwist, p, q, c, magma;
+	conicAlg := ConicAlgebra(a);
+	magma := ConicAlgMagma(conicAlg);
 	# Define i < j s.t. {i,j} = {i1,j1} and ensure that x1 = a[ij], x2 = b[ji].
 	if i1 = j1 or Set([i1, j1]) <> Set([i2, j2]) then
 		Error("Invalid input");
@@ -370,9 +379,9 @@ BindGlobal("_ApplyDDLaws_OnSummands_int2", function(i1, j1, a, i2, j2, b)
 			bCoeff := bCoeffList[2*q]; # in ComRing
 			aMag := aCoeffList[2*p - 1]; # in ConicAlgMag
 			bMag := bCoeffList[2*q - 1]; # in ConicAlgMag
-			if aMag = One(ConicAlgMag) then
+			if IsOne(aMag) then
 				c := c + aCoeff*bCoeff*ConicAlgMagEmb(bMag);
-			elif bMag = One(ConicAlgMag) then
+			elif IsOne(bMag) then
 				# Use relation dd_{a[ij],1[ji]} = dd_{1[ij],a[ji]}
 				c := c + aCoeff*bCoeff*ConicAlgMagEmb(aMag);
 			else
