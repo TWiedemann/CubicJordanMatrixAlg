@@ -4,20 +4,20 @@
 
 ### ----- Init -----
 gap> START_TEST("test_basic.tst");
-gap> InitCJMA(6, 6, 3, false);;
+gap> C := ConicAlgebra(6, 6, 3, "t", "a");;
 
 ### ----- Basic elements -----
 
 ## Elements of Conic algebra
-gap> a1 := ConicAlgIndet(1);
+gap> a1 := ConicAlgIndet(C, 1);
 (1)*a1
-gap> a2 := ConicAlgIndet(2);; a3 := ConicAlgIndet(3);;
+gap> a2 := ConicAlgIndet(C, 2);; a3 := ConicAlgIndet(C, 3);;
 
 ## Elements of commutative ring
-gap> t1 := ComRingIndet(1);
+gap> t1 := ComRingIndet(C, 1);
 t1
-gap> t2 := ComRingIndet(2);; t3 := ComRingIndet(3);;
-gap> g1 := ComRingGamIndet(1);
+gap> t2 := ComRingIndet(C, 2);; t3 := ComRingIndet(C, 3);;
+gap> g1 := ComRingGamIndet(C, 1);
 g1
 
 ### ----- Conic algebra structure -----

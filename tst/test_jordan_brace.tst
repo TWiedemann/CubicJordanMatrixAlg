@@ -3,9 +3,9 @@
 
 ### ----- Init -----
 gap> START_TEST("test_jordan_brace.tst");
-gap> InitCJMA(6, 3, 4, false);;
-gap> a1 := ConicAlgIndet(1);; a2 := ConicAlgIndet(2);; a3 := ConicAlgIndet(3);;
-gap> s1 := ComRingIndet(1);; s2 := ComRingIndet(2);; s3 := ComRingIndet(3);;
+gap> conicAlg := ConicAlgebra(6, 3, 4, "t", "a");;
+gap> a1 := ConicAlgIndet(conicAlg, 1);; a2 := ConicAlgIndet(conicAlg, 2);; a3 := ConicAlgIndet(conicAlg, 3);;
+gap> s1 := ComRingIndet(conicAlg, 1);; s2 := ComRingIndet(conicAlg, 2);; s3 := ComRingIndet(conicAlg, 3);;
 
 #### We do the computation for (i,j,l) = (1,2,3) and for the non-cyclic
 #### permutation (l,j,i). Then the assertion follows for all i,j,l pairwise distinct.
