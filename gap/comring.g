@@ -38,6 +38,12 @@ InstallMethod(ComRingIndet, [ IsString, IsInt ], function(symbol, i)
 	return Indeterminate(ComRingBaseRing, _ComRingIndetName(symbol, i));
 end);
 
+# conicAlg: A conic algebra. Its left acting domain is the associated commutative ring.
+InstallMethod(ComRingIndet, [ IsFreeMagmaRing, IsInt ], function(conicAlg, i)
+	return Indeterminate(ComRingBaseRing,
+		_ComRingIndetName(ComRingIndetName(conicAlg), i));
+end);
+
 # magma: Conic algebra magma.
 # n(a_i) \in ComRing, represents norm of i-th indeterminate in magma
 BindGlobal("ComRingNormIndet", function(magma, i)

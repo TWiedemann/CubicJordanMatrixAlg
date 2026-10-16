@@ -25,7 +25,7 @@ g1
 ## Conjugation
 gap> ConicAlgInv(a1);
 (1)*a1'
-gap> last = ConicAlgInvIndet(1);
+gap> last = ConicAlgInvIndet(C, 1);
 true
 gap> ConicAlgInv(a1*a2);
 (1)*(a2'*a1')

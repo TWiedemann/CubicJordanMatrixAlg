@@ -247,9 +247,9 @@ TestGrpComRels := function(conicAlg)
 	d2 := F4SimpleRoots[2];
 	d3 := F4SimpleRoots[3];
 	d4 := F4SimpleRoots[4];
-	g1 := ComRingGamIndet(1);
-	g2 := ComRingGamIndet(2);
-	g3 := ComRingGamIndet(3);
+	g1 := ComRingGamIndet(conicAlg, 1);
+	g2 := ComRingGamIndet(conicAlg, 2);
+	g3 := ComRingGamIndet(conicAlg, 3);
 	return TestEqualityPiecesOnList([
 		# Commutator relation on [d1, d2]
 		[GrpRootHomCom(d1, t1, d2, t2), GrpRootHomF4(d1+d2, t1*t2)],

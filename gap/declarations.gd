@@ -30,12 +30,12 @@ DeclareOperation("ComRingGamIndet", [ IsObject, IsInt ]);
 #! @ChapterInfo The multiplicative conic alternative algebra $C$, Functions
 DeclareOperation("ConicAlgIndet", [ IsInt ]);
 DeclareOperation("ConicAlgIndet", [ IsObject, IsInt ]);
+DeclareOperation("ConicAlgInvIndet", [ IsObject, IsInt ]);
 
 DeclareOperation("ConicAlgebra", [IsInt, IsInt, IsInt, IsString, IsString]);
 DeclareOperation("ConicAlgebra", [IsInt, IsInt, IsInt]);
 DeclareOperation("ConicAlgebra", [IsInt, IsInt]);
 DeclareOperation("ConicAlgebra", [IsElementOfFreeMagmaRing]);
-DeclareOperation("ComRingOfConicAlgebra", [IsRing]);
 DeclareOperation("ConicAlgMagma", [IsInt]);
 DeclareOperation("ConicAlgMagma", [IsInt, IsString]);
 DeclareOperation("ConicAlgMagma", [IsInt, IsString, IsString]);

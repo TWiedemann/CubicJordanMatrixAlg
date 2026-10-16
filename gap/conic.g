@@ -210,8 +210,8 @@ InstallMethod(ConicAlgebra, [IsInt, IsInt], function(comRing, conicRank)
 InstallMethod(ConicAlgebra, [IsElementOfFreeMagmaRing], function(a)
 	local fam;
 	fam := CollectionsFamily(FamilyObj(a));
-	if IsBound(fam!.conicAlgebra) then
-		return fam!.conicAlgebra;
+	if IsBound(fam!.conicAlg) then
+		return fam!.conicAlg;
 	else
 		Error("Must be an element of a conic algebra");
 	fi;
@@ -344,12 +344,14 @@ end);
 # ----- Constructors for indeterminates -----
 
 InstallMethod(ConicAlgIndet, [ IsFreeMagmaRing, IsInt ], function(conicAlg, i)
+	local emb, magma;
 	emb := ConicAlgMagEmbedding(conicAlg);
 	magma := ConicAlgMagma(conicAlg);
 	return emb(ConicAlgMagIndet(magma, i));
 end);
 
-BindGlobal("ConicAlgInvIndet", function(i)
+InstallMethod(ConicAlgInvIndet, [ IsFreeMagmaRing, IsInt ], function(conicAlg, i)
+	local emb, magma;
 	emb := ConicAlgMagEmbedding(conicAlg);
 	magma := ConicAlgMagma(conicAlg);
 	return emb(ConicAlgMagInvIndet(magma, i));
