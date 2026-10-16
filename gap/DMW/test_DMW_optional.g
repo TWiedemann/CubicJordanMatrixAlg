@@ -52,12 +52,13 @@ TestGrpRootHomExp := function(conicAlg, root)
 	elif root in F4LongRoots then
 		a := ComRingIndet(conicAlg, 1);
 	fi;
-	return TestEqualityOnModuleGens(GrpRootHomF4Div(root, a), GrpRootHomF4(root, a));
+	return TestEqualityOnModuleGens(conicAlg,
+		GrpRootHomF4Div(root, a), GrpRootHomF4(root, a));
 end;
 
 # Returns: true if TestGrpRootHomExp succeeds for all roots in F4 with F4RootGsCoord <> [0,0].
 # Otherwise returns the list of all error terms that have to be checked by hand.
-TestNon00GrpRootHomExp := function()
+TestNon00GrpRootHomExp := function(conicAlg)
 	local root, test, errorList;
 	errorList := [];
 	for root in F4Roots do
@@ -115,7 +116,7 @@ TestG2WeylFormulas := function(conicAlg)
 	Add(testList, [F4Exp(aLie1), F4Exp(aLie2)]);
 	# Perform actual tests
 	for list in testList do
-		if TestEquality(phibsInv*list[1]*phibs, list[2]) <> true then
+		if TestEquality(conicAlg, phibsInv*list[1]*phibs, list[2]) <> true then
 			return false;
 		fi;
 	od;

@@ -279,9 +279,11 @@ InstallMethod(LieGensAsLie, [IsFreeMagmaRing, IsInt, IsBool],
 	end);
 
 # Default: var = false.
-InstallMethod(LieGensAsLie, [IsInt], function(conicIndetNum)
-	return LieGensAsLie(conicIndetNum, false);
-end);
+InstallMethod(LieGensAsLie, [IsFreeMagmaRing, IsInt],
+	function(conicAlg, conicIndetNum)
+		return LieGensAsLie(conicAlg, conicIndetNum, false);
+	end
+);
 
 # comIndetNum, conicIndetNum: Numbers of the indeterminates that should be used.
 # Returns: A list of elements of Lie which generate it as a module, provided that

@@ -1,12 +1,9 @@
 
-#! @Arguments p
+#! @Arguments C, p
 #! @Description
 #! Returns the <C>p</C>-th indeterminate in $k$, which is printed as <C>tp</C>.
-#! We must have <C>1 &lt;= p &lt;= ComRing_rank</C>.
-#! If the package was initialised with <C>userVars = true</C>,
-#! then GAP variables <C>t1 := ComRingIndet(1), ...</C> are defined.
+#! We must have <C>1 &lt;= p &lt;= ComRingRank(C)</C>.
 #! @ChapterInfo The commutative ring $k$, Functions
-DeclareOperation("ComRingIndet", [ IsInt ]);
 DeclareOperation("ComRingIndet", [ IsString, IsInt ]);
 DeclareOperation("ComRingIndet", [ IsRing, IsInt ]);
 
@@ -20,29 +17,29 @@ DeclareOperation("ComRingIndet", [ IsRing, IsInt ]);
 #! then GAP variables <C>g1 := ComRingGamIndet(1), ...</C> are defined.
 #! @ChapterInfo The commutative ring $k$, Functions
 DeclareOperation("ComRingGamIndet", [ IsInt ]);
-DeclareOperation("ComRingGamIndet", [ IsObject, IsInt ]);
 
-#! @Arguments p
+#! @Arguments C, p
 #! @Description
-#! Returns the <C>p</C>-th indeterminate in $C$, which is printed as <C>ap</C>. We must have
-#! <C>1 &lt;= p &lt;= ComRing_rank</C>. If the package was initialised with <C>userVars =
-#! true</C>, then GAP variables <C>a1 := ConicAlgIndet(1), ...</C> are available.
+#! Returns the <C>p</C>-th indeterminate in <C>C</C>, printed as <C>ap</C>. We must have
+#! <C>1 &lt;= p &lt;= ConicRank(C)</C>.
 #! @ChapterInfo The multiplicative conic alternative algebra $C$, Functions
-DeclareOperation("ConicAlgIndet", [ IsInt ]);
 DeclareOperation("ConicAlgIndet", [ IsObject, IsInt ]);
 DeclareOperation("ConicAlgInvIndet", [ IsObject, IsInt ]);
 
+DeclareOperation("ConicAlgebra", [IsInt, IsInt, IsInt, IsString, IsString, IsString, IsString]);
 DeclareOperation("ConicAlgebra", [IsInt, IsInt, IsInt, IsString, IsString]);
 DeclareOperation("ConicAlgebra", [IsInt, IsInt, IsInt]);
 DeclareOperation("ConicAlgebra", [IsInt, IsInt]);
 DeclareOperation("ConicAlgebra", [IsElementOfFreeMagmaRing]);
 DeclareOperation("ConicAlgMagma", [IsInt]);
 DeclareOperation("ConicAlgMagma", [IsInt, IsString]);
-DeclareOperation("ConicAlgMagma", [IsInt, IsString, IsString]);
+DeclareOperation("ConicAlgMagma", [IsInt, IsString, IsString, IsString]);
 DeclareOperation("ConicAlgMagma", [IsNonassocWord]);
 DeclareOperation("ConicAlgMagma", [IsFreeMagmaRing]);
 
 DeclareOperation("ComRingOfConicAlg", [IsFreeMagmaRing]);
+DeclareOperation("ConicAlgMaxTrLength", [IsFreeMagmaRing]);
+DeclareOperation("ConicAlgMagEmbedding", [IsFreeMagmaRing]);
 
 DeclareOperation("ConicRank", [ IsObject ]);
 DeclareOperation("ConicIndetName", [ IsObject ]);
@@ -444,8 +441,8 @@ DeclareOperation("Simplify", [ IsObject ]);
 #! <C>[gen, Simplify(g(gen) - h(gen))]</C> for any <C>gen</C> for which the test was not
 #! successfull. The list of all generators <C>gen</C> on which we test equality is obtained
 #! by evaluating all root homomorphisms with image in $L_{-2} + L_1$ on the last
-#! indeterminate in $k$ or $C$ (that is, on <C>ComRingIndet(ComRing_rank)</C> or
-#! <C>ConicAlgIndet(ConicAlg_rank)</C>). The user should assure that these indeterminates do
+#! indeterminate in $k$ or $C$ (that is, on the last generators of the coefficient ring or
+#! <C>C</C>). The user should assure that these indeterminates do
 #! not occur in the definition of <C>g</C> and <C>h</C>.
 #! @ChapterInfo Simplification and equality tests, Functions
 DeclareOperation("TestEquality", [ IsFreeMagmaRing, IsObject, IsObject, IsObject ]);
@@ -460,8 +457,8 @@ DeclareOperation("TestEquality", [ IsFreeMagmaRing, IsObject, IsObject, IsObject
 #! <C>[gen, Simplify(g(gen) - h(gen))]</C> for any <C>gen</C> for which the test was not
 #! successfull. The list of all generators <C>gen</C> on which we test equality is obtained
 #! by evaluating all root homomorphisms with image in $L_{-2} + L_1$ on the last
-#! indeterminate in $k$ or $C$ (that is, on <C>ComRingIndet(ComRing_rank)</C> or
-#! <C>ConicAlgIndet(ConicAlg_rank)</C>). The user should assure that these indeterminates do
+#! indeterminate in $k$ or $C$ (that is, on the last generators of the coefficient ring or
+#! <C>C</C>). The user should assure that these indeterminates do
 #! not occur in the definition of <C>g</C> and <C>h</C>.
 #! @ChapterInfo Testing equality of automorphism of $L$, Functions
 DeclareOperation("TestEquality", [ IsFreeMagmaRing, IsObject, IsObject ]);
@@ -473,30 +470,8 @@ DeclareOperation("TestEquality", [ IsFreeMagmaRing, IsObject, IsObject ]);
 #! arise during the test. By "pieces" we mean the underlying elements of $k$, $C$ and $L_0$
 #! that make up the error terms. Thus to prove that <C>g</C> and <C>h</C> are the same, it
 #! suffices to prove that all elements in the output list represent 0. As for
-#! <C>TestEquality</C>, the user should assure that <C>ComRingIndet(ComRing_rank)</C> or
-#! <C>ConicAlgIndet(ConicAlg_rank)</C> do not occur in the definition of <C>g</C> and
+#! <C>TestEquality</C>, the user should assure that the final indeterminates of the coefficient
+#! ring or <C>C</C> do not occur in the definition of <C>g</C> and
 #! <C>h</C>.
 #! @ChapterInfo Testing equality of automorphism of $L$, Functions
 DeclareOperation("TestEqualityPieces", [ IsFreeMagmaRing, IsObject, IsObject ]);
-
-#! @Arguments [comrank, conicrank, tracelength, userVars]
-#! @Description
-#! Initialises the package with <C>ComRing_rank := comrank</C>, <C>ConicAlg_rank :=
-#! conicrank</C>, <C>Trace_MaxLength := tracelength</C>. If <C>userVars = true</C>, then the
-#! following GAP variables are defined for the user's convenience: <C>t1, t2, ...</C> for
-#! the generators of $k$; <C>a1, a2, ...</C> for the generators of $C$; <C>g1, g2, g3</C>
-#! for the (arbitrary) constants $\gamma_1, \gamma_2, \gamma_3$ in $k$ (see below);
-#! <C>dd</C> for <C>Liedd</C> (see below). If <C>userVars = false</C>, then for example the
-#! indeterminates in $k$ are still printed as <C>t1, t2, ...</C>, but no GAP variables of
-#! the same name are defined to easily access these elements of $k$. High values of
-#! <C>ConicAlg_rank</C> and <C>Trace_MaxLength</C> strongly impact the time needed for
-#! initialisation with <C>InitCJMA</C>. All serious computations needed in [DMW] work in
-#! the setup <C>InitCJMA(6, 3, 4, false)</C> or <C>InitCJMA(6, 2, 4, false)</C>. It is
-#! possible to reset the values of these constants with another call to <C>InitCJMA</C>.
-#! However, this will issue a few GAP warnings (see below) and may lead to unsafe behaviour,
-#! and is hence not recommended. In particular, re-initialisation will redefine all
-#! algebraic structures that are set up in the package, and hence elements of these
-#! structures that were defined before re-initialisation are not compatible with those
-#! defined afterwards. For example:
-#! @ChapterInfo Introduction, Initialisation
-DeclareGlobalFunction("InitCJMA");

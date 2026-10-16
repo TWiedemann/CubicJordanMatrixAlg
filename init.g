@@ -6,7 +6,6 @@ ReadPackage("CubicJordanMatrixAlg", "gap/helper.g");
 ReadPackage("CubicJordanMatrixAlg", "gap/conic_mag.g");
 ReadPackage("CubicJordanMatrixAlg", "gap/comring.g"); # Commutative ring k = ComRing
 ReadPackage("CubicJordanMatrixAlg", "gap/conic.g"); # Conic algebra C = Conic
-ReadPackage("CubicJordanMatrixAlg", "gap/init_trlists.g"); # Initialises some global constants
 ReadPackage("CubicJordanMatrixAlg", "gap/cubic.g"); # Cubic Jordan matrix algebra
 ReadPackage("CubicJordanMatrixAlg", "gap/brown.g"); # Brown algebra
 ReadPackage("CubicJordanMatrixAlg", "gap/DD.g"); # DD
@@ -17,4 +16,3 @@ ReadPackage("CubicJordanMatrixAlg", "gap/group.g"); # LieEndo and root homomorph
 ReadPackage("CubicJordanMatrixAlg", "gap/simplify.g"); # Simplification functions
 ReadPackage("CubicJordanMatrixAlg", "gap/chev.g"); # Chevalley-type bases
 ReadPackage("CubicJordanMatrixAlg", "gap/test_equal.g"); # Equality tests
-# RereadPackage("CubicJordanMatrixAlg", "gap/user_vars.g"); # Additional shortcuts for convenience

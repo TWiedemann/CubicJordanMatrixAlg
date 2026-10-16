@@ -5,7 +5,7 @@
 
 # Init
 gap> START_TEST("test_lie_comm.tst");
-gap> InitCJMA(6, 2, 4, false);;
+gap> conicAlg := ConicAlgebra(6, 2, 4);;
 gap> ReadPackage("CubicJordanMatrixAlg", "gap/DMW/test_DMW.g");;
 
 # Test claim about length of roots for pairs a, b for which a+b is a root
@@ -13,14 +13,14 @@ gap> TestF4RootLengthSum();
 true
 
 # Test that F4-commutator relations in the Lie algebra have the desired form
-gap> TestLieComRels();
+gap> TestLieComRels(conicAlg);
 true
 
 ## Test that the Chevalley-type bases (for F4 and G2) satisfy the axioms of Chevalley-type bases
 
 # Test that x_a*x_{-a}=h_a and that this element acts as CartanInt(a,b) on L_b for all roots b
 # (and not merely for those with pi(b)_1 <> 0).
-gap> TestChevH();
+gap> TestChevH(conicAlg);
 true
 
 # Test that c(a,b) = -c(a,b) for all roots a, b for which a+b is also a root

@@ -17,7 +17,7 @@ BindGlobal("_ComRingNormIndetName", function(conicSymbol, i)
 end);
 
 BindGlobal("_ComRingTraceIndetName", function(conicIndet)
-	return Concatenation(_ConicTraceSymbol, "(", _ConicAlgIndetName(conicSymbol, i), ")");
+	return Concatenation(_ConicTraceSymbol, "(", String(conicIndet), ")");
 end);
 
 # i: 1, 2, or 3
@@ -38,7 +38,6 @@ InstallMethod(ComRingIndet, [ IsString, IsInt ], function(symbol, i)
 	return Indeterminate(ComRingBaseRing, _ComRingIndetName(symbol, i));
 end);
 
-# conicAlg: A conic algebra. Its left acting domain is the associated commutative ring.
 InstallMethod(ComRingIndet, [ IsFreeMagmaRing, IsInt ], function(conicAlg, i)
 	return Indeterminate(ComRingBaseRing,
 		_ComRingIndetName(ComRingIndetName(conicAlg), i));

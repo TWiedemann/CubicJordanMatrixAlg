@@ -17,7 +17,7 @@ gap> a2 := ConicAlgIndet(C, 2);; a3 := ConicAlgIndet(C, 3);;
 gap> t1 := ComRingIndet(C, 1);
 t1
 gap> t2 := ComRingIndet(C, 2);; t3 := ComRingIndet(C, 3);;
-gap> g1 := ComRingGamIndet(C, 1);
+gap> g1 := ComRingGamIndet(1);
 g1
 
 ### ----- Conic algebra structure -----

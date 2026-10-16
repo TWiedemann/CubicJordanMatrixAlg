@@ -2,11 +2,11 @@
 
 ### ----- Init -----
 gap> START_TEST(".tst");
-gap> InitCJMA(6, 2, 4, false);;
+gap> conicAlg := ConicAlgebra(6, 2, 4, "t", "a");;
 gap> ReadPackage("CubicJordanMatrixAlg", "gap/DMW/test_DMW.g");;
 
 ### Test that all elements w_a for a in F4 are indeed reflections.
-gap> TestAllReflections();
+gap> TestAllReflections(conicAlg);
 true
 
 ### Test that Table 3 in [DMW] is correct.
@@ -47,7 +47,7 @@ $\alpha$ & $\eta(\alpha, \delta_1)$ & $\eta(\alpha, \delta_2)$ & $\eta(\alpha, \
 \bottomrule
 
 ### Test that Table 2 in [DMW] is correct
-gap> TestZeroParities();
+gap> TestZeroParities(conicAlg);
 true
 
 ### Test that the Weyl elements have the desired parities.

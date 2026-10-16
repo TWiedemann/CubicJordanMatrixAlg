@@ -61,7 +61,7 @@ InstallMethod(TestEqualityOnGenList, [IsLieEndo, IsLieEndo, IsList],
 InstallMethod(TestEquality, [IsFreeMagmaRing, IsLieEndo, IsLieEndo, IsInt],
 	function(conicAlg, lieEndo1, lieEndo2, conicIndetNum)
 		local genList;
-		genList := LieGensAsLie(conicIndetNum);
+		genList := LieGensAsLie(conicAlg, conicIndetNum);
 		return TestEqualityOnGenList(lieEndo1, lieEndo2, genList);
 	end
 );
@@ -80,14 +80,14 @@ DeclareOperation("TestEqualityOnModuleGens", [IsFreeMagmaRing, IsLieEndo, IsLieE
 InstallMethod(TestEqualityOnModuleGens, [IsFreeMagmaRing, IsLieEndo, IsLieEndo, IsInt],
 	function(conicAlg, lieEndo1, lieEndo2, conicIndetNum)
 		local genList;
-		genList := LieGensAsModule(conicIndetNum);
-		return TestEqualityOnGenList(conicAlg, lieEndo1, lieEndo2, genList);
+		genList := LieGensAsModule(conicAlg, conicIndetNum);
+		return TestEqualityOnGenList(lieEndo1, lieEndo2, genList);
 	end
 );
 
 InstallMethod(TestEqualityOnModuleGens, [IsFreeMagmaRing, IsLieEndo, IsLieEndo], 
 	function(conicAlg, lieEndo1, lieEndo2)
-		return TestEqualityOnModuleGens(lieEndo1, lieEndo2, ConicRank(conicAlg)-1);
+		return TestEqualityOnModuleGens(conicAlg, lieEndo1, lieEndo2, ConicRank(conicAlg)-1);
 	end
 );
 

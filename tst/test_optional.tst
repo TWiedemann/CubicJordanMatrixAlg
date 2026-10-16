@@ -2,13 +2,13 @@
 
 ### ----- Init -----
 gap> START_TEST("test_optional.tst");
-gap> InitCJMA(6, 3, 4, false);;
+gap> conicAlg := ConicAlgebra(6, 3, 4);;
 gap> ReadPackage("CubicJordanMatrixAlg", "gap/DMW/test_DMW_optional.g");;
-gap> TestGrpRootHoms();
+gap> TestGrpRootHoms(conicAlg);
 true
-gap> TestNon00GrpRootHomExp();
+gap> TestNon00GrpRootHomExp(conicAlg);
 true
-gap> TestG2WeylFormulas();
+gap> TestG2WeylFormulas(conicAlg);
 true
 
 #
