@@ -4,6 +4,152 @@
 ### Technically, ConicAlg is a free magma ring over the free magma ConicAlgMag
 ### whose coefficient ring is ComRing.
 
+# ----- Helper functions used in the constructor -----
+
+## A conic algebra stores some lists with precomputed information in the family object
+## of its underlying magma:
+## - comRingIndetInfo: A list whose i-th contains information about the i-th indeterminate
+##   in the underlying commutative base ring. Namely, this entry is a list
+##   [type, info] where type is one of the strings "g" (for \gamma), 
+##   "t" (for indeterminates representing arbitrary elements), "n" (for norm indeterminates),
+##   "tr" for trace indeterminates. `info` is additional information:
+##   For t_i and g_i, info is i. For n(x) and tr(x), info is x (as an element of magma).
+## - traceIndets: List of all indeterminates in ComRing of the form
+##   tr(a) \in ComRing with a \in ConicAlgMag.
+## - traceValues: List of the elements a+a' \in ConicAlg "corresponding"
+##   to the elements of traceIndets.
+## - trSubIndetList: List of trace indeterminates which may be replaced by other terms
+##   using the relation tr(xy') = tr(x)tr(y) - tr(xy). This relation is used by
+##   the simplifaction functions to replace all appearances of a_i' in tr.
+## - trSubValueList: A list whose i-th entry is the term by which
+##   trSubIndetList[i] should be replaced in the simplification functions.
+
+# magma: Conic algebra magma.
+# comRank, maxTrLenth: Integers.
+# comIndetSym: String.
+# This function initialises all indeterminates in the commutative base ring of
+# the conic algebra over magma. The number of indeterminates is determined by
+# comRank (the number of indeterminates comIndetSym_1, ...) and trMaxLength (the maximal
+# length of trace indeterminates). This initialisation step ensures that these
+# indeterminates are always printed in the same order (because they are always initialised
+# in the same order).
+# Returns: [indetList, comRingIndetInfo] where indetList is a list of all indeterminates
+# in the commutative ring (in the order in which they are initialised) and comRingIndetInfo
+# as as described above.
+BindGlobal("_InitComRingIndeterminates", function(magma, comRank, comIndetSym, maxTrLength)
+	local maxIndetNum, magEl, magEls, magElsReps, magElRep, trace, polyRep, monomial, i, j
+		conicRank, indetList;
+	conicRank := ConicRank(magma);
+	indetList := [];
+	comRingIndetInfo := [];
+	## Initialise all indeterminates of ComRing in the desired order
+	for i in [1..3] do
+		Add(indetList, ComRingGamIndet(i)); # Initialise indeterminate
+		Add(comRingIndetInfo, ["g", i]);
+	od;
+	for i in [1..comRank] do
+		Add(indetList, ComRingIndet(comIndetSym, i)); # Initialise indeterminate
+		Add(comRingIndetInfo, ["t", i]);
+	od;
+	for i in [1..conicRank] do
+		Add(indetList, ComRingNormIndet(magma,i)); # Initialise indeterminate
+		Add(comRingIndetInfo, ["n", ConicAlgMagIndet(magma,i)]);
+	od;
+	## Initialise trace indeterminates in ComRing
+	# List of all elements of ConicAlgMag up to length maxTrLength
+	magEls := Concatenation(_AllConicAlgMagEls(magma, maxTrLength));
+	magEls := Concatenation([One(magma)], magEls);
+	magElsReps := List(magEls, x -> ExtRepOfObj(x));
+	for i in [1..Length(magEls)] do
+		magEl := magEls[i];
+		magElRep := magElsReps[i];
+		trace := ConicAlgMagTr(magEl);
+		polyRep := ExtRepNumeratorRatFun(trace); # rep of the polynomial `trace`
+		if Length(polyRep) = 2 then
+			Add(indetList, trace);
+			Add(comRingIndetInfo, ["tr", magEl]);
+		fi;
+	od;
+	return [indetList, comRingIndetInfo];
+end);
+
+# comRingIndets: List of indeterminates in ComRing.
+# comRingIndetInfo: As described above.
+# Returns: [traceIndets, traceValues] as described above.
+BindGlobal("_TraceHelpLists", function(comRingIndets, comRingIndetInfo)
+	local i, infoList, type, info, a, aInv;
+	traceIndets := [];
+	traceValues := [];
+	# Look up the corresponding information in _ComRingIndetInfo
+	for i in [1..Length(comRingIndetInfo)] do
+		infoList := _ComRingIndetInfo[i];
+		type := infoList[1];
+		info := infoList[2];
+		if type = "tr" then
+			Add(traceIndets, comRingIndets[i]); # The variable tr(a) \in ComRing
+			a := ConicAlgMagEmb(info); # \in ConicAlg
+			aInv := ConicAlgMagEmb(ConicAlgMagInv(a));
+			Add(traceValues, a+ConicAlgInv(a)); # The element a+a' \in ConicAlg
+		fi;
+	od;
+	return [traceIndets, traceValues];
+end);
+
+# comRingIndets: As described above
+# Returns: [trSubIndetList, trSubValueList] as described above.
+# Currently these lists are filled "by hand" and only for products tr(xyz) up
+# to length 3. This is sufficient for our computations.
+BindGlobal("_TrSubstitutionLists", function(magma, comRingIndets)
+	local tr, inv, add, indet, i, j, k, x, y, z, trSubIndetList, trSubValueList, conicRank;
+	trSubIndetList := [];
+	trSubValueList := [];
+	conicRank := ConicRank(magma);
+	tr := ConicAlgMagTr;
+	inv := ConicAlgMagInv;
+	indet := i -> ConicAlgMagIndet(magma, i);
+	# trace: Element of ConicAlgMag.
+	# value: Element of ConicAlg.
+	# Adds trace and value to the desired lists.
+	add := function(trace, value)
+		if trace in comRingIndets and not trace in trSubIndetList then
+			Add(trSubIndetList, trace);
+			Add(trSubValueList, value);
+		fi;
+	end;
+	for i in [1..conicRank] do
+		for j in [1..conicRank] do
+			x := indet(i);
+			y := indet(j);
+			## Product of length 2
+			# tr(xy') = tr(x)tr(y) - tr(xy)
+			if i<>j then
+				add(tr(x*inv(y)), tr(x)*tr(y) - tr(x*y));
+			else
+				# If x=y, then the term tr(xx') never appears because it is automatically
+				# replaced by 2n(x) (=tr(n(x))). Hence we write the replacement rule
+				# the other way around. This is precisely relation [GPR, (16.5.8)].
+				add(tr(x*x), tr(x)^2 - 2*ConicAlgMagNorm(x));
+			fi;
+			## Products of length 3
+			for k in [1..ConicRank(magma)] do
+				z := indet(k);
+				# tr(xyz') = tr(xy)tr(z) - tr(xyz)
+				add(tr(x*y*inv(z)), tr(x*y)*tr(z) - tr(x*y*z));
+				# tr(x'yz) = tr(x)tr(yz) - tr(xyz)
+				add(tr(inv(x)*y*z), tr(x)*tr(y*z) - tr(x*y*z));
+				# tr(xy'z) = tr(zxy') = tr(zx)tr(y) - tr(zxy)
+				add(tr(x*inv(y)*z), tr(z*x)*tr(y) - tr(z*x*y));
+				# tr(x'y'z) = tr(z'yx) = tr(z)tr(yx) - tr(zyx)
+				add(tr(inv(x)*inv(y)*z), tr(z)*tr(y*x) - tr(z*y*x));
+				# tr(x'yz') = tr(zy'x) = tr(xz)tr(y) - tr(xzy)
+				add(tr(inv(x)*y*inv(z)), tr(x*z)*tr(y) - tr(x*z*y));
+				# tr(xy'z') = tr(zyx') = tr(x)tr(yz) - tr(xzy)
+				add(tr(x*inv(y)*inv(z)), tr(x)*tr(y*z) - tr(x*z*y));
+			od;
+		od;
+	od;
+end);
+
 # ----- Constructors for conic algebras -----
 
 InstallMethod(ConicAlgebra, [IsInt, IsInt, IsInt, IsString, IsString, IsString, IsString],
@@ -15,9 +161,9 @@ InstallMethod(ConicAlgebra, [IsInt, IsInt, IsInt, IsString, IsString, IsString, 
 		comRingIndetInfo := initInfo[2];
 		comRing := FunctionField(ComRingBaseRing, comRingIndets);
 		conicAlg := FreeMagmaRing(ComRing, magma);
-		# Store information in families
 		famConicAlg := FamilyObj(conicAlg);
 		famConicAlgMag := FamilyObj(Magma);
+		# Additional information to be stored in the family object of conicAlg
 		famConicAlg!.conicAlg := conicAlg;
 		famConicAlg!.conicAlgMagFamily := famConicAlgMag;
 		# Additional information to be stored in the family object of magma
@@ -27,6 +173,13 @@ InstallMethod(ConicAlgebra, [IsInt, IsInt, IsInt, IsString, IsString, IsString, 
 		famConicAlgMag!.conicZeroName := zeroSym;
 		famConicAlgMag!.conicAlgMagEmbedding := x -> ImageElm(Embedding(magma, conicAlg), x);
 		famConicAlgMag!.comRingIndetInfo := comRingIndetInfo;
+		# More complicated information to be stored in the family object of magma
+		traceLists := _TraceHelpLists(comRingIndets, comRingIndetInfo);
+		famConicAlgMag!.traceIndets := traceLists[1];
+		famConicAlgMag!.traceValues := traceLists[2];
+		traceSubLists := _TrSubstitutionLists(magma, comRingIndets);
+		famConicAlgMag!.trSubIndetList := traceSubLists[1];
+		famConicAlgMag!.trSubValueList := traceSubLists[2];
 		return conicAlg;
 	end
 );

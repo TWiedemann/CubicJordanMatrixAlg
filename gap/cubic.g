@@ -236,8 +236,8 @@ InstallMethod(
 # Returns: Put p := 3i+1, q := 3i+2, r := 3i+3. Then the output is
 # t_p[11] + t_q[22] + t_r[33] + a_p[23] + a_q[31] + a_r[12]
 # where t_l and a_l are the respective indeterminates.
-BindGlobal("CubicGenericEl", function(i)
-	if 3*i+3 > ConicAlg_rank or 3*i+3 > ComRing_rank then
+BindGlobal("CubicGenericEl", function(conicAlg, i)
+	if 3*i+3 > ConicRank(conicAlg) or 3*i+3 > ComRingRank(conicAlg) then
 		return fail;
 	else
 		return CubicElFromTuple(
