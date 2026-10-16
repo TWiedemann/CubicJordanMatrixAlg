@@ -4,6 +4,7 @@ RereadPackage("CubicJordanMatrixAlg", "gap/F4-roots.g"); # The root systems F4 a
 RereadPackage("CubicJordanMatrixAlg", "gap/parity_lists.g"); # Stores the parity map of the F4-graded group
 ReadPackage("CubicJordanMatrixAlg", "gap/helper.g");
 ReadPackage("CubicJordanMatrixAlg", "gap/conic_mag.g");
+RereadPackage("CubicJordanMatrixAlg", "gap/comring.g"); # Commutative ring k = ComRing
 
 ReadPackage("CubicJordanMatrixAlg", "gap/conic_constructor.g");
 # InitCJMA(a,b,c,d) initialises the setup of the package with
@@ -39,7 +40,7 @@ InstallGlobalFunction(InitCJMA, function(args...)
 	BindGlobal("ConicAlg_rank", conicrank);
 	BindGlobal("Trace_MaxLength", tracelength);
 	# Read files
-	RereadPackage("CubicJordanMatrixAlg", "gap/comring.g"); # Commutative ring k = ComRing
+	
 	RereadPackage("CubicJordanMatrixAlg", "gap/conic.g"); # Conic algebra C = Conic
 	RereadPackage("CubicJordanMatrixAlg", "gap/init_trlists.g"); # Initialises some global constants
 	RereadPackage("CubicJordanMatrixAlg", "gap/cubic.g"); # Cubic Jordan matrix algebra

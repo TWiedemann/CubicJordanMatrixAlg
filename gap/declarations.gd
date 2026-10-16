@@ -7,7 +7,8 @@
 #! then GAP variables <C>t1 := ComRingIndet(1), ...</C> are defined.
 #! @ChapterInfo The commutative ring $k$, Functions
 DeclareOperation("ComRingIndet", [ IsInt ]);
-DeclareOperation("ComRingIndet", [ IsObject, IsInt ]);
+DeclareOperation("ComRingIndet", [ IsString, IsInt ]);
+DeclareOperation("ComRingIndet", [ IsRing, IsInt ]);
 
 #! @Arguments i
 #! @Description
@@ -33,10 +34,11 @@ DeclareOperation("ConicAlgIndet", [ IsObject, IsInt ]);
 DeclareOperation("ConicAlgebra", [IsInt, IsInt, IsInt, IsString, IsString]);
 DeclareOperation("ConicAlgebra", [IsInt, IsInt, IsInt]);
 DeclareOperation("ConicAlgebra", [IsInt, IsInt]);
-DeclareOperation("ComRingOfConicAlgebra", [IsObject]);
+DeclareOperation("ComRingOfConicAlgebra", [IsRing]);
 DeclareOperation("ConicAlgMagma", [IsInt]);
 DeclareOperation("ConicAlgMagma", [IsInt, IsString]);
 DeclareOperation("ConicAlgMagma", [IsInt, IsString, IsString]);
+DeclareOperation("ConicAlgMagma", [IsNonassocWord]);
 
 DeclareOperation("ConicRank", [ IsObject ]);
 DeclareOperation("ConicIndetName", [ IsObject ]);

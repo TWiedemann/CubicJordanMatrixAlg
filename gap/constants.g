@@ -7,6 +7,9 @@ BindGlobal("_SkipTests", false);
 
 ## ---- Symbols ----
 BindGlobal("_ConicConjSymbol", "'");
+BindGlobal("_ConicNormSymbol", "n");
+BindGlobal("_ConicTraceSymbol", "tr");
+BindGlobal("_ComRingGamIndetSymbol", "g");
 BindGlobal("_ConicIndetDefaultSymbol", "a");
 BindGlobal("_ComRingIndetDefaultSymbol", "t");
 BindGlobal("_ConicDefaultOneString", "1_C");

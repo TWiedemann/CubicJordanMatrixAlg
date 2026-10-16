@@ -53,6 +53,16 @@ InstallMethod(ConicAlgMagma, [IsInt], function(rank)
 	return ConicAlgMagma(rank, _ConicIndetDefaultSymbol, _ConicDefaultOneString);
 end);
 
+InstallMethod(ConicAlgMagma, [IsNonassocWord], function(m)
+	local fam;
+	fam := FamilyObj(magma);
+	if IsBound(fam!.conicMagma) then
+		return fam!.conicMagma;
+	else
+		Error("Magma must be magma of a conic algebra");
+	fi;
+end);
+
 InstallMethod("ConicRank", [IsMagma], function(magma)
 	local fam;
 	fam := FamilyObj(magma);
@@ -95,7 +105,7 @@ InstallMethod(String, "Custom string for 1 in ConicAlgMag", [IsNonassocWord], fu
 end);
 
 InstallMethod(PrintObj, "Custom string for 1 in ConicAlgMag", [IsNonassocWord], function(x)
-	if IsBound( FamilyObj(x)!.conicRank ) then
+	if IsBound( CollectionsFamily(FamilyObj(x))!.conicOneName ) then
 		Print(String(x));
 	else
 		TryNextMethod();
