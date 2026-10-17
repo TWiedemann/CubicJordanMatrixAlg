@@ -30,7 +30,7 @@ BindGlobal("DDSanitizeRep", function(rep)
 			if rep[j][2] = x[2] and rep[j][3] = x[3] then
 				rep[j][1] := rep[j][1] + x[1];
 				Remove(rep, i);
-				if rep[j][1] = Zero(ComRing) then
+				if IsZero(rep[j][1]) then
 					Remove(rep, j);
 				fi;
 				break;
@@ -50,7 +50,7 @@ BindGlobal("DDRepToString", function(a)
 	stringList := [];
 	for summand in a do
 		s := Concatenation(_DDSymString, "_{", String(summand[2]), ",", String(summand[3]), "}");
-		if summand[1] <> One(ComRing) then
+		if not IsOne(summand[1]) then
 			s := Concatenation("(", String(summand[1]), ")", "*", s); 
 		fi;
 		Add(stringList, s);
@@ -160,7 +160,7 @@ InstallMethod(DDdd, [IsCubicElement, IsCubicElement], function(cubicEl1, cubicEl
 	if IsZero(cubicEl1) or IsZero(cubicEl2) then
 		return DDZero;
 	else
-		return DD([[One(ComRing), cubicEl1, cubicEl2]]);
+		return DD([[One(ComRingOfConicAlg(ConicAlgebra(cubicEl1))), cubicEl1, cubicEl2]]);
 	fi;
 end);
 

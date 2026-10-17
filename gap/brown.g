@@ -13,7 +13,7 @@ BindGlobal("_BrownRepToString", rep -> String(rep));
 
 BindGlobal("BrownSpec",  rec(
 	ElementName := "BrownElement",
-	Zero := a -> [Zero(a[1]), CubicZero, CubicZero, Zero(a[1])],
+	Zero := a -> [Zero(a[1]), Zero(a[2]), Zero(a[3]), Zero(a[4])],
 	# + and - on representations behave just like they should
 	Addition := function(a, b)
 		return a+b;
@@ -35,7 +35,12 @@ InstallMethod(String, [IsBrownElement], x -> _BrownRepToString(UnderlyingElement
 
 # ----- Constructors for elements of Brown -----
 
-BindGlobal("BrownZero", Brown(BrownSpec.Zero(fail)));
+BindGlobal("BrownZero", function(conicAlg)
+	local comRing, zero;
+	comRing := ComRingOfConicAlg(conicAlg);
+	zero := Zero(comRing);
+	return Brown([zero, CubicZero(conicAlg), CubicZero(conicAlg), zero]);
+end);
 
 InstallMethod(BrownEl, [IsRingElement, IsCubicElement, IsCubicElement, IsRingElement],
 	function(a, b, c, d)
@@ -51,15 +56,16 @@ InstallMethod(BrownEl, [IsRingElement, IsCubicElement, IsCubicElement, IsRingEle
 # i: Integer.
 # Returns: A list of the generic basic elements of Brown, using indeterminates a_i and t_i.
 BindGlobal("BrownGensAsModule", function(conicAlg, i)
-	local t, result, gen;
+	local t, result, gen, zero, cubicZero;
 	t := ComRingIndet(conicAlg, i);
+	zero := Zero(t);
+	cubicZero := CubicZero(conicAlg);
 	result := [];
-	z := Zero(ComRingOfConicAlg(conicAlg));
-	Add(result, BrownEl(t, CubicZero, CubicZero, z));
-	Add(result, BrownEl(z, CubicZero, CubicZero, t));
+	Add(result, BrownEl(t, cubicZero, cubicZero, zero));
+	Add(result, BrownEl(zero, cubicZero, cubicZero, t));
 	for gen in CubicGensAsModule(conicAlg, i) do
-		Add(result, BrownEl(z, gen, CubicZero, z));
-		Add(result, BrownEl(z, CubicZero, gen, z));
+		Add(result, BrownEl(zero, gen, cubicZero, zero));
+		Add(result, BrownEl(zero, cubicZero, gen, zero));
 	od;
 	return result;
 end);
@@ -113,7 +119,7 @@ end);
 # Scalar multiplication ComRing x Brown -> Brown
 InstallOtherMethod(\*, "for ComRingElement and BrownElement", [IsRingElement, IsBrownElement], 2, function(comEl, brownEl)
 	if IsInt(comEl) then
-		comEl := comEl * One(ComRing);
+		comEl := comEl * One(BrownElComPart(brownEl, 1));
 	fi;
 	ReqComRingEl(comEl);
 	return Brown(comEl * UnderlyingElement(brownEl));

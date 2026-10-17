@@ -148,20 +148,23 @@ end);
 
 # ----- Constructors for elements of Cubic -----
 
-BindGlobal("CubicZero", Cubic([
-		[Zero(ComRing), Zero(ComRing), Zero(ComRing)],
-		[Zero(ConicAlg), Zero(ConicAlg), Zero(ConicAlg)]
-]));
+BindGlobal("CubicZero", function(conicAlg)
+	local zeroComRing, zeroConicAlg;
+	zeroComRing := Zero(ComRingOfConicAlg(conicAlg));
+	zeroConicAlg := Zero(conicAlg);
+	return Cubic([[zeroComRing, zeroComRing, zeroComRing],
+		[zeroConicAlg, zeroConicAlg, zeroConicAlg]]);
+end);
 
 # i: 1, 2, or 3
 # t: Element of ComRing
 # Returns: The element t[ii] of Cubic.
-InstallMethod(CubicComEl, [IsRingElement, IsInt], function(t, i)
+InstallMethod(CubicComEl, [IsFreeMagmaRing, IsRingElement, IsInt], function(conicAlg, t, i)
 	local comList, conicList;
 	ReqComRingEl(t);
 	comList := [Zero(t), Zero(t), Zero(t)];
 	comList[i] := t;
-	conicList := [Zero(ConicAlg), Zero(ConicAlg), Zero(ConicAlg)];
+	conicList := List([1..3], x -> Zero(conicAlg));
 	return Cubic([comList, conicList]);
 end);
 
@@ -169,12 +172,13 @@ end);
 # a: Element of ConicAlg
 # Returns: The element a[jl] of Cubic if [i, j, l] is the cyclic permutation starting from i.
 InstallMethod(CubicConicEl, [ IsRingElement, IsInt ], function(a, i)
-	local comList, conicList;
+	local comList, conicList, comRing;
 	if not ReqConicAlgEl(a) then
 		return fail;
 	fi;
-	comList := [Zero(ComRing), Zero(ComRing), Zero(ComRing)];
-	conicList := [Zero(ConicAlg), Zero(ConicAlg), Zero(ConicAlg)];
+	comRing := ComRingOfConicAlg(ConicAlgebra(a));
+	comList := [Zero(comRing), Zero(comRing), Zero(comRing)];
+	conicList := [Zero(a), Zero(a), Zero(a)];
 	conicList[i] := a;
 	return Cubic([comList, conicList]);
 end);
@@ -198,21 +202,13 @@ BindGlobal("CubicConicElMat", function(a, j, l)
 	fi;
 end);
 
-BindGlobal("CubicConicElOne", function(i)
-	return CubicConicEl(One(ConicAlg), i);
-end);
-
-BindGlobal("CubicConicElOneMat", function(i, j)
-	return CubicConicElMat(One(ConicAlg), i, j);
-end);
-
 # i, j: Indices 1, 2 or 3
 # a: Element of ComRing or ConicAlg
 # Returns: a[ij] \in Cubic
-InstallMethod(CubicEl, [ IsRingElement, IsInt, IsInt ], function(a, i, j)
+InstallMethod(CubicEl, [ IsFreeMagmaRing, IsRingElement, IsInt, IsInt ], function(conicAlg, a, i, j)
 	if i = j then
 		ReqComRingEl(a);
-		return CubicComEl(a, i);
+		return CubicComEl(conicAlg, a, i);
 	elif i <> j then
 		ReqConicAlgEl(a);
 		return CubicConicElMat(a, i, j);
@@ -224,11 +220,11 @@ end);
 
 # i, j: Indices 1, 2 or 3
 # Returns: 1[ij] \in Cubic
-BindGlobal("CubicElOne", function(i, j)
+BindGlobal("CubicElOne", function(conicAlg, i, j)
 	if i = j then
-		return CubicComEl(One(ComRing), i);
+		return CubicComEl(conicAlg, One(ComRingOfConicAlg(conicAlg)), i);
 	else
-		return CubicConicElMat(One(ConicAlg), i, j);
+		return CubicConicElMat(One(conicAlg), i, j);
 	fi;
 end);
 
@@ -238,10 +234,13 @@ end);
 # Returns: t1[11] + t2[22] + t3[33] + a1[23] + a2[31] + a3[12]
 InstallMethod(
 	CubicElFromTuple,
-	[ IsRingElement, IsRingElement, IsRingElement, IsRingElement, IsRingElement, IsRingElement ],
+	[ IsRingElement, IsRingElement, IsRingElement,
+		IsElementOfFreeMagmaRing, IsElementOfFreeMagmaRing, IsElementOfFreeMagmaRing ],
 	function(t1, t2, t3, a1, a2, a3)
+		local conicAlg;
+		conicAlg := ConicAlgebra(a1);
 		return Sum([
-			CubicComEl(t1, 1), CubicComEl(t2, 2), CubicComEl(t3, 3),
+			CubicComEl(conicAlg, t1, 1), CubicComEl(conicAlg, t2, 2), CubicComEl(conicAlg, t3, 3),
 			CubicConicEl(a1, 1), CubicConicEl(a2, 2), CubicConicEl(a3, 3)
 		]);
 	end
@@ -270,7 +269,7 @@ BindGlobal("CubicGensAsModule", function(conicAlg, i)
 	t := ComRingIndet(conicAlg, i);
 	a := ConicAlgIndet(conicAlg, i);
 	return [
-		CubicComEl(t, 1), CubicComEl(t, 2), CubicComEl(t, 2),
+		CubicComEl(conicAlg, t, 1), CubicComEl(conicAlg, t, 2), CubicComEl(conicAlg, t, 2),
 		CubicConicEl(a, 1), CubicConicEl(a, 2), CubicConicEl(a, 3)
 	];
 end);
@@ -334,7 +333,7 @@ end );
 # [GPR24, (36.4.4)]
 InstallMethod(CubicAdj, [IsCubicElement], function(A)
 	local result, perm, i, j, l, a_i, a_j, a_l, A_i, A_j, A_l, comEl, algEl;
-	result := CubicZero;
+	result := Zero(A);
 	for perm in CycPerm do
 		i := perm[1];
 		j := perm[2];
@@ -346,7 +345,7 @@ InstallMethod(CubicAdj, [IsCubicElement], function(A)
 		A_j := CubicComPart(A, j);
 		A_l := CubicComPart(A, l);
 		comEl := A_j*A_l - TwistDiag[j]*TwistDiag[l]*ConicAlgNorm(a_i);
-		result := result + CubicComEl(comEl, i);
+		result := result + CubicComEl(ConicAlgebra(A), comEl, i);
 		algEl := -A_i*a_i + TwistDiag[i] * ConicAlgInv(a_j*a_l);
 		result := result + CubicConicElMat(algEl, j, l);
 	od;
@@ -359,7 +358,7 @@ end );
 InstallMethod(CubicCross, [IsCubicElement, IsCubicElement], function(A, B)
 	local result, perm, i, j, l, a_i, a_j, a_l, b_i, b_j, b_l,
 		A_i, A_j, A_l, B_i, B_j, B_l, comEl, algEl;
-	result := CubicZero;
+	result := Zero(A);
 	for perm in CycPerm do
 		i := perm[1];
 		j := perm[2];
@@ -377,7 +376,7 @@ InstallMethod(CubicCross, [IsCubicElement, IsCubicElement], function(A, B)
 		B_j := CubicComPart(B, j);
 		B_l := CubicComPart(B, l);
 		comEl := A_j*B_l + B_j*A_l - TwistDiag[j]*TwistDiag[l]*ConicAlgNormLin(a_i, b_i);
-		result := result + CubicComEl(comEl, i);
+		result := result + CubicComEl(ConicAlgebra(A), comEl, i);
 		algEl := -A_i*b_i - B_i*a_i + TwistDiag[i]*ConicAlgInv(a_j*b_l + b_j*a_l);
 		result := result + CubicConicElMat(algEl, j, l);
 	od;
@@ -389,7 +388,7 @@ end );
 # [GRP24, (36.4.7)]
 InstallMethod(CubicBiTr, [IsCubicElement, IsCubicElement], function(A, B)
 	local result, i, j, l, perm;
-	result := Zero(ComRing);
+	result := Zero(ComRingOfConicAlg(ConicAlgebra(A)));
 	for perm in CycPerm do
 		i := perm[1];
 		j := perm[2];
