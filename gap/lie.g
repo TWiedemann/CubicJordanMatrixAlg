@@ -279,6 +279,11 @@ InstallMethod(LiePart, [IsLieElement, IsInt], function(lieEl, i)
 	fi;
 end);
 
+# Return the conic algebra underlying a Lie element, using its Brown component.
+InstallMethod(ConicAlgebra, [IsLieElement], function(lieEl)
+	return ConicAlgebra(LiePart(lieEl, -1));
+end);
+
 DeclareOperation("LieCubicPosPart", [IsLieElement]);
 DeclareOperation("LieCubicNegPart", [IsLieElement]);
 

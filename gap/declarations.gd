@@ -31,6 +31,8 @@ DeclareOperation("ConicAlgebra", [IsInt, IsInt, IsInt, IsString, IsString]);
 DeclareOperation("ConicAlgebra", [IsInt, IsInt, IsInt]);
 DeclareOperation("ConicAlgebra", [IsInt, IsInt]);
 DeclareOperation("ConicAlgebra", [IsElementOfFreeMagmaRing]);
+# For conic algebra of an element (of Cubic, Lie, ConicAlg, ...)
+DeclareOperation("ConicAlgebra", [IsObject]);
 DeclareOperation("ConicAlgMagma", [IsInt]);
 DeclareOperation("ConicAlgMagma", [IsInt, IsString]);
 DeclareOperation("ConicAlgMagma", [IsInt, IsString, IsString, IsString]);

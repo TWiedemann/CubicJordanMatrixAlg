@@ -140,6 +140,16 @@ InstallMethod(DDCoeffList, [IsDDElement], function(ddEl)
 	return UnderlyingElement(ddEl);
 end);
 
+# Return the conic algebra underlying a nonzero DD element.
+InstallMethod(ConicAlgebra, [IsDDElement], function(ddEl)
+	local coeffList;
+	coeffList := DDCoeffList(ddEl);
+	if IsEmpty(coeffList) then
+		Error("Cannot determine the conic algebra of a zero DD element");
+	fi;
+	return ConicAlgebra(coeffList[1][2]);
+end);
+
 # ----- Constructors for elements of DD -----
 
 BindGlobal("DDZero", DD([]));

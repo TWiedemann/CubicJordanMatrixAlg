@@ -87,6 +87,11 @@ BindGlobal("CubicSpec", rec(
 
 BindGlobal("Cubic", ArithmeticElementCreator(CubicSpec));
 
+# Returns: the conic algebra over which this cubic element is defined.
+InstallMethod(ConicAlgebra, [IsCubicElement], function(cubicEl)
+	return ConicAlgebra(CubicConicPart(cubicEl, 1));
+end);
+
 InstallMethod(String, [IsCubicElement], x -> CubicRepToString(UnderlyingElement(x)));
 
 # Scalar multiplication ComRing x Cubic -> Cubic (with priority 2, i.e., high enough to be used)

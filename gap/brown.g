@@ -26,6 +26,11 @@ BindGlobal("BrownSpec",  rec(
 ));
 BindGlobal("Brown", ArithmeticElementCreator(BrownSpec));
 
+# Return the conic algebra underlying a Brown element.
+InstallMethod(ConicAlgebra, [IsBrownElement], function(brownEl)
+	return ConicAlgebra(BrownElCubicPart(brownEl, 1));
+end);
+
 InstallMethod(String, [IsBrownElement], x -> _BrownRepToString(UnderlyingElement(x)));
 
 # ----- Constructors for elements of Brown -----
