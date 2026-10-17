@@ -35,15 +35,17 @@ BindGlobal("CubicRepToString", function(a)
 	stringList := [];
 	# Display elements of ComRing.
 	for i in [1..3] do
-		if a[1][i] <> Zero(ComRing) then
+		if not IsZero(a[1][i]) then
 			s := Concatenation("(", String(a[1][i]), ")", "[", String(i), String(i), "]");
 			Add(stringList, s);
 		fi;
 	od;
 	# Display elements of ConicAlg.
 	for i in [1..3] do
-		if a[2][i] <> Zero(ConicAlg) then
-			s := Concatenation("(", String(a[2][i]), ")", "[", String(CycPerm[i][2]), String(CycPerm[i][3]), "]");
+		if not IsZero(a[2][i]) then
+			s := Concatenation(
+				"(", String(a[2][i]), ")", "[", String(CycPerm[i][2]), String(CycPerm[i][3]), "]"
+			);
 			Add(stringList, s);
 		fi;
 	od;
@@ -54,8 +56,22 @@ end);
 
 BindGlobal("CubicSpec", rec(
 	ElementName := "CubicElement",
-	Zero := a -> [[Zero(ComRing), Zero(ComRing), Zero(ComRing)], [Zero(ConicAlg), Zero(ConicAlg), Zero(ConicAlg)]],
-	One := a -> [[One(ComRing), One(ComRing), One(ComRing)], [Zero(ConicAlg), Zero(ConicAlg), Zero(ConicAlg)]],
+	Zero := function(cubicEl)
+		local zeroComRing, zeroConicAlg;
+		zeroComRing := Zero(ComRingOfConicAlg(ConicAlgebra(cubicEl[2][1])));
+		zeroConicAlg := Zero(cubicEl[2][1]);
+		return [
+			[zeroComRing, zeroComRing, zeroComRing], [zeroConicAlg, zeroConicAlg, zeroConicAlg]
+		];
+	end,
+	One := function(cubicEl)
+		local oneComRing, zeroConicAlg;
+		zeroConicAlg := Zero(cubicEl[2][1]);
+		oneComRing := One(ComRingOfConicAlg(ConicAlgebra(cubicEl[2][1])));
+		return [
+			[oneComRing, oneComRing, oneComRing], [zeroConicAlg, zeroConicAlg, zeroConicAlg]
+		];
+	end,
 	# The representations of elements behave under "+" and "-" exactly as they should
 	Addition := function(a, b)
 		return a+b;
@@ -77,9 +93,9 @@ InstallMethod(String, [IsCubicElement], x -> CubicRepToString(UnderlyingElement(
 InstallMethod(\*, "for ComRingElement and CubicElement", [IsRingElement, IsCubicElement], 2, 
 	function(a,b)
 		local rep, productRep;
-		if IsInt(a) then
-			a := a*One(ComRing);
-		fi;
+		# if IsInt(a) then
+		# 	a := a*One(ComRing);
+		# fi;
 		ReqComRingEl(a);
 		rep := UnderlyingElement(b);
 		productRep := [];
@@ -138,16 +154,10 @@ BindGlobal("CubicZero", Cubic([
 InstallMethod(CubicComEl, [IsRingElement, IsInt], function(t, i)
 	local comList, conicList;
 	ReqComRingEl(t);
-	comList := [Zero(ComRing), Zero(ComRing), Zero(ComRing)];
+	comList := [Zero(t), Zero(t), Zero(t)];
 	comList[i] := t;
 	conicList := [Zero(ConicAlg), Zero(ConicAlg), Zero(ConicAlg)];
 	return Cubic([comList, conicList]);
-end);
-
-# i: 1, 2, or 3
-# Returns: The element 1[ii] of Cubic.
-BindGlobal("CubicComElOne", function(i)
-	return CubicComEl(One(ComRing), i);
 end);
 
 # i: 1, 2, or 3

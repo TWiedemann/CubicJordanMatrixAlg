@@ -26,7 +26,7 @@ DeclareOperation("ComRingGamIndet", [ IsInt ]);
 DeclareOperation("ConicAlgIndet", [ IsObject, IsInt ]);
 DeclareOperation("ConicAlgInvIndet", [ IsObject, IsInt ]);
 
-DeclareOperation("ConicAlgebra", [IsInt, IsInt, IsInt, IsString, IsString, IsString, IsString]);
+DeclareOperation("ConicAlgebra", [IsInt, IsInt, IsInt, IsRecord]);
 DeclareOperation("ConicAlgebra", [IsInt, IsInt, IsInt, IsString, IsString]);
 DeclareOperation("ConicAlgebra", [IsInt, IsInt, IsInt]);
 DeclareOperation("ConicAlgebra", [IsInt, IsInt]);
@@ -45,6 +45,8 @@ DeclareOperation("ConicRank", [ IsObject ]);
 DeclareOperation("ConicIndetName", [ IsObject ]);
 DeclareOperation("ComRingRank", [ IsObject ]);
 DeclareOperation("ComRingIndetName", [ IsObject ]);
+
+DeclareOperation("ConicAlgInv", [ IsElementOfFreeMagmaRing ]);
 
 #! @Arguments a
 #! @Description
@@ -82,6 +84,11 @@ DeclareOperation("ConicNorm", [ IsObject ]);
 #! tr(a1a3'a2')</C>).
 #! @ChapterInfo The multiplicative conic alternative algebra $C$, Functions
 DeclareOperation("ConicTr", [ IsObject ]);
+
+DeclareOperation("ReqComRingEl", [IsRingElement]);
+DeclareOperation("ReqComRingEl", [IsList]);
+DeclareOperation("ReqConicAlgEl", [IsRingElement]);
+DeclareOperation("ReqConicAlgEl", [IsList]);
 
 #! @Arguments a, b
 #! @Description

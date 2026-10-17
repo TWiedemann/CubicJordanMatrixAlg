@@ -6,12 +6,12 @@
 
 # root: Root in F4
 # Returns: The corresponding element of a "Chevalley basis" of Lie
-BindGlobal("ChevBasEl", function(root)
+BindGlobal("ChevBasEl", function(conicAlg, root)
 	local one;
 	if root in F4ShortRoots then
-		one := One(ConicAlg);
+		one := One(conicAlg);
 	elif root in F4LongRoots then
-		one := One(ComRing);
+		one := One(ComRingOfConicAlg(conicAlg));
 	else
 		return fail;
 	fi;
@@ -20,8 +20,9 @@ end);
 
 # root: Root in G2.
 # Returns: The corresponding element of a "Chevalley basis" of type G2 of Lie.
-BindGlobal("ChevG2BasEl", function(root)
-	local F4root, result, sign;
+BindGlobal("ChevG2BasEl", function(conicAlg, root)
+	local F4root, result, sign, one;
+	one := One(ComRingOfConicAlg(conicAlg));
 	if root in G2LongRoots then
 		# Additional minus sign
 		if root in [[-2,-1], [-1,-2]] then
@@ -32,7 +33,7 @@ BindGlobal("ChevG2BasEl", function(root)
 		# Find corresponding F4-root
 		for F4root in F4LongRoots do
 			if F4RootG2Coord(F4root) = root then
-				return sign*LieRootHomF4(F4root, One(ComRing), true, true);
+				return sign*LieRootHomF4(F4root, one, true, true);
 			fi;
 		od;
 	else
@@ -40,7 +41,7 @@ BindGlobal("ChevG2BasEl", function(root)
 		result := LieZero;
 		for F4root in F4LongRoots do
 			if F4RootG2Coord(F4root) = root then
-				result := result + LieRootHomF4(F4root, One(ComRing), true, true);
+				result := result + LieRootHomF4(F4root, one, true, true);
 			fi;
 		od;
 		if root in [[-1,0], [0,-1]] then
@@ -54,32 +55,32 @@ end);
 
 # root: Root in F4.
 # Returns: The element h_root of the Chevalley basis.
-BindGlobal("ChevHEl", function(root)
-	return ChevBasEl(root) * ChevBasEl(-root);
+BindGlobal("ChevHEl", function(conicAlg, root)
+	return ChevBasEl(conicAlg, root) * ChevBasEl(conicAlg, -root);
 end);
 
 # root: Root in G2.
 # Returns: The element h_root of the Chevalley basis.
-BindGlobal("ChevG2HEl", function(root)
-	return ChevG2BasEl(root) * ChevG2BasEl(-root);
+BindGlobal("ChevG2HEl", function(conicAlg, root)
+	return ChevG2BasEl(conicAlg, root) * ChevG2BasEl(conicAlg, -root);
 end);
 
 # root1, root2: Roots in F4
 # Returns: Integer c s.t. [ x_root1, x_root2 ] = c x_{root1+root2}.
 # Here x_a = ChevBasEl(a) and the output is 0 if root1+root2 is not a root.
-BindGlobal("ChevStrucConst", function(root1, root2)
+BindGlobal("ChevStrucConst", function(conicAlg, root1, root2)
 	local sum, candidates, comm, chevSum, c, diff;
 	sum := root1+root2;
 	if not sum in F4Roots then
-		return Zero(ComRing);
+		return Zero(ComRingOfConicAlg(conicAlg));
 	fi;
 	# Since ComRing is not a field, it is not evident that there even exists c \in ComRing
 	# such that [ x_root1, x_root2 ] = c x_{root1+root2}. Hence we cannot use GAP functions
 	# to immediately obtain c. However, it turns out that there is only a low number of
 	# possibilities which may occur, so we simply try them all out.
 	candidates := [-2,-1,1,2];
-	comm := ChevBasEl(root1) * ChevBasEl(root2);
-	chevSum := ChevBasEl(sum);
+	comm := ChevBasEl(conicAlg, root1) * ChevBasEl(conicAlg, root2);
+	chevSum := ChevBasEl(conicAlg, sum);
 	for c in candidates do
 		if Simplify(comm - c*chevSum) = LieZero then
 			return c;
@@ -91,14 +92,14 @@ end);
 # root1, root2: Roots in G2
 # Returns: Integer c s.t. [ x_root1, x_root2 ] = c x_{root1+root2}.
 # Here x_a = ChevBasEl(a) and the output is 0 if root1+root2 is not a root.
-BindGlobal("ChevG2StrucConst", function(root1, root2)
+BindGlobal("ChevG2StrucConst", function(conicAlg, root1, root2)
 	local sum, candidates, comm, chevSum, c, diff;
 	sum := root1+root2;
 	if not sum in G2Roots then
-		return Zero(ComRing);
+		return Zero(ComRingOfConicAlg(conicAlg));
 	fi;
 	candidates := [-4,-3,-2,-1,1,2,3,4];
-	comm := ChevG2BasEl(root1) * ChevG2BasEl(root2);
+	comm := ChevG2BasEl(conicAlg, root1) * ChevG2BasEl(conicAlg, root2);
 	chevSum := ChevG2BasEl(sum);
 	for c in candidates do
 		if Simplify(comm - c*chevSum) = LieZero then

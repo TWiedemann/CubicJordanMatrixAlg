@@ -151,16 +151,21 @@ end);
 
 # ----- Constructors for conic algebras -----
 
-InstallMethod(ConicAlgebra, [IsInt, IsInt, IsInt, IsString, IsString, IsString, IsString],
-	function(comRank, conicRank, maxTrLength, comSym, conicSym, zeroSym, oneSym)
+InstallMethod(ConicAlgebra, [IsInt, IsInt, IsInt, IsRecord],
+	function(comRank, conicRank, maxTrLength, symbols)
 		local magma, initInfo, comRingIndets, comRingIndetInfo, comRing, conicAlg,
-			famConicAlg, famConicAlgMag, famComRing, traceLists, traceSubLists;
+			famConicAlg, famConicAlgMag, famComRing, traceLists, traceSubLists,
+			comSym, conicSym, zeroSym, oneSym;
+		comSym := symbols.comSym;
+		conicSym := symbols.conicSym;
+		zeroSym := symbols.zeroSym;
+		oneSym := symbols.oneSym;
 		magma := ConicAlgMagma(conicRank, conicSym, oneSym, zeroSym);
 		initInfo := _InitComRingIndeterminates(magma, comRank, comSym, maxTrLength);
 		comRingIndets := initInfo[1];
 		comRingIndetInfo := initInfo[2];
 		comRing := FunctionField(ComRingBaseRing, comRingIndets);
-		conicAlg := FreeMagmaRing(ComRing, magma);
+		conicAlg := FreeMagmaRing(comRing, magma);
 		famConicAlg := FamilyObj(conicAlg);
 		famConicAlgMag := FamilyObj(magma);
 		# Additional information to be stored in the family object of conicAlg
@@ -187,8 +192,11 @@ InstallMethod(ConicAlgebra, [IsInt, IsInt, IsInt, IsString, IsString, IsString, 
 InstallMethod(ConicAlgebra, [IsInt, IsInt, IsInt, IsString, IsString],
 	function(comRank, conicRank, maxTrLength, comSym, conicSym)
 		return ConicAlgebra(
-			comRank, conicRank, maxTrLength, comSym, conicSym,
-			_ConicDefaultZeroString, _ConicDefaultOneString
+			comRank, conicRank, maxTrLength, rec(
+				comSym := comSym, conicSym := conicSym,
+				zeroSym := _ConicDefaultZeroString,
+				oneSym := _ConicDefaultOneString
+			)
 		);
 	end
 );
@@ -197,13 +205,13 @@ InstallMethod(ConicAlgebra, [IsInt, IsInt, IsInt], function(comRing, conicRank, 
 	return ConicAlgebra(
 		comRing, conicRank, maxTrLength, _ComRingIndetDefaultSymbol, _ConicIndetDefaultSymbol
 	);
-);
+end);
 
 InstallMethod(ConicAlgebra, [IsInt, IsInt], function(comRing, conicRank)
 	return ConicAlgebra(
 		comRing, conicRank, _DefaultMaxTrLength, _ComRingIndetDefaultSymbol, _ConicIndetDefaultSymbol
 	);
-);
+end);
 
 # ----- Getter functions for information stored in conic algebra -----
 
@@ -289,11 +297,6 @@ end);
 
 # ----- Functions which test requirements and throw errors ---
 
-DeclareOperation("ReqComRingEl", [IsRingElement]);
-DeclareOperation("ReqComRingEl", [IsList]);
-DeclareOperation("ReqConicAlgEl", [IsRingElement]);
-DeclareOperation("ReqConicAlgEl", [IsList]);
-
 # For runtime reasons, ReqComRingEl only tests whether an element is a rational function
 # to determine whether it lies (or rather, can possibly lie) in ComRing.
 # Similarly, ReqConicAlgEl only tests whether an element is an element of a free
@@ -362,7 +365,7 @@ end);
 # 
 # a: Element of ConicAlg.
 # Returns: The conjugate a' of a.
-BindGlobal("ConicAlgInv", function(a)
+InstallMethod(ConicAlgInv, [IsElementOfFreeMagmaRing], function(a)
 	ReqConicAlgEl(a);
 	return ChangeRingElByMagmaTrans(ConicAlgebra(a), a, ConicAlgMagInv);
 end);

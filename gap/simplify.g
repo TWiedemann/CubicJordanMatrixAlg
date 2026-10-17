@@ -580,7 +580,7 @@ InstallMethod(ApplyDDLaws, [IsDDElement, IsBool], function(ddEl, applyDDRels)
 	for i in [1..3] do
 		for j in [1..3] do
 			Add(resultCoeffList, [
-				One(ComRing), CubicComElOne(i),
+				One(ComRing), CubicComEl(One(conicAlg), i),
 				CubicEl(resultZto[i][j], i, j)
 			]);
 			if i<j then

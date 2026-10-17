@@ -13,7 +13,7 @@ BindGlobal("_BrownRepToString", rep -> String(rep));
 
 BindGlobal("BrownSpec",  rec(
 	ElementName := "BrownElement",
-	Zero := a -> [Zero(ComRing), CubicZero, CubicZero, Zero(ComRing)],
+	Zero := a -> [Zero(a[1]), CubicZero, CubicZero, Zero(a[1])],
 	# + and - on representations behave just like they should
 	Addition := function(a, b)
 		return a+b;
@@ -49,11 +49,12 @@ BindGlobal("BrownGensAsModule", function(conicAlg, i)
 	local t, result, gen;
 	t := ComRingIndet(conicAlg, i);
 	result := [];
-	Add(result, BrownEl(t, CubicZero, CubicZero, Zero(ComRing)));
-	Add(result, BrownEl(Zero(ComRing), CubicZero, CubicZero, t));
+	z := Zero(ComRingOfConicAlg(conicAlg));
+	Add(result, BrownEl(t, CubicZero, CubicZero, z));
+	Add(result, BrownEl(z, CubicZero, CubicZero, t));
 	for gen in CubicGensAsModule(conicAlg, i) do
-		Add(result, BrownEl(Zero(ComRing), gen, CubicZero, Zero(ComRing)));
-		Add(result, BrownEl(Zero(ComRing), CubicZero, gen, Zero(ComRing)));
+		Add(result, BrownEl(z, gen, CubicZero, z));
+		Add(result, BrownEl(z, CubicZero, gen, z));
 	od;
 	return result;
 end);

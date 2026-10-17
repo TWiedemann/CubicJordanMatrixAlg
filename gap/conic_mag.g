@@ -65,7 +65,7 @@ InstallMethod(ConicAlgMagma, [IsNonassocWord], function(m)
 	fi;
 end);
 
-InstallMethod("ConicRank", [IsMagma], function(magma)
+InstallMethod(ConicRank, [IsMagma], function(magma)
 	local fam;
 	fam := FamilyObj(magma);
 	if IsBound(fam!.conicRank) then
@@ -75,7 +75,7 @@ InstallMethod("ConicRank", [IsMagma], function(magma)
 	fi;
 end);
 
-InstallMethod("ConicIndetName", [IsMagma], function(magma)
+InstallMethod(ConicIndetName, [IsMagma], function(magma)
 	local fam;
 	fam := FamilyObj(magma);
 	if IsBound(fam!.conicIndetName) then
