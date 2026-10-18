@@ -37,7 +37,7 @@ gap> ConicAlgNorm(ConicAlgInv(a1));
 n(a1)
 gap> ConicAlgNorm(a1*a2);
 n(a1)*n(a2)
-gap> ConicAlgNorm(One(ConicAlg)) = One(ComRing);
+gap> ConicAlgNorm(One(C)) = One(ComRingOfConicAlg(C));
 true
 gap> ConicAlgNorm(t1*a1);
 t1^2*n(a1)
@@ -45,7 +45,7 @@ t1^2*n(a1)
 ## Trace
 gap> ConicAlgTr(a1);
 tr(a1)
-gap> ConicAlgTr(One(ConicAlg));
+gap> ConicAlgTr(One(C));
 2
 gap> ConicAlgTr(a1*a2);
 tr(a1a2)
@@ -71,11 +71,11 @@ tr(a1a2')
 ### ----- Cubic norm (pair) structure ---
 
 ## Elements
-gap> CubicComEl(t1, 1);
+gap> CubicComEl(C, t1, 1);
 (t1)[11]
-gap> CubicComEl(t1, 2);
+gap> CubicComEl(C, t1, 2);
 (t1)[22]
-gap> CubicComEl(t1, 3);
+gap> CubicComEl(C, t1, 3);
 (t1)[33]
 gap> CubicConicEl(a1, 1);
 ((1)*a1)[23]
@@ -117,7 +117,7 @@ gap> JordanU(cubicGen1, cubicGen2);
 (g1*g2*g3*tr(a2a3a4)+g1*g2*t1*tr(a3a6')+g1*g2*t5*n(a3)+g1*g3*t1*tr(a2a5')+g1*g3*t6*n(a2)+t1^2*t4)[11]+(g1*g2*g3*tr(a1a5a3)+g1*g2*t2*tr(a3a6')+g1*g2*t4*n(a3)+g2*g3*t2*tr(a1a4')+g2*g3*t6*n(a1)+t2^2*t5)[22]+(g1*g2*g3*tr(a1a2a6)+g1*g3*t3*tr(a2a5')+g1*g3*t4*n(a2)+g2*g3*t3*tr(a1a4')+g2*g3*t5*n(a1)+t3^2*t6)[33]+((g1*g2*tr(a3a6')+g1*g3*tr(a2a5')+g2*g3*tr(a1a4')+t2*t5+t3*t6)*a1+(-g2*g3*n(a1)+t2*t3)*a4+(g1*t4)*(a3'*a2')+(g1*t3)*(a3'*a5')+(g1*t2)*(a6'*a2')+(-g1*g2)*(a6'*(a3*a1))+(-g1*g3)*((a1*a2)*a5'))[23]+((g1*g2*tr(a3a6')+g1*g3*tr(a2a5')+g2*g3*tr(a1a4')+t1*t4+t3*t6)*a2+(-g1*g3*n(a2)+t1*t3)*a5+(g2*t5)*(a1'*a3')+(g2*t1)*(a1'*a6')+(g2*t3)*(a4'*a3')+(-g2*g3)*(a4'*(a1*a2))+(-g1*g2)*((a2*a3)*a6'))[31]+((g1*g2*tr(a3a6')+g1*g3*tr(a2a5')+g2*g3*tr(a1a4')+t1*t4+t2*t5)*a3+(-g1*g2*n(a3)+t1*t2)*a6+(g3*t6)*(a2'*a1')+(g3*t2)*(a2'*a4')+(g3*t1)*(a5'*a1')+(-g1*g3)*(a5'*(a2*a3))+(-g2*g3)*((a3*a1)*a4'))[12]
 gap> JordanU(CubicConicEl(a1, 1), CubicConicEl(a2, 2));
 0_J
-gap> JordanU(CubicConicEl(a1, 1), CubicComEl(t2, 2));
+gap> JordanU(CubicConicEl(a1, 1), CubicComEl(C, t2, 2));
 (g2*g3*t2*n(a1))[33]
 gap> JordanULin(cubicGen1, cubicGen2, cubicGen1);
 (g1*g2*g3*tr(a1a2a6)+g1*g2*g3*tr(a1a5a3)+g1*g2*t1*tr(a3a6')+g1*g2*t2*tr(a3a6')+2*g1*g2*t4*n(a3)+g1*g3*t1*tr(a2a5')+g1*g3*t3*tr(a2a5')+2*g1*g3*t4*n(a2)+2*t1^2*t4)[11]+(g1*g2*g3*tr(a1a2a6)+g1*g2*g3*tr(a2a3a4)+g1*g2*t1*tr(a3a6')+g1*g2*t2*tr(a3a6')+2*g1*g2*t5*n(a3)+g2*g3*t2*tr(a1a4')+g2*g3*t3*tr(a1a4')+2*g2*g3*t5*n(a1)+2*t2^2*t5)[22]+(g1*g2*g3*tr(a1a5a3)+g1*g2*g3*tr(a2a3a4)+g1*g3*t1*tr(a2a5')+g1*g3*t3*tr(a2a5')+2*g1*g3*t6*n(a2)+g2*g3*t2*tr(a1a4')+g2*g3*t3*tr(a1a4')+2*g2*g3*t6*n(a1)+2*t3^2*t6)[33]+((g1*g2*tr(a3a6')+g1*g3*tr(a2a5')+t2*t5+t2*t6+t3*t5+t3*t6)*a1+(2*g1*g2*n(a3)+2*g1*g3*n(a2)+2*g2*g3*n(a1)+t2^2+t3^2)*a4+(g1*t5+g1*t6)*(a3'*a2')+(g1*t1+g1*t2)*(a3'*a5')+(-g1*g2)*(a3'*(a3*a4))+(-g1*g2)*(a3'*(a6*a1))+(g1*t1+g1*t3)*(a6'*a2')+(-g1*g3)*((a1*a5)*a2')+(-g1*g3)*((a4*a2)*a2'))[23]+((g1*g2*tr(a3a6')+g2*g3*tr(a1a4')+t1*t4+t1*t6+t3*t4+t3*t6)*a2+(2*g1*g2*n(a3)+2*g1*g3*n(a2)+2*g2*g3*n(a1)+t1^2+t3^2)*a5+(g2*t4+g2*t6)*(a1'*a3')+(g2*t2+g2*t3)*(a1'*a6')+(-g2*g3)*(a1'*(a1*a5))+(-g2*g3)*(a1'*(a4*a2))+(g2*t1+g2*t2)*(a4'*a3')+(-g1*g2)*((a2*a6)*a3')+(-g1*g2)*((a5*a3)*a3'))[31]+((g1*g3*tr(a2a5')+g2*g3*tr(a1a4')+t1*t4+t1*t5+t2*t4+t2*t5)*a3+(2*g1*g2*n(a3)+2*g1*g3*n(a2)+2*g2*g3*n(a1)+t1^2+t2^2)*a6+(g3*t4+g3*t5)*(a2'*a1')+(g3*t1+g3*t3)*(a2'*a4')+(-g1*g3)*(a2'*(a2*a6))+(-g1*g3)*(a2'*(a5*a3))+(g3*t2+g3*t3)*(a5'*a1')+(-g2*g3)*((a3*a4)*a1')+(-g2*g3)*((a6*a1)*a1'))[12]
@@ -129,7 +129,7 @@ gap> brown1 := BrownEl(t1, cubicGen1, cubicGen2, t2);
 [ t1, (t1)[11]+(t2)[22]+(t3)[33]+((1)*a1)[23]+((1)*a2)[31]+((1)*a3)[12], (t4)[11]+(t5)[22]+(t6)[33]+((1)*a4)[23]+((1)*a5)[31]+((1)*a6)[12], t2 ]
 gap> t1*brown1;
 [ t1^2, (t1^2)[11]+(t1*t2)[22]+(t1*t3)[33]+((t1)*a1)[23]+((t1)*a2)[31]+((t1)*a3)[12], (t1*t4)[11]+(t1*t5)[22]+(t1*t6)[33]+((t1)*a4)[23]+((t1)*a5)[31]+((t1)*a6)[12], t1*t2 ]
-gap> brown1 + BrownEl(t2, CubicZero, CubicConicEl(a1, 1), t3);
+gap> brown1 + BrownEl(t2, CubicZero(C), CubicConicEl(a1, 1), t3);
 [ t1+t2, (t1)[11]+(t2)[22]+(t3)[33]+((1)*a1)[23]+((1)*a2)[31]+((1)*a3)[12], (t4)[11]+(t5)[22]+(t6)[33]+((1)*a1+(1)*a4)[23]+((1)*a5)[31]+((1)*a6)[12], t2+t3 ]
 
 ### ----- L_0 -----
@@ -137,55 +137,55 @@ gap> brown1 + BrownEl(t2, CubicZero, CubicConicEl(a1, 1), t3);
 ## Elements
 gap> DDZero;
 0_{DD}
-gap> L0Zero;
+gap> L0Zero(C);
 0_{L_0}
-gap> L0Zero = DDZero;
+gap> L0Zero(C) = DDZero;
 false
-gap> L0Xi - L0Zeta;
+gap> L0Xi(C) - L0Zeta(C);
 xi+(-1)*zeta
-gap> last + t1*L0Zeta + L0dd(cubicGen1, cubicGen2);
+gap> last + t1*L0Zeta(C) + L0dd(cubicGen1, cubicGen2);
 dd_{(t1)[11]+(t2)[22]+(t3)[33]+((1)*a1)[23]+((1)*a2)[31]+((1)*a3)[12],(t4)[11]+(t5)[22]+(t6)[33]+((1)*a4)[23]+((1)*a5)[31]+((1)*a6)[12]}+xi+(t1-1)*zeta
 gap> DDdd(cubicGen1, cubicGen2);
 dd_{(t1)[11]+(t2)[22]+(t3)[33]+((1)*a1)[23]+((1)*a2)[31]+((1)*a3)[12],(t4)[11]+(t5)[22]+(t6)[33]+((1)*a4)[23]+((1)*a5)[31]+((1)*a6)[12]}
 
 ## ApplyDDLaws
-gap> ApplyDDLaws(DDdd(CubicConicEl(a1, 2), CubicComEl(t1, 3)), true);
+gap> ApplyDDLaws(DDdd(CubicConicEl(a1, 2), CubicComEl(C, t1, 3)), true);
 dd_{(1)[11],((t1)*a1)[31]}
 gap> ApplyDDLaws(DDdd(CubicConicElMat(a1, 1,2), CubicConicElMat(a2, 2,3)), true);
 dd_{(1)[11],((g2)*(a2'*a1'))[31]}
 gap> ApplyDDLaws(DDdd(CubicConicElMat(a1, 1,2), CubicConicElMat(a2, 1,3)), true);
 dd_{(1)[22],((g1)*(a1'*a2))[23]}
-gap> ApplyDDLaws(DDdd(CubicConicElMat(a1, 1,2), CubicComEl(t1, 3)), true);
+gap> ApplyDDLaws(DDdd(CubicConicElMat(a1, 1,2), CubicComEl(C, t1, 3)), true);
 0_{L_0}
 
 ## Embeddings
 gap> L0dd(cubicGen1, cubicGen2) = DDToL0Emb(DDdd(cubicGen1, cubicGen2));
 true
-gap> CubicPosToL0Emb(cubicGen1) + L0Xi;
+gap> CubicPosToL0Emb(cubicGen1) + L0Xi(C);
 ad^+_{(t1)[11]+(t2)[22]+(t3)[33]+((1)*a1)[23]+((1)*a2)[31]+((1)*a3)[12]}+xi
-gap> CubicNegToL0Emb(cubicGen1) + L0Xi;
+gap> CubicNegToL0Emb(cubicGen1) + L0Xi(C);
 ad^-_{(t1)[11]+(t2)[22]+(t3)[33]+((1)*a1)[23]+((1)*a2)[31]+((1)*a3)[12]}+xi
 
 ### ----- Lie -----
 
 ## Elements
-gap> LieX + t1*LieY;
+gap> LieX(C) + t1*LieY(C);
 (1)*x + (t1)*y
-gap> LieX*LieY;
+gap> LieX(C)*LieY(C);
 xi
-gap> LieY*LieX;
+gap> LieY(C)*LieX(C);
 (-1)*xi
-gap> LieX*(t1*LieY);
+gap> LieX(C)*(t1*LieY(C));
 (t1)*xi
-gap> t1*LieX + 5*LieY + LieZeta - LieY;
+gap> t1*LieX(C) + 5*LieY(C) + LieZeta(C) - LieY(C);
 (t1)*x + zeta + (4)*y
 gap> Display(last);
 -2 part: t1
  0 part: zeta
  2 part: 4
-gap> LieZeta = L0Zeta;
+gap> LieZeta(C) = L0Zeta(C);
 false
-gap> LiePart(Liedd(CubicConicEl(a1, 1), CubicConicEl(a2, 2)) + LieX, 0);
+gap> LiePart(Liedd(CubicConicEl(a1, 1), CubicConicEl(a2, 2)) + LieX(C), 0);
 dd_{((1)*a1)[23],((1)*a2)[31]}
 
 ## Embeddings
@@ -193,7 +193,7 @@ gap> BrownNegToLieEmb(brown1);
 [ t1, (t1)[11]+(t2)[22]+(t3)[33]+((1)*a1)[23]+((1)*a2)[31]+((1)*a3)[12], (t4)[11]+(t5)[22]+(t6)[33]+((1)*a4)[23]+((1)*a5)[31]+((1)*a6)[12], t2 ]_-
 gap> BrownPosToLieEmb(brown1);
 [ t1, (t1)[11]+(t2)[22]+(t3)[33]+((1)*a1)[23]+((1)*a2)[31]+((1)*a3)[12], (t4)[11]+(t5)[22]+(t6)[33]+((1)*a4)[23]+((1)*a5)[31]+((1)*a6)[12], t2 ]_+
-gap> LieX*last;
+gap> LieX(C)*last;
 [ -t1, (-t1)[11]+(-t2)[22]+(-t3)[33]+((-1)*a1)[23]+((-1)*a2)[31]+((-1)*a3)[12], (-t4)[11]+(-t5)[22]+(-t6)[33]+((-1)*a4)[23]+((-1)*a5)[31]+((-1)*a6)[12], -t2 ]_-
 gap> BrownNegToLieEmb(brown1) * BrownPosToLieEmb(brown1);
 (2)*dd_{(t1)[11]+(t2)[22]+(t3)[33]+((1)*a1)[23]+((1)*a2)[31]+((1)*a3)[12],(t4)[11]+(t5)[22]+(t6)[33]+((1)*a4)[23]+((1)*a5)[31]+((1)*a6)[12]}+ad^+_{(-2*g2*g3*n(a4)-2*t1*t2+2*t5*t6)[11]+(-2*g1*g3*n(a5)-2*t2^2+2*t4*t6)[22]+(-2*g1*g2*n(a6)-2*t2*t3+2*t4*t5)[33]+((-2*t2)*a1+(-2*t4)*a4+(2*g1)*(a6'*a5'))[23]+((-2*t2)*a2+(-2*t5)*a5+(2*g2)*(a4'*a6'))[31]+((-2*t2)*a3+(-2*t6)*a6+(2*g3)*(a5'*a4'))[12]}+ad^-_{(-2*g2*g3*n(a1)-2*t1*t4+2*t2*t3)[11]+(-2*g1*g3*n(a2)+2*t1*t3-2*t1*t5)[22]+(-2*g1*g2*n(a3)+2*t1*t2-2*t1*t6)[33]+((-2*t1)*a1+(-2*t1)*a4+(2*g1)*(a3'*a2'))[23]+((-2*t2)*a2+(-2*t1)*a5+(2*g2)*(a1'*a3'))[31]+((-2*t3)*a3+(-2*t1)*a6+(2*g3)*(a2'*a1'))[12]}+(g1*g2*tr(a3a6')+g1*g3*tr(a2a5')+g2*g3*tr(a1a4')-t1*t2+t1*t4+t2*t5+t3*t6)*xi+(-2*g1*g2*tr(a3a6')-2*g1*g3*tr(a2a5')-2*g2*g3*tr(a1a4')+2*t1*t2-2*t1*t4-2*t2*t5-2*t3*t6)*zeta

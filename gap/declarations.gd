@@ -110,20 +110,21 @@ DeclareOperation("CubicConicEl", [ IsRingElement, IsObject ]);
 #! Returns the element of $J$ which is denoted by $te_i$ in [DMW]. It is printed as
 #! <C>t[ii]</C>.
 #! @ChapterInfo The cubic Jordan matrix algebra, Elements of the cubic Jordan matrix algebra
-DeclareOperation("CubicComEl", [ IsRingElement, IsObject ]);
+DeclareOperation("CubicComEl", [ IsFreeMagmaRing, IsRingElement, IsObject ]);
 
 #! @Arguments z, i, j
 #! @Description
 #! Returns <C>z[ij]</C>. Thus <C>z</C> must lie in $k$ if <C>i=j</C> and in $C$ otherwise.
 #! @ChapterInfo The cubic Jordan matrix algebra, Elements of the cubic Jordan matrix algebra
-DeclareOperation("CubicEl", [ IsRingElement, IsInt, IsInt ]);
+DeclareOperation("CubicEl", [ IsFreeMagmaRing, IsRingElement, IsInt, IsInt ]);
 
 #! @Arguments t, s, r, a, b, c
 #! @Description
 #! Returns <C>t[11] + s[22] + r[33] + a[23] + b[31] + c[12]</C>.
 #! @ChapterInfo The cubic Jordan matrix algebra, Elements of the cubic Jordan matrix algebra
 DeclareOperation("CubicElFromTuple",
-    [ IsRingElement, IsRingElement, IsRingElement, IsRingElement, IsRingElement, IsRingElement ]);
+	[ IsRingElement, IsRingElement, IsRingElement,
+        IsElementOfFreeMagmaRing, IsElementOfFreeMagmaRing, IsElementOfFreeMagmaRing ]);
 
 #! @Arguments cub, i
 #! @Description
@@ -339,12 +340,14 @@ DeclareOperation("Liedd", [ IsObject, IsObject ]);
 #! Returns the embedding of <C>ddEl</C> into $L_0$ or $L$, respectively.
 #! @ChapterInfo The Lie algebra, The parts $Z$ and `DD`
 DeclareOperation("DDToL0Emb", [ IsObject ]);
+DeclareOperation("DDToL0Emb", [ IsFreeMagmaRing, IsObject ]);
 
 #! @Arguments ddEl
 #! @Description
 #! Returns the embedding of <C>ddEl</C> into $L_0$ or $L$, respectively.
 #! @ChapterInfo The Lie algebra, The parts $Z$ and `DD`
 DeclareOperation("DDToLieEmb", [ IsObject ]);
+DeclareOperation("DDToLieEmb", [ IsFreeMagmaRing, IsObject ]);
 
 #! @Arguments l0
 #! @Description
@@ -392,38 +395,38 @@ DeclareOperation("F4Refl", [ IsObject, IsObject ]);
 #! Returns the element $\vartheta_\alpha(z)$ of $L$ as defined in [DMW, 10.29]. Thus <C>z</C>
 #! must be in $k$ if <C>F4Root</C> is long and in $C$ otherwise.
 #! @ChapterInfo The Lie algebra, Root homomorphisms
-DeclareOperation("LieRootHomF4", [ IsObject, IsObject, IsObject, IsObject ]);
+DeclareOperation("LieRootHomF4", [ IsFreeMagmaRing, IsObject, IsObject, IsObject, IsObject ]);
 
 #! @Arguments F4Root, z
 #! @Description
 #! Returns the element $\vartheta_\alpha(z)$ of $L$ as defined in [DMW, 10.29]. Thus <C>z</C>
 #! must be in $k$ if <C>F4Root</C> is long and in $C$ otherwise.
 #! @ChapterInfo The Lie algebra, Root homomorphisms
-DeclareOperation("LieRootHomF4", [ IsObject, IsObject ]);
+DeclareOperation("LieRootHomF4", [ IsFreeMagmaRing, IsObject, IsObject ]);
 
 #! @Arguments F4Root, z
 #! @Description
 #! Returns the automorphism $\theta_\alpha(a)$ of $L$ in <C>LieEndo</C> as defined in
 #! [DMW, 11.2, 11.8]. Thus <C>z</C> must be in $k$ if <C>F4Root</C> is long and in $C$ otherwise.
 #! @ChapterInfo The automorphism group, Functions
-DeclareOperation("GrpRootHomF4", [ IsObject, IsObject, IsObject ]);
+DeclareOperation("GrpRootHomF4", [ IsFreeMagmaRing, IsObject, IsObject, IsObject ]);
 
 #! @Arguments F4Root, z
 #! @Description
 #! Returns the automorphism $\theta_\alpha(a)$ of $L$ in <C>LieEndo</C> as defined in
 #! [DMW, 11.2, 11.8]. Thus <C>z</C> must be in $k$ if <C>F4Root</C> is long and in $C$ otherwise.
 #! @ChapterInfo The automorphism group, Functions
-DeclareOperation("GrpRootHomF4", [ IsObject, IsObject ]);
+DeclareOperation("GrpRootHomF4", [ IsFreeMagmaRing, IsObject, IsObject ]);
 
 #! @Arguments F4Root
 #! @Description
 #! Returns the Weyl element $w_\alpha = \theta_{-\alpha}(-1) \theta_\alpha(1)
 #! \theta_{-\alpha}(-1)$ in <C>LieEndo</C>.
 #! @ChapterInfo The automorphism group, Functions
-DeclareOperation("GrpStandardWeylF4", [ IsList ]);
+DeclareOperation("GrpStandardWeylF4", [ IsFreeMagmaRing, IsList ]);
 
 # Variant with additional sign. Not part of the main interface.
-DeclareOperation("GrpStandardWeylF4", [ IsList, IsInt ]);
+DeclareOperation("GrpStandardWeylF4", [ IsFreeMagmaRing, IsList, IsInt ]);
 
 #! @Arguments u
 #! @Description

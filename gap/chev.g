@@ -15,7 +15,7 @@ BindGlobal("ChevBasEl", function(conicAlg, root)
 	else
 		return fail;
 	fi;
-	return LieRootHomF4(root, one);
+	return LieRootHomF4(conicAlg, root, one);
 end);
 
 # root: Root in G2.
@@ -33,15 +33,15 @@ BindGlobal("ChevG2BasEl", function(conicAlg, root)
 		# Find corresponding F4-root
 		for F4root in F4LongRoots do
 			if F4RootG2Coord(F4root) = root then
-				return sign*LieRootHomF4(F4root, one, true, true);
+				return sign*LieRootHomF4(conicAlg, F4root, one, true, true);
 			fi;
 		od;
 	else
 		# Add F4-basis elements for all long roots in the preimage of root
-		result := LieZero;
+		result := LieZero(conicAlg);
 		for F4root in F4LongRoots do
 			if F4RootG2Coord(F4root) = root then
-				result := result + LieRootHomF4(F4root, one, true, true);
+				result := result + LieRootHomF4(conicAlg, F4root, one, true, true);
 			fi;
 		od;
 		if root in [[-1,0], [0,-1]] then
@@ -82,7 +82,7 @@ BindGlobal("ChevStrucConst", function(conicAlg, root1, root2)
 	comm := ChevBasEl(conicAlg, root1) * ChevBasEl(conicAlg, root2);
 	chevSum := ChevBasEl(conicAlg, sum);
 	for c in candidates do
-		if Simplify(comm - c*chevSum) = LieZero then
+		if Simplify(comm - c*chevSum) = LieZero(conicAlg) then
 			return c;
 		fi;
 	od;
@@ -102,7 +102,7 @@ BindGlobal("ChevG2StrucConst", function(conicAlg, root1, root2)
 	comm := ChevG2BasEl(conicAlg, root1) * ChevG2BasEl(conicAlg, root2);
 	chevSum := ChevG2BasEl(sum);
 	for c in candidates do
-		if Simplify(comm - c*chevSum) = LieZero then
+		if Simplify(comm - c*chevSum) = LieZero(conicAlg) then
 			return c;
 		fi;
 	od;

@@ -24,10 +24,10 @@ TestReflection := function(conicAlg, root, refl)
 			candidates := [a, -a];
 		fi;
 		alphaRefl := F4Refl(alpha, root);
-		testEl := refl(LieRootHomF4(alpha, a));
+		testEl := refl(LieRootHomF4(conicAlg, alpha, a));
 		isOk := false;
 		for b in candidates do
-			if TestEquality(testEl, LieRootHomF4(alphaRefl, b)) = true then
+			if TestEquality(testEl, LieRootHomF4(conicAlg, alphaRefl, b)) = true then
 				isOk := true;
 				break;
 			fi;
@@ -50,7 +50,7 @@ end;
 TestAllReflections := function(conicAlg)
 	local root;
 	for root in F4Roots do
-		if TestReflection(conicAlg, root, GrpStandardWeylF4(root)) = false then
+		if TestReflection(conicAlg, root, GrpStandardWeylF4(conicAlg, root)) = false then
 			return false;
 		fi;
 	od;
@@ -84,12 +84,12 @@ _WeylErrorAndParity := function(conicAlg, root, onRootList, w, wInv)
 		# Define root group element x on which we act
 		if baseRoot in F4ShortRoots then
 			a := ConicAlgIndet(conicAlg, 1);
-			x := GrpRootHomF4(baseRoot, a);
+			x := GrpRootHomF4(conicAlg, baseRoot, a);
 			twistList := [a, -a, ConicAlgInv(a), -ConicAlgInv(a)];
 			parList := [[1,1], [-1,1], [1,-1], [-1,-1]];
 		else
 			t := ComRingIndet(conicAlg, 1);
-			x := GrpRootHomF4(baseRoot, t);
+			x := GrpRootHomF4(conicAlg, baseRoot, t);
 			twistList := [t, -t];
 			parList := [[1,1], [-1,1]];
 		fi;
@@ -98,7 +98,7 @@ _WeylErrorAndParity := function(conicAlg, root, onRootList, w, wInv)
 		par := fail;
 		for i in [1..Length(parList)] do
 			b := twistList[i];
-			y := GrpRootHomF4(F4Refl(baseRoot, root), b);
+			y := GrpRootHomF4(conicAlg, F4Refl(baseRoot, root), b);
 			test := TestEquality(conicAlg, wInv*x*w, y);
 			if test = true then
 				isWeylOnBaseRoot := true;
@@ -148,7 +148,7 @@ TestWeylParity := function(conicAlg, root, w, wInv, parList)
 		else
 			a := ComRingIndet(conicAlg, 1);
 		fi;
-		x := GrpRootHomF4(baseRoot, a);
+		x := GrpRootHomF4(conicAlg, baseRoot, a);
 		# b is a twisted by par
 		b := a;
 		if par[1] = -1 then
@@ -157,7 +157,7 @@ TestWeylParity := function(conicAlg, root, w, wInv, parList)
 		if par[2] = -1 then
 			b := ConicAlgInv(b);
 		fi;
-		y := GrpRootHomF4(F4Refl(baseRoot, root), b);
+		y := GrpRootHomF4(conicAlg, F4Refl(baseRoot, root), b);
 		test := TestEqualityPieces(conicAlg, wInv*x*w, y);
 		errorList := Concatenation(errorList, test);
 	od;
@@ -178,8 +178,8 @@ TestSimpleRootParLists := function(conicAlg)
 	errorList := [];
 	for i in [1..4] do
 		root := F4SimpleRoots[i];
-		w := GrpStandardWeylF4(root, 1);
-		wInv := GrpStandardWeylF4(root, -1);
+		w := GrpStandardWeylF4(conicAlg, root, 1);
+		wInv := GrpStandardWeylF4(conicAlg, root, -1);
 		parList := F4SimpleRootParLists[i];
 		test := TestWeylParity(conicAlg, root, w, wInv, parList);
 		if test <> true then
@@ -189,12 +189,12 @@ TestSimpleRootParLists := function(conicAlg)
 	return errorList;
 end;
 
-# Returns: true if the parities used in the definition of GrpRootHomF4(alpha, ...)
+# Returns: true if the parities used in the definition of GrpRootHomF4(conicAlg, alpha, ...)
 # are correct for alpha in F4Roots with F4RootG2Coor(alpha) = [0,0].
 TestZeroParities := function(conicAlg)
 	local w1, w4, a1, alphaList, betaList, wiList, etaList, i;
-	w1 := GrpStandardWeylF4(F4SimpleRoots[1]);
-	w4 := GrpStandardWeylF4(F4SimpleRoots[4]);
+	w1 := GrpStandardWeylF4(conicAlg, F4SimpleRoots[1]);
+	w4 := GrpStandardWeylF4(conicAlg, F4SimpleRoots[4]);
 	a1 := ConicAlgIndet(conicAlg, 1);
 	# The values used in the table in [DMW] in the definition of \theta_\alpha
 	alphaList := [
@@ -210,8 +210,8 @@ TestZeroParities := function(conicAlg)
 	# Test
 	for i in [1..6] do
 		if not TestEquality(
-			wiList[i](LieRootHomF4(alphaList[i], a1)), 
-			LieRootHomF4(betaList[i], TwistGrpAct(etaList[i],a1))
+			wiList[i](LieRootHomF4(conicAlg, alphaList[i], a1)),
+			LieRootHomF4(conicAlg, betaList[i], TwistGrpAct(etaList[i],a1))
 		) then
 			return false;
 		fi;
@@ -228,7 +228,7 @@ end;
 GrpRootHomCom := function(root1, a1, root2, a2)
 	local hom;
 	hom := function(root, a)
-		return GrpRootHomF4(root, a);
+		return GrpRootHomF4(conicAlg, root, a);
 	end;
 	return hom(root1, -a1)*hom(root2, -a2)*hom(root1, a1)*hom(root2, a2);
 end;
@@ -252,16 +252,16 @@ TestGrpComRels := function(conicAlg)
 	g3 := ComRingGamIndet(3);
 	return TestEqualityPiecesOnList(conicAlg, [
 		# Commutator relation on [d1, d2]
-		[GrpRootHomCom(d1, t1, d2, t2), GrpRootHomF4(d1+d2, t1*t2)],
+		[GrpRootHomCom(d1, t1, d2, t2), GrpRootHomF4(conicAlg, d1+d2, t1*t2)],
 		# Commutator relation on [d2, d3]
 		[
 			GrpRootHomCom(d2, t1, d3, a1),
-			GrpRootHomF4(d2+d3, -t1*a1) * GrpRootHomF4(d2+2*d3, t1*ConicAlgNorm(a1))
+			GrpRootHomF4(conicAlg, d2+d3, -t1*a1) * GrpRootHomF4(conicAlg, d2+2*d3, t1*ConicAlgNorm(a1))
 		],
 		# Commutator relation on [d2+d3, d3]
 		[
 			GrpRootHomCom(d2+d3, a1, d3, a2),
-			GrpRootHomF4(d2+2*d3, -ConicAlgTr(a1 * ConicAlgInv(a2)))
+			GrpRootHomF4(conicAlg, d2+2*d3, -ConicAlgTr(a1 * ConicAlgInv(a2)))
 		],
 		# Commutator relation on [d2, d2+2*d3]
 		[
@@ -269,7 +269,7 @@ TestGrpComRels := function(conicAlg)
 			GrpOne
 		],
 		# Commutator relation on [d3, d4]
-		[GrpRootHomCom(d4, a1, d3, a2), GrpRootHomF4(d3+d4, ConicAlgInv(a2)*ConicAlgInv(a1))]
+		[GrpRootHomCom(d4, a1, d3, a2), GrpRootHomF4(conicAlg, d3+d4, ConicAlgInv(a2)*ConicAlgInv(a1))]
 	]);
 end;
 
@@ -322,8 +322,8 @@ TestChevHOnRoot := function(conicAlg, root)
 	h := hEl(conicAlg, root);
 	for alpha in roots do
 		x := chev(conicAlg, alpha);
-		coeff := cartan(alpha, root) * One(ComRing);
-		if Simplify(h*x - coeff*x) <> LieZero then
+		coeff := cartan(alpha, root) * One(ComRingOfConicAlg(conicAlg));
+		if Simplify(h*x - coeff*x) <> LieZero(conicAlg) then
 			return false;
 		fi;
 	od;
@@ -347,9 +347,9 @@ end;
 # root1, root2: Roots in F4.
 # Returns: If root1=-root2, returns true. If root1+root2 is not a root and not zero,
 # returns true if the commutator formula
-# LieRootHomF4(root1, a) * LieRootHomF4(root2, b) = 0
+# LieRootHomF4(conicAlg, root1, a) * LieRootHomF4(conicAlg, root2, b) = 0
 # is satisfied. In any other case, returns true if the commutator formula
-# LieRootHomF4(root1, a) * LieRootHomF4(root2, b) = LieRootHomF4(root1+root2, p)
+# LieRootHomF4(conicAlg, root1, a) * LieRootHomF4(conicAlg, root2, b) = LieRootHomF4(conicAlg, root1+root2, p)
 # is satisfied for some p, which may be one of the following:
 # - ChevStrucConst(root1, root2)/2 * tr(c*d) if root1+root2 is long and
 # one of root1, root2 is short. (In this case, by TestF4RootLengthSum(),
@@ -373,7 +373,7 @@ TestLieComRel := function(conicAlg, root1, root2)
 		else
 			param[i] := [t[i]];
 		fi;
-		lie[i] := LieRootHomF4(roots[i], param[i][1]);
+		lie[i] := LieRootHomF4(conicAlg, roots[i], param[i][1]);
 	od;
 	# Test
 	comm := Simplify(lie[1]*lie[2]);
@@ -384,7 +384,7 @@ TestLieComRel := function(conicAlg, root1, root2)
 			if roots[3] in F4ShortRoots then
 				# In this case, one of root1 and root2 must be short, so prod lies in ConicAlg
 				for par in [prod, ConicAlgInv(prod)] do
-					test := LieRootHomF4(roots[3], par);
+					test := LieRootHomF4(conicAlg, roots[3], par);
 					if TestEquality(comm, test) then
 						return true;
 					fi;
@@ -398,12 +398,12 @@ TestLieComRel := function(conicAlg, root1, root2)
 					fi;
 					prod := ConicAlgTr(c/2 * p1 * p2);
 				fi;
-				test := LieRootHomF4(roots[3], prod);
+				test := LieRootHomF4(conicAlg, roots[3], prod);
 				if TestEquality(comm, test) then
 					return true;
 				fi;
 			elif roots[3] <> [0,0,0,0] then
-				test := LieZero;
+				test := LieZero(conicAlg);
 				if TestEquality(comm, test) then
 					return true;
 				fi;
@@ -483,11 +483,11 @@ PrintLatexParityTable := function()
 	e2 := [0,1,0,0];
 	e3 := [0,0,1,0];
 	e4 := [0,0,0,1];
-	rootCoeffs := [ 
-		e1, e2, e3, e4, e1+e2, e2+e3, e3+e4, e1+e2+e3, e2+2*e3, e2+e3+e4, e1+e2+2*e3, 
-		e1+e2+e3+e4, e2+2*e3+e4, e1+2*e2+2*e3, e1+e2+2*e3+e4, e2+2*e3+2*e4, e1+2*e2+2*e3+e4, 
-		e1+e2+2*e3+2*e4, e1+2*e2+3*e3+e4, e1+2*(e2+e3+e4), e1+2*e2+3*e3+2*e4, e1+2*e2+4*e3+2*e4, 
-		e1+3*e2+4*e3+2*e4, 2*e1+3*e2+4*e3+2*e4 
+	rootCoeffs := [
+		e1, e2, e3, e4, e1+e2, e2+e3, e3+e4, e1+e2+e3, e2+2*e3, e2+e3+e4, e1+e2+2*e3,
+		e1+e2+e3+e4, e2+2*e3+e4, e1+2*e2+2*e3, e1+e2+2*e3+e4, e2+2*e3+2*e4, e1+2*e2+2*e3+e4,
+		e1+e2+2*e3+2*e4, e1+2*e2+3*e3+e4, e1+2*(e2+e3+e4), e1+2*e2+3*e3+2*e4, e1+2*e2+4*e3+2*e4,
+		e1+3*e2+4*e3+2*e4, 2*e1+3*e2+4*e3+2*e4
 	]; # Positive roots in the desired order, expressed as linear combinations of F4SimpleRoots
 	for i in [1..Length(rootCoeffs)] do
 		# \midrule after 5 rows

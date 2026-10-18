@@ -373,7 +373,7 @@ BindGlobal("_ApplyDDLaws_OnSummands_int2", function(i1, j1, a, i2, j2, b)
 	lConic := [];
 	rConic := [];
 	# All summands coeff*dd_{1[ij],a[ji]} are combined as dd_{1[ij], c[ji]}
-	c := Zero(ConicAlg);
+	c := Zero(a);
 	## Split up a and b into sums of monomials
 	aCoeffList := CoefficientsAndMagmaElements(a);
 	bCoeffList := CoefficientsAndMagmaElements(b);
@@ -421,25 +421,29 @@ end);
 # (We use d(a[ij],b[ji])+*d(b'[ij],a'[ji]) = g_i g_j tr(ab') (d(1[ii],1[ii]) + d(1[jj],1[jj])).)
 # - in all summands of the form d_{1[ij],a[ji]} with a \in ConicAlg,
 # a has no summand of the form t*1 for t \in ComRing. (Use relation d(a[ij],a'[ji]) = ...)
-DeclareOperation("ApplyDDLaws", [IsDDElement, IsBool]);
-InstallMethod(ApplyDDLaws, [IsDDElement, IsBool], function(ddEl, applyDDRels)
+DeclareOperation("ApplyDDLaws", [IsDDElement, IsFreeMagmaRing, IsBool]);
+InstallMethod(ApplyDDLaws, [IsDDElement, IsFreeMagmaRing, IsBool], function(ddEl, conicAlg, applyDDRels)
 	local resultZto, resultRemainSummandList, resultCoeffList, ddSummand, ddCoeff,
 		cubic1, cubic2, cubSummandList1, cubSummandList2, i1, j1, a, i2, j2, b,
 		intersection, simp, i, j, coeffs, lCubic, rCubic, k, resultZShift, c, t,
 		xiCoeff, zetaCoeff, list, list2, lConic, rConic, add, l, coeff, a2, b2,
-		length;
+		length, comRing, zeroComRing, zeroConicAlg, oneComRing;
+	comRing := ComRingOfConicAlg(conicAlg);
+	zeroComRing := Zero(comRing);
+	oneComRing := One(ComRing);
+	zeroConicAlg := Zero(conicAlg);
 	# resultZto[i][j] will store an element x of ConicAlg or of ComRing such that the result has a
 	# summand dd(1[ii], x[ij]) \in Z_{i \to j}
 	resultZto := [
-		[Zero(ComRing), Zero(ConicAlg), Zero(ConicAlg)],
-		[Zero(ConicAlg), Zero(ComRing), Zero(ConicAlg)],
-		[Zero(ConicAlg), Zero(ConicAlg), Zero(ComRing)]
+		[zeroComRing, zeroConicAlg, zeroConicAlg],
+		[zeroConicAlg, zeroComRing, zeroConicAlg],
+		[zeroConicAlg, zeroConicAlg, zeroComRing]
 	];
 	# resultZShift[i][j] for i<j will store an element x of ConicAlg such that
 	# the result has a summand dd(1[ij],x[ji]).
 	resultZShift := [
-		[, Zero(ConicAlg), Zero(ConicAlg)],
-		[,, Zero(ConicAlg)]
+		[, zeroConicAlg, zeroConicAlg],
+		[,, zeroConicAlg]
 	];
 	# All remaining summands (i.e. those that lie in Z_{ij,ji} for some i <> j
 	# and which cannot be expressed as dd(1[ij],b[ji]) go to resultRemainSummandList.
@@ -495,8 +499,8 @@ InstallMethod(ApplyDDLaws, [IsDDElement, IsBool], function(ddEl, applyDDRels)
 
     ### Apply additional DD-relations
 	# Coefficients of result
-	xiCoeff := Zero(ComRing);
-	zetaCoeff := Zero(ComRing);
+	xiCoeff := zeroComRing;
+	zetaCoeff := zeroComRing;
     if applyDDRels then
 		## Replace elements d(a[ij],a'[ji]) and d(a[ij],b[ji])+d(b'[ij],a'[ji])
 		length := Length(resultRemainSummandList);
@@ -509,7 +513,7 @@ InstallMethod(ApplyDDLaws, [IsDDElement, IsBool], function(ddEl, applyDDRels)
 			a := list[4];
 			b := list[5];
 
-			if coeff = Zero(ComRing) then
+			if IsZero(coeff) then
 				# The summand has already been removed in an earlier iteration
 				Remove(resultRemainSummandList, k);
 				continue;
@@ -570,7 +574,7 @@ InstallMethod(ApplyDDLaws, [IsDDElement, IsBool], function(ddEl, applyDDRels)
         xiCoeff := xiCoeff - resultZto[3][3];
         resultZto[1][1] := resultZto[1][1] - resultZto[3][3];
         resultZto[2][2] := resultZto[2][2] - resultZto[3][3];
-        resultZto[3][3] := Zero(ComRing);
+        resultZto[3][3] := zeroComRing;
     fi;
 
 	### Finalise coefficient list of the result
@@ -580,13 +584,13 @@ InstallMethod(ApplyDDLaws, [IsDDElement, IsBool], function(ddEl, applyDDRels)
 	for i in [1..3] do
 		for j in [1..3] do
 			Add(resultCoeffList, [
-				One(ComRing), CubicComEl(One(conicAlg), i),
-				CubicEl(resultZto[i][j], i, j)
+				oneComRing, CubicComEl(conicAlg, oneComRing, i),
+				CubicEl(conicAlg, resultZto[i][j], i, j)
 			]);
 			if i<j then
 				Add(resultCoeffList, [
-					One(ComRing), CubicConicElOneMat(i,j), 
-					CubicEl(resultZShift[i][j], j, i)
+					oneComRing, CubicConicElMat(One(conicAlg), i,j),
+					CubicEl(conicAlg, resultZShift[i][j], j, i)
 				]);
 			fi;
 		od;
@@ -609,7 +613,7 @@ InstallMethod(ApplyDDLaws, [IsDDElement, IsBool], function(ddEl, applyDDRels)
 		DDSanitizeRep(resultCoeffList);
 	fi;
 	
-	return DDToL0Emb(DD(resultCoeffList)) + xiCoeff*L0Xi + zetaCoeff*L0Zeta;
+	return DDToL0Emb(conicAlg, DD(resultCoeffList)) + xiCoeff*L0Xi(conicAlg) + zetaCoeff*L0Zeta(conicAlg);
 end);
 
 # Apply WithoutTraces to all ConicAlg-components
@@ -643,18 +647,21 @@ end);
 # Apply WithoutTraces to all ConicAlg-Components
 DeclareOperation("WithoutTraces", [IsL0Element]);
 InstallMethod(WithoutTraces, [IsL0Element], function(l0El)
+	local conicAlg;
+	conicAlg := ConicAlgebra(l0El);
 	return Sum([
 		CubicPosToL0Emb(WithoutTraces(L0CubicPosPart(l0El))),
 		CubicNegToL0Emb(WithoutTraces(L0CubicNegPart(l0El))),
-		L0XiPart(l0El)*L0Xi,
-		L0ZetaPart(l0El)*L0Zeta,
-		DDToL0Emb(WithoutTraces(L0DDPart(l0El)))
+		L0XiPart(l0El)*L0Xi(conicAlg),
+		L0ZetaPart(l0El)*L0Zeta(conicAlg),
+		DDToL0Emb(conicAlg, WithoutTraces(L0DDPart(l0El)))
 	]);
 end);
 
 # Applies Simplify to all components and applies ApplyDDLaws to the DD-part.
 InstallMethod(Simplify, [IsL0Element], function(L0El)
-	local pos, neg, zeta, xi, dd, l0;
+	local pos, neg, zeta, xi, dd, l0, conicAlg;
+	conicAlg := ConicAlgebra(L0El);
 	pos := L0CubicPosPart(L0El);
 	neg := L0CubicNegPart(L0El);
 	zeta := L0ZetaPart(L0El);
@@ -664,16 +671,16 @@ InstallMethod(Simplify, [IsL0Element], function(L0El)
 	# We have to apply Simplify to the DD-part before applying
 	# ApplyDDLaws because Simplify may produce summands in
 	# ComRing*One(ConicAlg) which were not visible beforehand (e.g. a1+a1').
-	l0 := ApplyDDLaws(Simplify(L0DDPart(L0El)), true);
+	l0 := ApplyDDLaws(Simplify(L0DDPart(L0El)), conicAlg, true);
 	zeta := zeta + L0ZetaPart(l0);
 	xi := xi + L0XiPart(l0);
-	l0 := ApplyDDLaws(Simplify(L0DDPart(l0)), true);
+	l0 := ApplyDDLaws(Simplify(L0DDPart(l0)), conicAlg, true);
 	return Sum([
 		CubicPosToL0Emb(Simplify(pos)),
 		CubicNegToL0Emb(Simplify(neg)),
-		Simplify(zeta + L0ZetaPart(l0)) * L0Zeta,
-		Simplify(xi + L0XiPart(l0)) * L0Xi,
-		DDToL0Emb(Simplify(L0DDPart(l0)))
+		Simplify(zeta + L0ZetaPart(l0)) * L0Zeta(conicAlg),
+		Simplify(xi + L0XiPart(l0)) * L0Xi(conicAlg),
+		DDToL0Emb(conicAlg, Simplify(L0DDPart(l0)))
 	]);
 end);
 

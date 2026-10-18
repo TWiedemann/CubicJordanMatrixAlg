@@ -1,7 +1,7 @@
 ### This file contains tests of (special cases of) statements that are proven
 ### abstractly or by hand in [DMW]. It is not loaded by default.
 
-# Tests whether GrpRootHomF4(root, _) is a homomorphism.
+# Tests whether GrpRootHomF4(conicAlg, root, _) is a homomorphism.
 # If root is short: Uses indeterminates a_1, a_2, a_(ConicRank), t_(ComRingRank),
 # and it is assumed that ConicRank > 2.
 # If root is long: Uses indeterminates t_1, t_2, t_(ComRingRank), a_(ConicARank),
@@ -17,9 +17,9 @@ TestGrpRootHom := function(conicAlg, root)
 	else
 		return fail;
 	fi;
-	g1 := GrpRootHomF4(root, x1);
-	g2 := GrpRootHomF4(root, x2);
-	g3 := GrpRootHomF4(root, x1+x2);
+	g1 := GrpRootHomF4(conicAlg, root, x1);
+	g2 := GrpRootHomF4(conicAlg, root, x2);
+	g3 := GrpRootHomF4(conicAlg, root, x1+x2);
 	if IsEmpty(TestEqualityPieces(g1*g2, g3)) then
 		return true;
 	else
@@ -52,8 +52,10 @@ TestGrpRootHomExp := function(conicAlg, root)
 	elif root in F4LongRoots then
 		a := ComRingIndet(conicAlg, 1);
 	fi;
-	return TestEqualityOnModuleGens(conicAlg,
-		GrpRootHomF4Div(root, a), GrpRootHomF4(root, a));
+	return TestEqualityOnModuleGens(
+		conicAlg,
+		GrpRootHomF4Div(conicAlg, root, a), GrpRootHomF4(conicAlg, root, a)
+	);
 end;
 
 # Returns: true if TestGrpRootHomExp succeeds for all roots in F4 with F4RootGsCoord <> [0,0].
@@ -85,10 +87,13 @@ TestG2WeylFormulas := function(conicAlg)
 	t1 := ComRingIndet(conicAlg, 1);
 	a1 := ConicAlgIndet(conicAlg, 1);
 	# Define phibs as w(bLie), a product of exponential automorphisms
-	bCub := t1*CubicComEl(t1, 1) + CubicComEl(One(t1), 2) + CubicComEl(One(t1), 3);
+	bCub := Sum(
+		t1*CubicComEl(conicAlg, t1, 1), CubicComEl(conicAlg, One(t1), 2),
+		CubicComEl(conicAlg, One(t1), 3)
+	);
 	bCubInv := CubicNorm(bCub)^-1 * CubicAdj(bCub);
-	bLie := BrownNegEl(Zero(t1), bCub, CubicZero, Zero(t1));
-	bInvLie := BrownPosEl(Zero(t1), CubicZero, -bCubInv, Zero(t1));
+	bLie := BrownNegEl(Zero(t1), bCub, CubicZero(conicAlg), Zero(t1));
+	bInvLie := BrownPosEl(Zero(t1), CubicZero(conicAlg), -bCubInv, Zero(t1));
 	phiMid := F4Exp(-bLie);
 	phiMidInv := F4Exp(bLie);
 	phiR := F4Exp(-bInvLie);
@@ -103,16 +108,16 @@ TestG2WeylFormulas := function(conicAlg)
 	testList := [];
 	# e_{(0,a,0,0)_+}^\phibs = e_{-a^\iota}
 	aCub := CubicConicEl(a1, 1);
-	aLie1 := BrownPosEl(Zero(t1), aCub, CubicZero, Zero(t1));
+	aLie1 := BrownPosEl(Zero(t1), aCub, CubicZero(conicAlg), Zero(t1));
 	aLie2 := CubicNegToLieEmb(-iota(aCub));
 	Add(testList, [F4Exp(aLie1), F4Exp(aLie2)]);
 	# e_{(0,0,a',0)_+}^\phibs = e_{(0,-t(a')^\iota, 0, 0)_-}
-	aLie1 := BrownPosEl(Zero(t1), CubicZero, aCub, Zero(t1));
-	aLie2 := BrownNegEl(Zero(t1), -t*iotainv(aCub), CubicZero, Zero(t1));
+	aLie1 := BrownPosEl(Zero(t1), CubicZero(conicAlg), aCub, Zero(t1));
+	aLie2 := BrownNegEl(Zero(t1), -t*iotainv(aCub), CubicZero(conicAlg), Zero(t1));
 	Add(testList, [F4Exp(aLie1), F4Exp(aLie2)]);
 	# e_{(0,a,0,0)_-}^\phibs = e_{(0,0, -t^{-1} a^\iota, 0)_+}
-	aLie1 := BrownNegEl(Zero(t1), aCub, CubicZero, Zero(t1));
-	aLie2 := BrownPosEl(Zero(t1), CubicZero, -t^-1*iota(aCub), Zero(t1));
+	aLie1 := BrownNegEl(Zero(t1), aCub, CubicZero(conicAlg), Zero(t1));
+	aLie2 := BrownPosEl(Zero(t1), CubicZero(conicAlg), -t^-1*iota(aCub), Zero(t1));
 	Add(testList, [F4Exp(aLie1), F4Exp(aLie2)]);
 	# Perform actual tests
 	for list in testList do

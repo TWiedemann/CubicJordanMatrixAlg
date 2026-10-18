@@ -15,7 +15,7 @@ BindGlobal("LieEndoSpec", rec(
 			Error("Function only defined on elements of Lie");
 			return fail;
 		else
-			return LieZero;
+			return LieZero(ConicAlgebra(x));
 		fi;
 	end,
 	# Identity map
@@ -79,7 +79,7 @@ InstallMethod(F4Exp, [IsLieElement, IsInt], function(a, n)
 		lastSummand := x;
 		result := x;
 		for i in [1..n] do
-			lastSummand := ((1/i)*One(ComRing)) * (a * lastSummand);
+			lastSummand := ((1/i)*One(ComRingOfConicAlg(ConicAlgebra(a)))) * (a * lastSummand);
 			result := result + lastSummand;
 		od;
 		return result;
@@ -92,15 +92,15 @@ InstallMethod(F4Exp, [IsLieElement], a -> F4Exp(a, 3));
 ## ----- Root homomorphisms in LieEndo -----
 
 # Explicit formulas for all roots except for those in the (0, 0)-part
-DeclareOperation("GrpRootHomF4NonDiv", [IsList, IsRingElement, IsBool]);
-DeclareOperation("GrpRootHomF4NonDiv", [IsList, IsRingElement]);
+DeclareOperation("GrpRootHomF4NonDiv", [IsFreeMagmaRing, IsList, IsRingElement, IsBool]);
+DeclareOperation("GrpRootHomF4NonDiv", [IsFreeMagmaRing, IsList, IsRingElement]);
 
 # root: Root in F4.
 # a: Element of ComRing if root is long and element of ConicAlg otherwise
 # naive: Bool.
 # Returns: The exponential of LieRootHomF4(root, a, naive, naive), defined by explicit
 # formulas without divisions by 2 and 3.
-InstallMethod(GrpRootHomF4NonDiv, [IsList, IsRingElement, IsBool], function(root, a, naive)
+InstallMethod(GrpRootHomF4NonDiv, [IsFreeMagmaRing, IsList, IsRingElement, IsBool], function(conicAlg, root, a, naive)
 	local rootG2, lieXCoeff, lieNeg1, lie0, lieDDCoeffList, lieXiCoeff, lieZetaCoeff,
 		liePos1, lieYCoeff, result, rho, b, bBrown, bLie, b2, c, c2, nu, scalar,
 		list, lieCubicNeg, lieCubicPos, aLie, aBrown, lam, mu, nextSummand,
@@ -114,7 +114,7 @@ InstallMethod(GrpRootHomF4NonDiv, [IsList, IsRingElement, IsBool], function(root
 		return fail;
 	fi;
 	liehom := function(root2, a2)
-		return LieRootHomF4(root2, a2, naive, naive);
+		return LieRootHomF4(conicAlg, root2, a2, naive, naive);
 	end;
 	rootG2 := F4RootG2Coord(root);
 	return LieEndo(function(lieEl)
@@ -136,24 +136,24 @@ InstallMethod(GrpRootHomF4NonDiv, [IsList, IsRingElement, IsBool], function(root
 			rho := LiePart(liehom(root, a), -2);
 			# Action on L_{-2} + L_{-1} + DD + Cubic + Cubic' is id
 			# Action on xi and zeta
-			result := result + 2*rho*lieXiCoeff*LieX;
-			result := result + rho*lieZetaCoeff*LieX;
+			result := result + 2*rho*lieXiCoeff*LieX(conicAlg);
+			result := result + rho*lieZetaCoeff*LieX(conicAlg);
 			# Action on L_1
 			result := result - rho*BrownNegToLieEmb(liePos1);
 			# Action on L_2
-			result := result + rho*lieYCoeff*LieXi + rho^2*lieYCoeff*LieX;
+			result := result + rho*lieYCoeff*LieXi(conicAlg) + rho^2*lieYCoeff*LieX(conicAlg);
 			return result;
 		elif rootG2 = [2, 1] then
 			# Define rho so that liehom(root, a) = rho*y
 			rho := LiePart(liehom(root, a), 2);
 			# Action on L_{2} + L_{1} + DD + Cubic + Cubic' is id
 			# Action on xi and zeta
-			result := result - 2*rho*lieXiCoeff*LieY;
-			result := result - rho*lieZetaCoeff*LieY;
+			result := result - 2*rho*lieXiCoeff*LieY(conicAlg);
+			result := result - rho*lieZetaCoeff*LieY(conicAlg);
 			# Action on L_{-1}
 			result := result + rho*BrownPosToLieEmb(lieNeg1);
 			# Action on L_{-2}
-			result := result - rho*lieXCoeff*LieXi + rho^2*lieXCoeff*LieY;
+			result := result - rho*lieXCoeff*LieXi(conicAlg) + rho^2*lieXCoeff*LieY(conicAlg);
 			return result;
 		elif rootG2[1] = 1 then
 			## Components of a
@@ -169,24 +169,24 @@ InstallMethod(GrpRootHomF4NonDiv, [IsList, IsRingElement, IsBool], function(root
 			c := BrownElCubicPart(liePos1, 1);
 			c2 := BrownElCubicPart(liePos1, 2);
 			rho := BrownElComPart(liePos1, 2);
-			result := result + (CubicBiTr(b,c2) - CubicBiTr(c,b2) + mu*nu - lam*rho)*LieY;
+			result := result + (CubicBiTr(b,c2) - CubicBiTr(c,b2) + mu*nu - lam*rho)*LieY(conicAlg);
 			## Action on L0
 			# Action on xi and zeta
 			result := result - lieXiCoeff*aLie;
-			result := result + lieZetaCoeff*BrownPosEl(lam, CubicZero, -b2, -2*mu);
+			result := result + lieZetaCoeff*BrownPosEl(lam, CubicZero(conicAlg), -b2, -2*mu);
 			# Action on Cubic
 			c := lieCubicPos;
 			result := Sum([
 				result,
-				-BrownPosEl(Zero(ComRing), lam*c, CubicCross(c,b), CubicBiTr(c, b2)),
-				- CubicBiTr(c, CubicAdj(b))*LieY
+				-BrownPosEl(Zero(lam), lam*c, CubicCross(c,b), CubicBiTr(c, b2)),
+				- CubicBiTr(c, CubicAdj(b))*LieY(conicAlg)
 			]);
 			# Action on Cubic'
 			c2 := lieCubicNeg;
 			result := Sum([
 				result,
-				BrownPosEl(CubicBiTr(b,c2), CubicCross(c2,b2), mu*c2, Zero(ComRing)),
-				- CubicBiTr(CubicAdj(b2), c2)*LieY
+				BrownPosEl(CubicBiTr(b,c2), CubicCross(c2,b2), mu*c2, Zero(mu)),
+				- CubicBiTr(CubicAdj(b2), c2)*LieY(conicAlg)
 			]);
 			# Action on DD
 			for list in lieDDCoeffList do
@@ -213,8 +213,8 @@ InstallMethod(GrpRootHomF4NonDiv, [IsList, IsRingElement, IsBool], function(root
 				result,
 				CubicNegToLieEmb(lam*c2 - CubicCross(c, b) + nu*b2),
 				-Liedd(b, c2) - Liedd(c, b2),
-				(rho*lam - CubicBiTr(b, c2))*(LieXi - LieZeta),
-				(CubicBiTr(c, b2) - nu*mu)*LieZeta,
+				(rho*lam - CubicBiTr(b, c2))*(LieXi(conicAlg) - LieZeta(conicAlg)),
+				(CubicBiTr(c, b2) - nu*mu)*LieZeta(conicAlg),
 				CubicPosToLieEmb(rho*b - CubicCross(c2, b2) + mu*c),
 				BrownPosEl(
 					-rho*lam^2 - CubicBiTr(CubicAdj(b), c),
@@ -222,14 +222,14 @@ InstallMethod(GrpRootHomF4NonDiv, [IsList, IsRingElement, IsBool], function(root
 					-rho*CubicAdj(b) - JordanU(b2, c),
 					CubicBiTr(c2, CubicAdj(b2)) + nu*mu^2
 				),
-				(-rho*CubicNorm(b) - nu*CubicNorm(b2))*LieY
+				(-rho*CubicNorm(b) - nu*CubicNorm(b2))*LieY(conicAlg)
 			]);
 			## Action on L_{-2}
 			nextSummand := Sum([
 				BrownNegEl(lam, b, b2, mu),
 				CubicNegToLieEmb(-CubicAdj(b)),
 				CubicPosToLieEmb(-CubicAdj(b2)),
-				BrownPosEl(-CubicNorm(b), CubicZero, CubicZero, CubicNorm(b2))
+				BrownPosEl(-CubicNorm(b), CubicZero(conicAlg), CubicZero(conicAlg), CubicNorm(b2))
 			]);
 			result := result + lieXCoeff*nextSummand;
 			return result;
@@ -247,24 +247,24 @@ InstallMethod(GrpRootHomF4NonDiv, [IsList, IsRingElement, IsBool], function(root
 			c := BrownElCubicPart(lieNeg1, 1);
 			c2 := BrownElCubicPart(lieNeg1, 2);
 			rho := BrownElComPart(lieNeg1, 2);
-			result := result + (CubicBiTr(b,c2) - CubicBiTr(c,b2) + mu*nu - lam*rho)*LieX;
+			result := result + (CubicBiTr(b,c2) - CubicBiTr(c,b2) + mu*nu - lam*rho)*LieX(conicAlg);
 			## Action on L0
 			# Action on xi and zeta
 			result := result + lieXiCoeff*aLie;
-			result := result + lieZetaCoeff*BrownNegEl(2*lam, b, CubicZero, -mu);
+			result := result + lieZetaCoeff*BrownNegEl(2*lam, b, CubicZero(conicAlg), -mu);
 			# Action on Cubic
 			c := lieCubicPos;
 			result := Sum([
 				result,
-				-BrownNegEl(Zero(ComRing), lam*c, CubicCross(c,b), CubicBiTr(c, b2)),
-				- CubicBiTr(c, CubicAdj(b))*LieX
+				-BrownNegEl(Zero(lam), lam*c, CubicCross(c,b), CubicBiTr(c, b2)),
+				- CubicBiTr(c, CubicAdj(b))*LieX(conicAlg)
 			]);
 			# Action on Cubic'
 			c2 := lieCubicNeg;
 			result := Sum([
 				result,
-				BrownNegEl(CubicBiTr(b,c2), CubicCross(c2,b2), mu*c2, Zero(ComRing)),
-				- CubicBiTr(CubicAdj(b2), c2)*LieX
+				BrownNegEl(CubicBiTr(b,c2), CubicCross(c2,b2), mu*c2, Zero(mu)),
+				- CubicBiTr(CubicAdj(b2), c2)*LieX(conicAlg)
 			]);
 			# Action on DD
 			for list in lieDDCoeffList do
@@ -291,8 +291,8 @@ InstallMethod(GrpRootHomF4NonDiv, [IsList, IsRingElement, IsBool], function(root
 				result,
 				CubicNegToLieEmb(-lam*c2 + CubicCross(b, c) - nu*b2),
 				Liedd(b, c2) + Liedd(c, b2),
-				(lam*rho - CubicBiTr(b, c2))*LieZeta,
-				(CubicBiTr(c, b2) - mu*nu)*(LieXi - LieZeta),
+				(lam*rho - CubicBiTr(b, c2))*LieZeta(conicAlg),
+				(CubicBiTr(c, b2) - mu*nu)*(LieXi(conicAlg) - LieZeta(conicAlg)),
 				CubicPosToLieEmb(-rho*b + CubicCross(b2, c2) - mu*c),
 				BrownNegEl(
 					rho*lam^2 + CubicBiTr(c, CubicAdj(b)),
@@ -300,14 +300,14 @@ InstallMethod(GrpRootHomF4NonDiv, [IsList, IsRingElement, IsBool], function(root
 					rho*CubicAdj(b) + JordanU(b2, c),
 					-CubicBiTr(CubicAdj(b2), c2) - mu^2*nu
 				),
-				(rho*CubicNorm(b) + nu*CubicNorm(b2))*LieX
+				(rho*CubicNorm(b) + nu*CubicNorm(b2))*LieX(conicAlg)
 			]);
 			## Action on L_2
 			nextSummand := Sum([
 				-BrownPosEl(lam, b, b2, mu),
 				CubicNegToLieEmb(-CubicAdj(b)),
 				CubicPosToLieEmb(-CubicAdj(b2)),
-				BrownNegEl(-CubicNorm(b), CubicZero, CubicZero, CubicNorm(b2))
+				BrownNegEl(-CubicNorm(b), CubicZero(conicAlg), CubicZero(conicAlg), CubicNorm(b2))
 			]);
 			result := result + lieYCoeff*nextSummand;
 			return result;
@@ -329,7 +329,7 @@ InstallMethod(GrpRootHomF4NonDiv, [IsList, IsRingElement, IsBool], function(root
 				b2 := BrownElCubicPart(brown, 2);
 				mu := BrownElComPart(brown, 2);
 				result := result + LieBrownEl(
-					Zero(ComRing),
+					Zero(lam),
 					lam*aCubic,
 					CubicCross(aCubic, b) + lam*CubicAdj(aCubic),
 					CubicBiTr(aCubic, b2) + CubicBiTr(b, CubicAdj(aCubic)) + lam*CubicNorm(aCubic)
@@ -370,7 +370,7 @@ InstallMethod(GrpRootHomF4NonDiv, [IsList, IsRingElement, IsBool], function(root
 					-CubicBiTr(b, aCubic2) + CubicBiTr(CubicAdj(aCubic2), b2) - mu*CubicNorm(aCubic2),
 					-CubicCross(aCubic2, b2) + mu*CubicAdj(aCubic2),
 					-mu*aCubic2,
-					Zero(ComRing)
+					Zero(mu)
 				);
 			od;
 			## Action on zeta
@@ -394,38 +394,41 @@ InstallMethod(GrpRootHomF4NonDiv, [IsList, IsRingElement, IsBool], function(root
 end);
 
 # Default: naive = false.
-InstallMethod(GrpRootHomF4NonDiv, [IsList, IsRingElement], function(root, a)
-	return GrpRootHomF4NonDiv(root, a, false);
-end);
+InstallMethod(GrpRootHomF4NonDiv, [IsFreeMagmaRing, IsList, IsRingElement], 
+	function(conicAlg, root, a)
+		return GrpRootHomF4NonDiv(conicAlg, root, a, false);
+	end
+);
 
 # F4-root homomorphisms which use division. We only use them to test that they coincide
 # with GrpRootHomF4NonDiv.
-DeclareOperation("GrpRootHomF4Div", [IsList, IsRingElement]);
-InstallMethod(GrpRootHomF4Div, [IsList, IsRingElement], function(root, a)
-	return F4Exp(LieRootHomF4(root, a));
+DeclareOperation("GrpRootHomF4Div", [IsFreeMagmaRing, IsList, IsRingElement]);
+InstallMethod(GrpRootHomF4Div, [IsFreeMagmaRing, IsList, IsRingElement], function(conicAlg, root, a)
+	return F4Exp(LieRootHomF4(conicAlg, root, a));
 end);
 
 # root: Root in F4.
 # sign: 1 or -1. Default 1.
 # Returns: The standard Weyl element corresponding to root if sign=1, and its inverse otherwise.
-InstallMethod(GrpStandardWeylF4, [IsList, IsInt], function(root, sign)
+InstallMethod(GrpStandardWeylF4, [IsFreeMagmaRing, IsList, IsInt], function(conicAlg, root, sign)
 	local inv, one;
 	# Handle optional argument
 	if not sign in [1, -1] then
 		return fail;
 	fi;
 	if root in F4LongRoots then
-		one := One(ComRing);
+		one := One(ComRingOfConicAlg(conicAlg));
 	elif root in F4ShortRoots then
-		one := One(ConicAlg);
+		one := One(conicAlg);
 	else
 		return fail;
 	fi;
-	inv := GrpRootHomF4(-root, -sign*one);
-	return inv * GrpRootHomF4(root, sign*one) * inv;
+	inv := GrpRootHomF4(conicAlg, -root, -sign*one);
+	return inv * GrpRootHomF4(conicAlg, root, sign*one) * inv;
 end);
 
-InstallMethod(GrpStandardWeylF4, [IsList], root -> GrpStandardWeylF4(root, 1));
+InstallMethod(GrpStandardWeylF4, [IsFreeMagmaRing, IsList],
+	(conicAlg, root) -> GrpStandardWeylF4(conicAlg, root, 1));
 
 # root: Root in F4.
 # a: Element of ConicAlg if root is short and element of ComRing if root is long.
@@ -433,7 +436,7 @@ InstallMethod(GrpStandardWeylF4, [IsList], root -> GrpStandardWeylF4(root, 1));
 # Returns: If naive=false (default), the image of the a under the root homomorphism
 # w.r.t. root. If naive=true, the "naive" root homomorphism is used (no multiplication
 # by -1, g1, g2, g3).
-InstallMethod(GrpRootHomF4, [IsList, IsRingElement, IsBool], function(root, a, naive)
+InstallMethod(GrpRootHomF4, [IsFreeMagmaRing, IsList, IsRingElement, IsBool], function(conicAlg, root, a, naive)
 	local roothom, weyl, weylInv, d1, d4;
 	if root in F4LongRoots then
 		ReqComRingEl(a);
@@ -451,9 +454,9 @@ InstallMethod(GrpRootHomF4, [IsList, IsRingElement, IsBool], function(root, a, n
 		else
 			a := ConicAlgInv(a);
 		fi;
-		roothom := rootArg -> GrpRootHomF4NonDiv(rootArg, a, naive);
-		weyl := GrpStandardWeylF4;
-		weylInv := x -> GrpStandardWeylF4(x, -1);
+		roothom := rootArg -> GrpRootHomF4NonDiv(conicAlg, rootArg, a, naive);
+		weyl := x -> GrpStandardWeylF4(conicAlg, x);
+		weylInv := x -> GrpStandardWeylF4(conicAlg, x, -1);
 		d1 := F4SimpleRoots[1];
 		d4 := F4SimpleRoots[4];
 		if root = [0, 1, -1, 0] then
@@ -470,11 +473,11 @@ InstallMethod(GrpRootHomF4, [IsList, IsRingElement, IsBool], function(root, a, n
 			return weylInv(d4) * roothom([0, 1, 0, 1]) * weyl(d4);
 		fi;
 	else
-		return GrpRootHomF4NonDiv(root, a, naive);
+		return GrpRootHomF4NonDiv(conicAlg, root, a, naive);
 	fi;
 end);
 
 # Default: naive = false.
-InstallMethod(GrpRootHomF4, [IsList, IsRingElement], function(root, a)
-	return GrpRootHomF4(root, a, false);
+InstallMethod(GrpRootHomF4, [IsFreeMagmaRing, IsList, IsRingElement], function(conicAlg, root, a)
+	return GrpRootHomF4(conicAlg, root, a, false);
 end);
