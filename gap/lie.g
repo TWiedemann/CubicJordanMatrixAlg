@@ -114,7 +114,7 @@ BindGlobal("LieSpec", rec(
 		Print(LieRepToString(a));
 	end,
 	Multiplication := function(a, b)
-		local neg2, neg1, zero, pos1, pos2;
+		local neg2, neg1, zero, pos1, pos2, conicAlg;
 		conicAlg := ConicAlgebra(a.neg1);
 		# Initialisation of the components of [a, b]
 		neg2 := Zero(a.neg2);

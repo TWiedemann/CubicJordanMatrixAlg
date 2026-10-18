@@ -78,7 +78,8 @@ BindGlobal("L0Spec", rec(
 	# a, b: Representations of elements of L0
 	# Returns: The Lie bracket of the corresponding elements
 	Multiplication := function(a, b)
-		local dd, xiCoeff, zetaCoeff, cubicPos, cubicNeg, summand, coeff, cubic1, cubic2;
+		local dd, xiCoeff, zetaCoeff, cubicPos, cubicNeg, summand, coeff, cubic1, cubic2, comZero,
+			comOne;
 		# Init components of [a,b]
 		dd := DDZero;
 		comZero := Zero(a.xiCoeff);
@@ -262,7 +263,7 @@ InstallOtherMethod(\*, "for ComRingElement and L0Element", [IsRingElement, IsL0E
 # - ...a*LieY (\in L_2) if a in Comring
 # - ...a_+ if a in Brown
 BindGlobal("XiEndo", function(a, sign)
-	if a in ComRing then
+	if IsRationalFunction(a) then # i.e. a \in ComRing
 		return sign*2*a;
 	elif IsBrownElement(a) then
 		return sign*a;
@@ -281,7 +282,7 @@ BindGlobal("ZetaEndo", function(a, sign)
 		Error("Argument must be a sign");
 		return fail;
 	fi;
-	if a in ComRing then
+	if IsRationalFunction(a) then # i.e. a \in ComRing
 		return sign*a;
 	elif IsBrownElement(a) then
 		if sign = 1 then

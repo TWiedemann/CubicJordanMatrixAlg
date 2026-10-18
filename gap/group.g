@@ -427,8 +427,9 @@ InstallMethod(GrpStandardWeylF4, [IsFreeMagmaRing, IsList, IsInt], function(coni
 	return inv * GrpRootHomF4(conicAlg, root, sign*one) * inv;
 end);
 
-InstallMethod(GrpStandardWeylF4, [IsFreeMagmaRing, IsList],
-	(conicAlg, root) -> GrpStandardWeylF4(conicAlg, root, 1));
+InstallMethod(GrpStandardWeylF4, [IsFreeMagmaRing, IsList], function(conicAlg, root)
+	return GrpStandardWeylF4(conicAlg, root, 1);
+end);
 
 # root: Root in F4.
 # a: Element of ConicAlg if root is short and element of ComRing if root is long.
