@@ -430,7 +430,7 @@ InstallMethod(ApplyDDLaws, [IsFreeMagmaRing, IsDDElement, IsBool], function(coni
 		length, comRing, zeroComRing, zeroConicAlg, oneComRing;
 	comRing := ComRingOfConicAlg(conicAlg);
 	zeroComRing := Zero(comRing);
-	oneComRing := One(ComRing);
+	oneComRing := One(comRing);
 	zeroConicAlg := Zero(conicAlg);
 	# resultZto[i][j] will store an element x of ConicAlg or of ComRing such that the result has a
 	# summand dd(1[ii], x[ij]) \in Z_{i \to j}

@@ -57,7 +57,7 @@ end);
 
 InstallMethod(ConicAlgMagma, [IsNonassocWord], function(m)
 	local fam;
-	fam := FamilyObj(m);
+	fam := CollectionsFamily(FamilyObj(m));
 	if IsBound(fam!.conicMagma) then
 		return fam!.conicMagma;
 	else
