@@ -34,8 +34,8 @@ BindGlobal("L0RepToString", function(rep)
 	for list in [["xiCoeff", "\xi"], ["zetaCoeff", "\zeta"]] do
 		name := list[1];
 		sym := list[2];
-		if rep.(name) <> Zero(ComRing) then
-			if rep.(name) = One(ComRing) then
+		if not IsZero(rep.(name)) then
+			if IsOne(rep.(name)) then
 				Add(stringList, sym);
 			else
 				Add(stringList, Concatenation("(", String(rep.(name)), ")*", sym));
@@ -66,11 +66,11 @@ BindGlobal("L0Spec", rec(
 		);
 	end,
 	Zero := a -> rec(
-		dd := DDZero,
-		xiCoeff := Zero(ComRing),
-		zetaCoeff := Zero(ComRing),
-		cubicPos := CubicZero,
-		cubicNeg := CubicZero
+		dd := Zero(a.dd),
+		xiCoeff := Zero(a.xiCoeff),
+		zetaCoeff := Zero(a.zetaCoeff),
+		cubicPos := Zero(a.cubicPos),
+		cubicNeg := Zero(a.cubicNeg)
 	),
 	Print := function(a)
 		Print(L0RepToString(a));
@@ -81,14 +81,17 @@ BindGlobal("L0Spec", rec(
 		local dd, xiCoeff, zetaCoeff, cubicPos, cubicNeg, summand, coeff, cubic1, cubic2;
 		# Init components of [a,b]
 		dd := DDZero;
-		xiCoeff := Zero(ComRing);
-		zetaCoeff := Zero(ComRing);
-		cubicPos := CubicZero;
-		cubicNeg := CubicZero;
+		comZero := Zero(a.xiCoeff);
+		comOne := One(a.xiCoeff);
+		xiCoeff := comZero;
+		zetaCoeff := comZero;
+		cubicPos := Zero(a.cubicPos);
+		cubicNeg := Zero(a.cubicNeg);
 		# [a.dd, b.dd] + [a.cubicPos, b.cubicNeg] + [a.cubicNeg, b.cubicPos]
 		# ([ad_{a'}, ad_a] = dd(a, a'))
 		dd := a.dd*b.dd + 
-			DD([[-One(ComRing), a.cubicPos, b.cubicNeg], [One(ComRing), b.cubicPos, a.cubicNeg]]);
+			DD([[-comOne, a.cubicPos, b.cubicNeg],
+				[comOne, b.cubicPos, a.cubicNeg]]);
 		# [a.zeta, b.cubicPos + b.cubicNeg] + [a.cubicPos + a.cubicNeg, b.zeta]
 		# ([zeta, ad_a] = ad_a and [zeta, ad_{a'}] = -ad_{a'})
 		cubicPos := a.zetaCoeff * b.cubicPos - b.zetaCoeff * a.cubicPos;
@@ -127,33 +130,49 @@ InstallMethod(String, [IsL0Element], x -> L0RepToString(UnderlyingElement(x)));
 
 # ----- Constructors for elements of L0 -----
 
-BindGlobal("L0Zero", L0(L0Spec.Zero(fail)));
+BindGlobal("L0Zero", function(conicAlg)
+	local comRing, zero;
+	comRing := ComRingOfConicAlg(conicAlg);
+	zero := Zero(comRing);
+	return L0(rec(dd := DDZero, xiCoeff := zero, zetaCoeff := zero,
+		cubicPos := CubicZero(conicAlg), cubicNeg := CubicZero(conicAlg)));
+end);
 
-BindGlobal("L0Xi", L0(rec(
+BindGlobal("L0Xi", function(conicAlg)
+	local comRing, zero;
+	comRing := ComRingOfConicAlg(conicAlg);
+	zero := Zero(comRing);
+	return L0(rec(
 	dd := DDZero,
-	xiCoeff := One(ComRing),
-	zetaCoeff := Zero(ComRing),
-	cubicPos := CubicZero,
-	cubicNeg := CubicZero
-)));
+	xiCoeff := One(comRing),
+	zetaCoeff := zero,
+	cubicPos := CubicZero(conicAlg),
+	cubicNeg := CubicZero(conicAlg)
+));
+end);
 
-BindGlobal("L0Zeta", L0(rec(
+BindGlobal("L0Zeta", function(conicAlg)
+	local comRing, zero;
+	comRing := ComRingOfConicAlg(conicAlg);
+	zero := Zero(comRing);
+	return L0(rec(
 	dd := DDZero,
-	xiCoeff := Zero(ComRing),
-	zetaCoeff := One(ComRing),
-	cubicPos := CubicZero,
-	cubicNeg := CubicZero
-)));
+	xiCoeff := zero,
+	zetaCoeff := One(comRing),
+	cubicPos := CubicZero(conicAlg),
+	cubicNeg := CubicZero(conicAlg)
+));
+end);
 
 # a: Element of Cubic.
 # Returns: ad_a^+ \in L0.
 InstallMethod(CubicPosToL0Emb, [IsCubicElement], function(a)
 	return L0(rec(
 		dd := DDZero,
-		xiCoeff := Zero(ComRing),
-		zetaCoeff := Zero(ComRing),
+		xiCoeff := Zero(ComRingOfConicAlg(ConicAlgebra(a))),
+		zetaCoeff := Zero(ComRingOfConicAlg(ConicAlgebra(a))),
 		cubicPos := a,
-		cubicNeg := CubicZero
+		cubicNeg := CubicZero(ConicAlgebra(a))
 	));
 end);
 
@@ -162,29 +181,34 @@ end);
 InstallMethod(CubicNegToL0Emb, [IsCubicElement], function(a)
 	return L0(rec(
 		dd := DDZero,
-		xiCoeff := Zero(ComRing),
-		zetaCoeff := Zero(ComRing),
-		cubicPos := CubicZero,
+		xiCoeff := Zero(ComRingOfConicAlg(ConicAlgebra(a))),
+		zetaCoeff := Zero(ComRingOfConicAlg(ConicAlgebra(a))),
+		cubicPos := CubicZero(ConicAlgebra(a)),
 		cubicNeg := a
 	));
 end);
 
 # ddEl: Element of DD.
 # Returns: The corresponding element of L0.
-InstallMethod(DDToL0Emb, [IsDDElement], function(ddEl)
+InstallMethod(DDToL0Emb, [IsDDElement, IsFreeMagmaRing], function(ddEl, conicAlg)
 	return L0(rec(
 		dd := ddEl,
-		xiCoeff := Zero(ComRing),
-		zetaCoeff := Zero(ComRing),
-		cubicPos := CubicZero,
-		cubicNeg := CubicZero
+		xiCoeff := Zero(ComRingOfConicAlg(conicAlg)),
+		zetaCoeff := Zero(ComRingOfConicAlg(conicAlg)),
+		cubicPos := CubicZero(conicAlg),
+		cubicNeg := CubicZero(conicAlg)
 	));
+end);
+
+# Does not work for 0_DD because ConicAlgebra(0_DD) does not work
+InstallMethod(DDToL0Emb, [IsDDElement], function(ddEl)
+	return DDToL0Emb(ddEl, ConicAlgebra(ddEl));
 end);
 
 # cubicEl1, cubicEl2: Elements of Cubic.
 # Returns: dd_{cubicEl1, cubicEl2} \in L0.
 InstallMethod(L0dd, [IsCubicElement, IsCubicElement], function(cubicEl1, cubicEl2)
-	return DDToL0Emb(DDdd(cubicEl1, cubicEl2));
+	return DDToL0Emb(DDdd(cubicEl1, cubicEl2), ConicAlgebra(cubicEl1));
 end);
 
 # ---- Getter functions for parts of elements of L0 ----
@@ -210,10 +234,14 @@ InstallOtherMethod(IsZero, [IsL0Element], function(L0el)
 		and IsZero(L0CubicPosPart(L0el)) and IsZero(L0CubicNegPart(L0el));
 end);
 
+InstallMethod(ConicAlgebra, [IsL0Element], function(L0el)
+	return ConicAlgebra(L0CubicPosPart(L0el));
+end);
+
 # ----- Scalar multiplication ComRing x L0 -> L0 -----
 InstallOtherMethod(\*, "for ComRingElement and L0Element", [IsRingElement, IsL0Element], 2, function(comEl, L0El)
 	if IsInt(comEl) then
-		comEl := comEl * One(ComRing);
+		comEl := comEl * One(ComRingOfConicAlg(ConicAlgebra(L0El)));
 	fi;
 	ReqComRingEl(comEl);
 	return L0(rec(
@@ -255,9 +283,11 @@ BindGlobal("ZetaEndo", function(a, sign)
 		return sign*a;
 	elif IsBrownElement(a) then
 		if sign = 1 then
-			return Brown([-BrownElPart(a, 1), CubicZero, BrownElPart(a, 3), 2*BrownElPart(a, 4)]);
+			return Brown([-BrownElPart(a, 1), CubicZero(ConicAlgebra(a)),
+				BrownElPart(a, 3), 2*BrownElPart(a, 4)]);
 		else
-			return Brown([-2*BrownElPart(a, 1), -BrownElPart(a, 2), CubicZero, BrownElPart(a, 4)]);
+			return Brown([-2*BrownElPart(a, 1), -BrownElPart(a, 2),
+				CubicZero(ConicAlgebra(a)), BrownElPart(a, 4)]);
 		fi;
 	else
 		Error("zeta not defined on this element");

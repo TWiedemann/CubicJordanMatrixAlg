@@ -62,7 +62,7 @@ end);
 # brown2: Element of Brown, regarded as element of L_1
 # Returns: [brown1, brown2] (\in L0)
 InstallMethod(_LieBracketBrownNegPos, [IsBrownElement, IsBrownElement], function(brown1, brown2)
-	local lam, b1, b2, mu, nu, c1, c2, rho;
+	local lam, b1, b2, mu, nu, c1, c2, rho, conicAlg;
 	lam := BrownElPart(brown1, 1);
 	b1 := BrownElPart(brown1, 2);
 	b2 := BrownElPart(brown1, 3);
@@ -71,10 +71,11 @@ InstallMethod(_LieBracketBrownNegPos, [IsBrownElement, IsBrownElement], function
 	c1 := BrownElPart(brown2, 2);
 	c2 := BrownElPart(brown2, 3);
 	rho := BrownElPart(brown2, 4);
+	conicAlg := ConicAlgebra(brown1);
 	return Sum([
 		CubicNegToL0Emb(-lam*c2 + CubicCross(b1, c1) - nu*b2),
-		(lam*rho - CubicBiTr(b1, c2)) * L0Zeta,
-		(CubicBiTr(c1, b2) - mu*nu) * (L0Xi - L0Zeta),
+		(lam*rho - CubicBiTr(b1, c2)) * L0Zeta(conicAlg),
+		(CubicBiTr(c1, b2) - mu*nu) * (L0Xi(conicAlg) - L0Zeta(conicAlg)),
 		L0dd(b1, c2) + L0dd(c1, b2),
 		CubicPosToL0Emb(-rho*b1 + CubicCross(b2, c2) - mu*c1)
 	]);
@@ -94,11 +95,11 @@ BindGlobal("LieSpec", rec(
 		);
 	end,
 	Zero := a -> rec(
-		neg2 := Zero(ComRing),
-		neg1 := BrownZero,
-		zero := L0Zero,
-		pos1 := BrownZero,
-		pos2 := Zero(ComRing)
+		neg2 := Zero(a.neg2),
+		neg1 := Zero(a.neg1),
+		zero := Zero(a.zero),
+		pos1 := Zero(a.pos1),
+		pos2 := Zero(a.pos2)
 	),
 	AdditiveInverse := function(a)
 		return rec(
@@ -114,16 +115,17 @@ BindGlobal("LieSpec", rec(
 	end,
 	Multiplication := function(a, b)
 		local neg2, neg1, zero, pos1, pos2;
+		conicAlg := ConicAlgebra(a.neg1);
 		# Initialisation of the components of [a, b]
-		neg2 := Zero(ComRing);
-		neg1 := BrownZero;
-		zero := L0Zero;
-		pos1 := BrownZero;
-		pos2 := Zero(ComRing);
+		neg2 := Zero(a.neg2);
+		neg1 := Zero(a.neg1);
+		zero := Zero(a.zero);
+		pos1 := Zero(a.pos1);
+		pos2 := Zero(a.pos2);
 		# [a.neg2, b]
 		neg2 := neg2 - L0ElAsEndo(b.zero, -2)(a.neg2); # [a.neg2, b.zero]
 		neg1 := neg1 - a.neg2*b.pos1; # [a.neg2, b.pos1];
-		zero := zero + a.neg2*b.pos2*L0Xi; # [a.neg2, b.pos2]
+		zero := zero + a.neg2*b.pos2*L0Xi(conicAlg); # [a.neg2, b.pos2]
 		# [a.neg1, b]
 		neg2 := neg2 + _LieBracketBrownPosPos(a.neg1, b.neg1); # [a.neg1, b.neg1]
 		neg1 := neg1 - L0ElAsEndo(b.zero, -1)(a.neg1); # [a.neg1, b.zero]
@@ -141,7 +143,7 @@ BindGlobal("LieSpec", rec(
 		pos1 := pos1 - L0ElAsEndo(b.zero, 1)(a.pos1); # [a.pos1, b.zero]
 		pos2 := pos2 + _LieBracketBrownPosPos(a.pos1, b.pos1); # [a.pos1, b.pos1]
 		# [a.pos2, b]
-		zero := zero - a.pos2*b.neg2*L0Xi; # [a.pos2, b.neg2]
+		zero := zero - a.pos2*b.neg2*L0Xi(conicAlg); # [a.pos2, b.neg2]
 		pos1 := pos1 + a.pos2*b.neg1; # [a.pos2, b.neg1]
 		pos2 := pos2 - L0ElAsEndo(b.zero, 2)(a.pos2); # [a.pos2, b.zero]
 		return rec(
@@ -159,7 +161,13 @@ BindGlobal("Lie", ArithmeticElementCreator(LieSpec));
 
 # ----- Constructors and embeddings for elements of Lie -----
 
-BindGlobal("LieZero", Lie(LieSpec.Zero(fail)));
+BindGlobal("LieZero", function(conicAlg)
+	return Lie(rec(
+		neg2 := Zero(ComRingOfConicAlg(conicAlg)), neg1 := BrownZero(conicAlg),
+		zero := L0Zero(conicAlg), pos1 := BrownZero(conicAlg),
+		pos2 := Zero(ComRingOfConicAlg(conicAlg))
+	));
+end);
 
 DeclareOperation(
 	"LieElFromTuple",
@@ -180,8 +188,18 @@ InstallMethod(
 	end
 );
 
-BindGlobal("LieX", LieElFromTuple(One(ComRing), BrownZero, L0Zero, BrownZero, Zero(ComRing)));
-BindGlobal("LieY", LieElFromTuple(Zero(ComRing), BrownZero, L0Zero, BrownZero, One(ComRing)));
+BindGlobal("LieX", function(conicAlg)
+	local comRing;
+	comRing := ComRingOfConicAlg(conicAlg);
+	return LieElFromTuple(One(comRing), BrownZero(conicAlg), L0Zero(conicAlg),
+		BrownZero(conicAlg), Zero(comRing));
+end);
+BindGlobal("LieY", function(conicAlg)
+	local comRing;
+	comRing := ComRingOfConicAlg(conicAlg);
+	return LieElFromTuple(Zero(comRing), BrownZero(conicAlg), L0Zero(conicAlg),
+		BrownZero(conicAlg), One(comRing));
+end);
 
 # More user-friendly alternative names
 InstallMethod(adPos, [ IsCubicElement ], CubicPosToLieEmb);
@@ -189,20 +207,38 @@ InstallMethod(adNeg, [ IsCubicElement ], CubicNegToLieEmb);
 
 # L0 -> Lie_0
 InstallMethod(L0ToLieEmb, [IsL0Element], function(L0el)
-	return LieElFromTuple(Zero(ComRing), BrownZero, L0el, BrownZero, Zero(ComRing));
+	local conicAlg, comRing;
+	conicAlg := ConicAlgebra(L0CubicPosPart(L0el));
+	comRing := ComRingOfConicAlg(conicAlg);
+	return LieElFromTuple(
+		Zero(comRing), BrownZero(conicAlg), L0el, BrownZero(conicAlg), Zero(comRing)
+	);
 end);
 
 # DD -> Lie_0
-InstallMethod(DDToLieEmb, [IsDDElement], x -> L0ToLieEmb(DDToL0Emb(x)));
+InstallMethod(DDToLieEmb, [IsDDElement, IsFreeMagmaRing], function(ddEl, conicAlg)
+	return L0ToLieEmb(DDToL0Emb(ddEl, conicAlg));
+end);
+InstallMethod(DDToLieEmb, [IsDDElement], ddEl -> DDToLieEmb(ddEl, ConicAlgebra(ddEl)));
 
 # Brown -> Lie_1
 InstallMethod(BrownPosToLieEmb, [IsBrownElement], function(brownEl)
-	return LieElFromTuple(Zero(ComRing), BrownZero, L0Zero, brownEl, Zero(ComRing));
+	local conicAlg, comRing;
+	conicAlg := ConicAlgebra(brownEl);
+	comRing := ComRingOfConicAlg(conicAlg);
+	return LieElFromTuple(
+		Zero(comRing), BrownZero(conicAlg), L0Zero(conicAlg), brownEl, Zero(comRing)
+	);
 end);
 
 # Brown -> Lie_{-1}
 InstallMethod(BrownNegToLieEmb, [IsBrownElement], function(brownEl)
-	return LieElFromTuple(Zero(ComRing), brownEl, L0Zero, BrownZero, Zero(ComRing));
+	local conicAlg, comRing;
+	conicAlg := ConicAlgebra(brownEl);
+	comRing := ComRingOfConicAlg(conicAlg);
+	return LieElFromTuple(
+		Zero(comRing), brownEl, L0Zero(conicAlg), BrownZero(conicAlg), Zero(comRing)
+	);
 end);
 
 # [ComRing, Cubic, Cubic', ComRing] -> Lie_1
@@ -239,8 +275,8 @@ InstallMethod(Liedd, [IsCubicElement, IsCubicElement], function(cubicEl1, cubicE
 	return L0ToLieEmb(L0dd(cubicEl1, cubicEl2));
 end);
 
-BindGlobal("LieZeta", L0ToLieEmb(L0Zeta));
-BindGlobal("LieXi", L0ToLieEmb(L0Xi));
+BindGlobal("LieZeta", conicAlg -> L0ToLieEmb(L0Zeta(conicAlg)));
+BindGlobal("LieXi", conicAlg -> L0ToLieEmb(L0Xi(conicAlg)));
 
 # comRingIndetNum, conicAlgIndetNum: Integers.
 # Returns: A list of "generic generators" of L_0000 using the indeterminates
@@ -250,9 +286,12 @@ BindGlobal("Lie0000Gens", function(conicAlg, comIndetNum, conicIndetNum)
 	t1 := ComRingIndet(conicAlg, comIndetNum);
 	a1 := ConicAlgIndet(conicAlg, conicIndetNum);
 	a2 := ConicAlgIndet(conicAlg, conicIndetNum+1);
-	result := [t1*LieXi, t1*LieZeta];
+	result := [t1*LieXi(conicAlg), t1*LieZeta(conicAlg)];
 	for i in [1,2,3] do
-		Add(result, Liedd(CubicComEl(One(ComRing), i), CubicComEl(t1, i)));
+		Add(result, Liedd(
+			CubicComEl(conicAlg, One(ComRingOfConicAlg(conicAlg)), i),
+			CubicComEl(conicAlg, t1, i))
+		);
 		for j in [i+1..3] do
 			Add(result, Liedd(CubicConicElMat(a1, i, j), CubicConicElMat(a2, j, i)));
 		od;
@@ -362,19 +401,21 @@ end);
 # ----- Further operations -----
 
 # Scalar multiplication ComRing x Lie -> Lie
-InstallOtherMethod(\*, "for ComRingElement and LieElement", [IsRingElement, IsLieElement], 2, function(comEl, lieEl)
-	if IsInt(comEl) then
-		comEl := comEl*One(ComRing);
-	fi;
-	ReqComRingEl(comEl);
-	return Lie(rec(
-		neg2 := comEl * LiePart(lieEl, -2),
-		neg1 := comEl * LiePart(lieEl, -1),
-		zero := comEl * LiePart(lieEl, 0),
-		pos1 := comEl * LiePart(lieEl, 1),
-		pos2 := comEl * LiePart(lieEl, 2)
-	));
-end);
+InstallOtherMethod(\*, "for ComRingElement and LieElement", [IsRingElement, IsLieElement], 2,
+	function(comEl, lieEl)
+		if IsInt(comEl) then
+			comEl := comEl*One(ComRingOfConicAlg(ConicAlgebra(lieEl)));
+		fi;
+		ReqComRingEl(comEl);
+		return Lie(rec(
+			neg2 := comEl * LiePart(lieEl, -2),
+			neg1 := comEl * LiePart(lieEl, -1),
+			zero := comEl * LiePart(lieEl, 0),
+			pos1 := comEl * LiePart(lieEl, 1),
+			pos2 := comEl * LiePart(lieEl, 2)
+		));
+	end
+);
 
 # ----- Display and String for elements of Lie -----
 
