@@ -421,8 +421,8 @@ end);
 # (We use d(a[ij],b[ji])+*d(b'[ij],a'[ji]) = g_i g_j tr(ab') (d(1[ii],1[ii]) + d(1[jj],1[jj])).)
 # - in all summands of the form d_{1[ij],a[ji]} with a \in ConicAlg,
 # a has no summand of the form t*1 for t \in ComRing. (Use relation d(a[ij],a'[ji]) = ...)
-DeclareOperation("ApplyDDLaws", [IsDDElement, IsFreeMagmaRing, IsBool]);
-InstallMethod(ApplyDDLaws, [IsDDElement, IsFreeMagmaRing, IsBool], function(ddEl, conicAlg, applyDDRels)
+DeclareOperation("ApplyDDLaws", [IsFreeMagmaRing, IsDDElement, IsBool]);
+InstallMethod(ApplyDDLaws, [IsFreeMagmaRing, IsDDElement, IsBool], function(conicAlg, ddEl, applyDDRels)
 	local resultZto, resultRemainSummandList, resultCoeffList, ddSummand, ddCoeff,
 		cubic1, cubic2, cubSummandList1, cubSummandList2, i1, j1, a, i2, j2, b,
 		intersection, simp, i, j, coeffs, lCubic, rCubic, k, resultZShift, c, t,
@@ -671,10 +671,10 @@ InstallMethod(Simplify, [IsL0Element], function(L0El)
 	# We have to apply Simplify to the DD-part before applying
 	# ApplyDDLaws because Simplify may produce summands in
 	# ComRing*One(ConicAlg) which were not visible beforehand (e.g. a1+a1').
-	l0 := ApplyDDLaws(Simplify(L0DDPart(L0El)), conicAlg, true);
+	l0 := ApplyDDLaws(conicAlg, Simplify(L0DDPart(L0El)), true);
 	zeta := zeta + L0ZetaPart(l0);
 	xi := xi + L0XiPart(l0);
-	l0 := ApplyDDLaws(Simplify(L0DDPart(l0)), conicAlg, true);
+	l0 := ApplyDDLaws(conicAlg, Simplify(L0DDPart(l0)), true);
 	return Sum([
 		CubicPosToL0Emb(Simplify(pos)),
 		CubicNegToL0Emb(Simplify(neg)),
