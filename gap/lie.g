@@ -216,10 +216,10 @@ InstallMethod(L0ToLieEmb, [IsL0Element], function(L0el)
 end);
 
 # DD -> Lie_0
-InstallMethod(DDToLieEmb, [IsDDElement, IsFreeMagmaRing], function(ddEl, conicAlg)
-	return L0ToLieEmb(DDToL0Emb(ddEl, conicAlg));
+InstallMethod(DDToLieEmb, [IsFreeMagmaRing, IsDDElement], function(conicAlg, ddEl)
+	return L0ToLieEmb(DDToL0Emb(conicAlg, ddEl));
 end);
-InstallMethod(DDToLieEmb, [IsDDElement], ddEl -> DDToLieEmb(ddEl, ConicAlgebra(ddEl)));
+InstallMethod(DDToLieEmb, [IsDDElement], ddEl -> DDToLieEmb(ConicAlgebra(ddEl), ddEl));
 
 # Brown -> Lie_1
 InstallMethod(BrownPosToLieEmb, [IsBrownElement], function(brownEl)

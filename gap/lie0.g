@@ -190,7 +190,7 @@ end);
 
 # ddEl: Element of DD.
 # Returns: The corresponding element of L0.
-InstallMethod(DDToL0Emb, [IsDDElement, IsFreeMagmaRing], function(ddEl, conicAlg)
+InstallMethod(DDToL0Emb, [IsFreeMagmaRing, IsDDElement], function(conicAlg, ddEl)
 	return L0(rec(
 		dd := ddEl,
 		xiCoeff := Zero(ComRingOfConicAlg(conicAlg)),
@@ -202,13 +202,13 @@ end);
 
 # Does not work for 0_DD because ConicAlgebra(0_DD) does not work
 InstallMethod(DDToL0Emb, [IsDDElement], function(ddEl)
-	return DDToL0Emb(ddEl, ConicAlgebra(ddEl));
+	return DDToL0Emb(ConicAlgebra(ddEl), ddEl);
 end);
 
 # cubicEl1, cubicEl2: Elements of Cubic.
 # Returns: dd_{cubicEl1, cubicEl2} \in L0.
 InstallMethod(L0dd, [IsCubicElement, IsCubicElement], function(cubicEl1, cubicEl2)
-	return DDToL0Emb(DDdd(cubicEl1, cubicEl2), ConicAlgebra(cubicEl1));
+	return DDToL0Emb(ConicAlgebra(cubicEl1), DDdd(cubicEl1, cubicEl2));
 end);
 
 # ---- Getter functions for parts of elements of L0 ----
@@ -239,19 +239,21 @@ InstallMethod(ConicAlgebra, [IsL0Element], function(L0el)
 end);
 
 # ----- Scalar multiplication ComRing x L0 -> L0 -----
-InstallOtherMethod(\*, "for ComRingElement and L0Element", [IsRingElement, IsL0Element], 2, function(comEl, L0El)
-	if IsInt(comEl) then
-		comEl := comEl * One(ComRingOfConicAlg(ConicAlgebra(L0El)));
-	fi;
-	ReqComRingEl(comEl);
-	return L0(rec(
-		dd := comEl * L0DDPart(L0El),
-		xiCoeff := comEl * L0XiPart(L0El),
-		zetaCoeff := comEl * L0ZetaPart(L0El),
-		cubicPos := comEl * L0CubicPosPart(L0El),
-		cubicNeg := comEl * L0CubicNegPart(L0El)
-	));
-end);
+InstallOtherMethod(\*, "for ComRingElement and L0Element", [IsRingElement, IsL0Element], 2,
+	function(comEl, L0El)
+		if IsInt(comEl) then
+			comEl := comEl * One(ComRingOfConicAlg(ConicAlgebra(L0El)));
+		fi;
+		ReqComRingEl(comEl);
+		return L0(rec(
+			dd := comEl * L0DDPart(L0El),
+			xiCoeff := comEl * L0XiPart(L0El),
+			zetaCoeff := comEl * L0ZetaPart(L0El),
+			cubicPos := comEl * L0CubicPosPart(L0El),
+			cubicNeg := comEl * L0CubicNegPart(L0El)
+		));
+	end
+);
 
 # ----- Action of L0 on Lie -----
 
