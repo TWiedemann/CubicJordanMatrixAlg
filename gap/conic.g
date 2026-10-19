@@ -1,8 +1,9 @@
-### This file contains the definition of ConicAlg, a free nonassociative algebra
-### that represents an arbitrary multiplicative conic alternative algebra,
-### and functions related to it.
-### Technically, ConicAlg is a free magma ring over the free magma ConicAlgMag
-### whose coefficient ring is ComRing.
+### This file contains the definition of conic algebras.
+### These are free magma rings over the magmas from conic_mag.g with coefficient ring
+### as defined in comring.g.
+
+## Some information about a conic algebra is stored in the family object of its
+## underlying magma.
 
 # ----- Helper functions used in the constructor -----
 
@@ -221,8 +222,7 @@ InstallMethod(ConicAlgebra, [IsInt, IsInt], function(comRing, conicRank)
 	);
 end);
 
-# ----- Getter functions for information stored in conic algebra -----
-
+# Returns conic algebra containing a
 InstallMethod(ConicAlgebra, [IsElementOfFreeMagmaRing], function(a)
 	local fam;
 	fam := CollectionsFamily(FamilyObj(a));
@@ -232,6 +232,8 @@ InstallMethod(ConicAlgebra, [IsElementOfFreeMagmaRing], function(a)
 		Error("Must be an element of a conic algebra");
 	fi;
 end);
+
+# ----- Getter functions for information stored in conic algebra -----
 
 InstallMethod(ConicAlgMagma, [IsFreeMagmaRing], function(C)
 	return UnderlyingMagma(C);

@@ -1,5 +1,6 @@
-### This file contains the definition of ConicAlgMag, the free magma consisting
-### of products of the ideterminates in the conic algebra, and functions related
+### This file contains the definition of the free magma underlying a conic algebra
+### It consists of products of the indeterminates in the conic algebra.
+### This file also contains functions related
 ### to this magma.
 
 # ----- Indeterminates and their names -----
@@ -34,27 +35,33 @@ end);
 
 # ----- ConicAlgMag and its generators ----- 
 
-InstallMethod(ConicAlgMagma, [IsInt, IsString, IsString, IsString], function(rank, varName, oneName, zeroName)
-	local magma, fam;
-	magma := FreeMagmaWithOne(_ConicAlgIndetNames(varName, rank));
-	fam := FamilyObj(magma);
-	fam!.conicOneName := oneName;
-	fam!.conicZeroName := zeroName;
-	fam!.conicMagma := magma;
-	fam!.conicIndetName := varName;
-	fam!.conicRank := rank;
-	return magma;
-end);
+InstallMethod(ConicAlgMagma, [IsInt, IsString, IsString, IsString],
+	function(rank, varName, oneName, zeroName)
+		local magma, fam;
+		magma := FreeMagmaWithOne(_ConicAlgIndetNames(varName, rank));
+		fam := FamilyObj(magma);
+		fam!.conicOneName := oneName;
+		fam!.conicZeroName := zeroName;
+		fam!.conicMagma := magma;
+		fam!.conicIndetName := varName;
+		fam!.conicRank := rank;
+		return magma;
+	end
+);
 
+# Default symbols for 1 and 0
 InstallMethod(ConicAlgMagma, [IsInt, IsString], function(rank, varName)
 	return ConicAlgMagma(rank, varName, _ConicDefaultOneString, _ConicDefaultZeroString);
 end);
 
+# Default variable symbol
 InstallMethod(ConicAlgMagma, [IsInt], function(rank)
 	return ConicAlgMagma(rank, _ConicIndetDefaultSymbol,
 		_ConicDefaultOneString, _ConicDefaultZeroString);
 end);
 
+# m: Magma element
+# Returns: The magma containing m
 InstallMethod(ConicAlgMagma, [IsNonassocWord], function(m)
 	local fam;
 	fam := CollectionsFamily(FamilyObj(m));
@@ -64,6 +71,8 @@ InstallMethod(ConicAlgMagma, [IsNonassocWord], function(m)
 		Error("Magma must be magma of a conic algebra");
 	fi;
 end);
+
+# ----- Getter functions for information stored in family object -----
 
 InstallMethod(ConicRank, [IsMagma], function(magma)
 	local fam;
@@ -114,7 +123,7 @@ InstallMethod(PrintObj, "Custom string for 1 in ConicAlgMag", [IsNonassocWord], 
 	fi;
 end);
 
-# ----- Constructing elements from representations and list of all elements -----
+# ----- Constructing elements from representations, and list of all elements -----
 
 # mRep: External representation of an element of ConicAlgMag
 # Returns: The corresponding element of magma.

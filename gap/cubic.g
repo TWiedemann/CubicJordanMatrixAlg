@@ -1,5 +1,5 @@
 ### This file contains the definition of the cubic Jordan matrix algebra over
-### ConicAlg and ComRing with respec to the structural constants
+### ConicAlg and ComRing with respect to the structural constants
 ### TwistDiag := [g1, g2, g3].
 ### We refer to this cubic Jordan matrix algebra as Cubic in the following.
 ### Cubic is a cubic norm structure and hence (Cubic, Cubic') is a cubic norm pair

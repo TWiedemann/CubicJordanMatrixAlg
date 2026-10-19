@@ -1,9 +1,7 @@
-### This file contains the definition of ComRing, the polynomial ring over Z
-### that represents an arbitrary commutative ring, and functions related to it
+### This file contains the definition of the commutative base ring (often called ComRing)
+### of a conic algebra. It is a polynomial ring over Z with suitably named indeterminates.
 
 # ----- Indeterminates names -----
-
-# Indeterminate names for traces are defined further below because this is more complicated.
 
 # Returns: Name of the i-th indeterminate of ComRing.
 BindGlobal("_ComRingIndetName", function(symbol, i)
