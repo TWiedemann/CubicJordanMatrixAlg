@@ -54,6 +54,14 @@ InstallMethod(TestEqualityOnGenList, [IsLieEndo, IsLieEndo, IsList],
 	end
 );
 
+# For consistent interface
+DeclareOperation("TestEqualityOnGenList", [IsFreeMagmaRing, IsLieEndo, IsLieEndo, IsList]);
+InstallMethod(TestEqualityOnGenList, [IsFreeMagmaRing, IsLieEndo, IsLieEndo, IsList], 
+	function(conicAlg, lieEndo1, lieEndo2, genList)
+		return TestEqualityOnGenList(lieEndo1, lieEndo2, genList);
+	end
+);
+
 # TestEquality(f, g, conicIndetNum) calls
 # TestEqualityOnGenList(f, g, LieGensAsLie(conicIndetNum)).
 # If no integer is provided, then TestEquality(f, g, ConicRank)
@@ -69,7 +77,7 @@ InstallMethod(TestEquality, [IsFreeMagmaRing, IsLieEndo, IsLieEndo, IsInt],
 
 InstallMethod(TestEquality, [IsFreeMagmaRing, IsLieEndo, IsLieEndo], 
 	function(conicAlg, lieEndo1, lieEndo2)
-		return TestEquality(lieEndo1, lieEndo2, ConicRank(conicAlg));
+		return TestEquality(conicAlg, lieEndo1, lieEndo2, ConicRank(conicAlg));
 	end
 );
 

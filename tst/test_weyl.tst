@@ -66,7 +66,7 @@ true
 ## (6) d_1 + d_2 + d_3 = 2*zeta - xi
 ## (7) \sum g_i dd(a_i[jl], a_l'a_j'[jl]) = g_1 g_2 g_3 tr(a1a2a3) (2*zeta - xi)
 ## where the sum runs over all cyclic permutation (i,j,l) of (1,2,3).
-gap> test := TestSimpleRootParLists();;
+gap> test := TestSimpleRootParLists(conicAlg);;
 
 # By (1) and (3), we have
 # dd_{1[23],((tr(a1)/g2)*a2')[23]} = 1/g2 dd_{a2[23], tr(a1)[32]} = 1/g2 dd_{a2[23], (a1+a1')[32]}.
@@ -95,7 +95,7 @@ dd_{((1)*1_C)[23],((g1/(g2*g3))*(a1'*a2'))[23]}+(1/g2)*dd_{((1)*a1)[12],((1)*a2'
 # 1/(g1g2) * \sum g_i dd_{b_i[jl], b_l'b_j'[jl]}
 # where b1 = 1, b2 = a1', b3 = a2', so the whole sum is 0 by (7).
 gap> test[4];
-dd_{((1)*1_C)[23],((1/-g2)*(a2*a1))[23]}+(-g3/(g1*g2))*dd_{((1)*a2')[12],((1)*a1)[12]}+(-1/g1)*dd_{((1)*a1')[31],((1)*a2)[31]}+(-g3*tr(a1a2))*xi+(2*g3*tr(a1a2))*zeta
+dd_{((1)*1_C)[23],((1/-g2)*(a2*a1))[23]}+(-g3/(g1*g2))*dd_{((1)*a2')[12],((1)*a1)[12]}+(1/-g1)*dd_{((1)*a1')[31],((1)*a2)[31]}+(-g3*tr(a1a2))*xi+(2*g3*tr(a1a2))*zeta
 
 # Like test[3]: The dd-summands are precisely
 # 1/(g1g3) * \sum g_i dd_{b_i[jl], b_l'b_j'[jl]}
@@ -139,7 +139,7 @@ dd_{((1)*1_C)[12],((1/g2)*(a2'*a1'))[12]}+(g1/(g2*g3))*dd_{((1)*a1)[23],((1)*a2'
 # -1/(g1g3) * \sum g_i dd_{b_i[jl], b_l'b_j'[jl]}
 # where b1 = a1', b2 = a2', b3 = 1, so the whole sum is 0 by (7).
 gap> test[11];
-dd_{((1)*1_C)[12],((-1/g1)*(a2*a1))[12]}+(-g2/(g1*g3))*dd_{((1)*a2')[31],((1)*a1)[31]}+(1/-g3)*dd_{((1)*a1')[23],((1)*a2)[23]}+(-g2*tr(a1a2))*xi+(2*g2*tr(a1a2))*zeta
+dd_{((1)*1_C)[12],((1/-g1)*(a2*a1))[12]}+(-g2/(g1*g3))*dd_{((1)*a2')[31],((1)*a1)[31]}+(1/-g3)*dd_{((1)*a1')[23],((1)*a2)[23]}+(-g2*tr(a1a2))*xi+(2*g2*tr(a1a2))*zeta
 
 # Like test[3]: The dd-summands are precisely
 # 1/(g1g3) * \sum g_i dd_{b_i[jl], b_l'b_j'[jl]}
@@ -158,7 +158,7 @@ dd_{((1)*1_C)[12],((g3/(g1*g2))*(a1'*a2'))[12]}+(1/g1)*dd_{((1)*a1)[31],((1)*a2'
 # d(1[12], 1[12]) = g1g2(d_1 + d_2).
 # It follows that the whole sum is zero.
 gap> test[13];
-dd_{(1)[11],(g2*tr(a1)*tr(a2))[11]}+dd_{((1)*1_C)[12],((-tr(a1)/g1)*a2)[12]}+dd_{(1)[22],(g2*tr(a1)*tr(a2))[22]}+(-1/g1)*dd_{((1)*a2)[12],((1)*a1)[12]}+(-1/g1)*dd_{((1)*a2)[12],((1)*a1')[12]}
+dd_{(1)[11],(g2*tr(a1)*tr(a2))[11]}+dd_{((1)*1_C)[12],((-tr(a1)/g1)*a2)[12]}+dd_{(1)[22],(g2*tr(a1)*tr(a2))[22]}+(1/-g1)*dd_{((1)*a2)[12],((1)*a1)[12]}+(1/-g1)*dd_{((1)*a2)[12],((1)*a1')[12]}
 
 # Follows from (1)
 gap> test[14];
