@@ -148,7 +148,7 @@ end);
 
 # ----- Constructors for elements of Cubic -----
 
-BindGlobal("CubicZero", function(conicAlg)
+InstallMethod(CubicZero, [IsFreeMagmaRing], function(conicAlg)
 	local zeroComRing, zeroConicAlg;
 	zeroComRing := Zero(ComRingOfConicAlg(conicAlg));
 	zeroConicAlg := Zero(conicAlg);

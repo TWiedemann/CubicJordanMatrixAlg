@@ -370,9 +370,33 @@ InstallMethod(ConicAlgInvIndet, [ IsFreeMagmaRing, IsInt ], function(conicAlg, i
 	return emb(ConicAlgMagInvIndet(magma, i));
 end);
 
+# ----- Assign generator variables -----
+
+InstallMethod(AssignGeneratorVariables, [IsFreeMagmaRing], function(conicAlg)
+	local i, varname, assignVar;
+	assignVar := function(num, sym, valueFunc)
+		for i in [1..num] do
+			varname := Concatenation(sym, String(i));
+			if IsBoundGlobal(varname) then
+				UnbindGlobal(varname);
+			fi;
+			BindGlobal(varname, valueFunc(i));
+			MakeReadWriteGlobal(varname);
+		od;
+	end;
+	assignVar(ConicRank(conicAlg), ConicIndetName(conicAlg), i -> ConicAlgIndet(conicAlg, i));
+	assignVar(ComRingRank(conicAlg), ComRingIndetName(conicAlg), i -> ComRingIndet(conicAlg, i));
+	assignVar(3, _ComRingGamIndetSymbol, i -> ComRingGamIndet(i));
+	varname := "dd";
+	if IsBoundGlobal(varname) then
+		UnbindGlobal(varname);
+	fi;
+	BindGlobal(varname, Liedd);
+	MakeReadWriteGlobal(varname);
+end);
+
 # ----- Conjugation, trace, norm on ConicAlg -----
 
-# 
 # a: Element of ConicAlg.
 # Returns: The conjugate a' of a.
 InstallMethod(ConicAlgInv, [IsElementOfFreeMagmaRing], function(a)

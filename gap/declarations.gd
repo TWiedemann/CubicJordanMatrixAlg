@@ -1,7 +1,8 @@
+### ----- The commutative ring k -----
 
 #! @Arguments C, p
 #! @Description
-#! Returns the <C>p</C>-th indeterminate in $k$, which is printed as <C>tp</C>.
+#! Returns the <C>p</C>-th indeterminate in the coefficient ring of <C>C</C>, which is printed as <C>tp</C>.
 #! We must have <C>1 &lt;= p &lt;= ComRingRank(C)</C>.
 #! @ChapterInfo The commutative ring $k$, Functions
 DeclareOperation("ComRingIndet", [ IsString, IsInt ]);
@@ -18,20 +19,51 @@ DeclareOperation("ComRingIndet", [ IsRing, IsInt ]);
 #! @ChapterInfo The commutative ring $k$, Functions
 DeclareOperation("ComRingGamIndet", [ IsInt ]);
 
+# ----- The conic algebra C -----
+
+#! @ChapterInfo The multiplicative conic alternative algebra $C$, Functions
+#! @BeginGroup ConicAlgebra
+#! @Description
+#! Blabla
+#! @Arguments comRingRank, conicRank, maxTrLength, nameRec
+DeclareOperation("ConicAlgebra", [IsInt, IsInt, IsInt, IsRecord]);
+#! @Arguments comRingRank, conicRank, maxTrLength, comSym, conicSym
+DeclareOperation("ConicAlgebra", [IsInt, IsInt, IsInt, IsString, IsString]);
+DeclareOperation("ConicAlgebra", [IsInt, IsInt, IsInt]);
+DeclareOperation("ConicAlgebra", [IsInt, IsInt]);
+DeclareOperation("ConicAlgebra", [IsObject]); # For conic algebra of an element (of Cubic, Lie, ConicAlg, ...)
+#! @EndGroup ConicAlgebra
+
+
 #! @Arguments C, p
 #! @Description
 #! Returns the <C>p</C>-th indeterminate in <C>C</C>, printed as <C>ap</C>. We must have
 #! <C>1 &lt;= p &lt;= ConicRank(C)</C>.
 #! @ChapterInfo The multiplicative conic alternative algebra $C$, Functions
-DeclareOperation("ConicAlgIndet", [ IsObject, IsInt ]);
-DeclareOperation("ConicAlgInvIndet", [ IsObject, IsInt ]);
+DeclareOperation("ConicAlgIndet", [ IsFreeMagmaRing, IsInt ]);
+DeclareOperation("ConicAlgInvIndet", [ IsFreeMagmaRing, IsInt ]);
 
-DeclareOperation("ConicAlgebra", [IsInt, IsInt, IsInt, IsRecord]);
-DeclareOperation("ConicAlgebra", [IsInt, IsInt, IsInt, IsString, IsString]);
-DeclareOperation("ConicAlgebra", [IsInt, IsInt, IsInt]);
-DeclareOperation("ConicAlgebra", [IsInt, IsInt]);
-# For conic algebra of an element (of Cubic, Lie, ConicAlg, ...)
-DeclareOperation("ConicAlgebra", [IsObject]);
+#! @Arguments C
+#! @Description
+#! This function defines global GAP variables that store the indeterminates of <C>C</C>
+#! of and of its coefficient ring $k$. The names of the GAP variables coincide
+#! with the names of the indeterminates. Any previously defined GAP variables
+#! with these names will be overwritten.
+#! @BeginExampleSession
+#! gap> C := ConicAlgebra(4, 2, 3, "b", "t");;
+#! gap> t1*b2;
+#! Error, Variable: 't1' must have a value
+#! not in any function at ...
+#! gap> AssignGeneratorVariables(C);
+#! gap> t1*b2;
+#! (t1)*b2
+#! @EndExampleSession
+#! This function also defines global variables <C>dd := Liedd</C> and
+#! <C>g1, g2, g3</C> for $\gamma_1, \gamma_2, \gamma_3$ that are independent
+#! of <C>C</C>.
+#! @ChapterInfo The multiplicative conic alternative algebra $C$, Functions
+DeclareOperation("AssignGeneratorVariables", [ IsFreeMagmaRing ]);
+
 DeclareOperation("ConicAlgMagma", [IsInt]);
 DeclareOperation("ConicAlgMagma", [IsInt, IsString]);
 DeclareOperation("ConicAlgMagma", [IsInt, IsString, IsString, IsString]);
@@ -97,6 +129,8 @@ DeclareOperation("ReqConicAlgEl", [IsList]);
 #! @ChapterInfo The multiplicative conic alternative algebra $C$, Functions
 DeclareOperation("ConicNormLin", [ IsObject, IsObject ]);
 
+# ----- The cubic Jordan matrix algebra `Cubic` -----
+
 #! @Arguments a, i
 #! @Description
 #! Returns <C>a[jl]</C> where <C>[i,j,l]</C> is the unique cyclic permutation of <C>[1,2,3]</C>
@@ -124,6 +158,12 @@ DeclareOperation("CubicEl", [ IsFreeMagmaRing, IsRingElement, IsInt, IsInt ]);
 DeclareOperation("CubicElFromTuple",
 	[ IsRingElement, IsRingElement, IsRingElement,
         IsElementOfFreeMagmaRing, IsElementOfFreeMagmaRing, IsElementOfFreeMagmaRing ]);
+
+#! @Arguments C
+#! @Description
+#! Returns the zero element of the conic algebra over <C>C</C>
+#! @ChapterInfo The cubic Jordan matrix algebra, Elements of the cubic Jordan matrix algebra
+DeclareOperation("CubicZero", [ IsFreeMagmaRing ]);
 
 #! @Arguments cub, i
 #! @Description
@@ -186,6 +226,8 @@ DeclareOperation("JordanULin", [ IsObject, IsObject, IsObject ]);
 #! @ChapterInfo The cubic Jordan matrix algebra, The Jordan algebra structure
 DeclareOperation("JordanD", [ IsObject, IsObject, IsObject ]);
 
+# ----- The Brown algebra `Brown` -----
+
 #! @Arguments t, cub1, cub2, s
 #! @Description
 #! Returns the element <C>[ t, cub1, cub2, s ]</C> of $B$.
@@ -218,6 +260,8 @@ DeclareOperation("BrownElComPart", [ IsObject, IsObject ]);
 #! <C>p=2</C>.
 #! @ChapterInfo The Brown algebra, Functions
 DeclareOperation("BrownElCubicPart", [ IsObject, IsObject ]);
+
+# ----- The Lie algebra `Lie` -----
 
 #! @Arguments lie, p
 #! @Description
@@ -403,6 +447,8 @@ DeclareOperation("LieRootHomF4", [ IsFreeMagmaRing, IsObject, IsObject, IsObject
 #! @ChapterInfo The Lie algebra, Root homomorphisms
 DeclareOperation("LieRootHomF4", [ IsFreeMagmaRing, IsObject, IsObject ]);
 
+# ----- The automorphisms of `Lie` -----
+
 #! @Arguments F4Root, z
 #! @Description
 #! Returns the automorphism $\theta_\alpha(a)$ of $L$ in <C>LieEndo</C> as defined in
@@ -426,6 +472,8 @@ DeclareOperation("GrpStandardWeylF4", [ IsFreeMagmaRing, IsList ]);
 
 # Variant with additional sign. Not part of the main interface.
 DeclareOperation("GrpStandardWeylF4", [ IsFreeMagmaRing, IsList, IsInt ]);
+
+# ----- Simplifcation and equality tests -----
 
 DeclareOperation("Simplify", [ IsFreeMagmaRing, IsObject ]);
 #! @Arguments u
