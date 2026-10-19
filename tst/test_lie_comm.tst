@@ -24,7 +24,7 @@ gap> TestChevH(conicAlg);
 true
 
 # Test that c(a,b) = -c(a,b) for all roots a, b for which a+b is also a root
-gap> TestChevStrucConstSigns();
+gap> TestChevStrucConstSigns(conicAlg);
 true
 
 #

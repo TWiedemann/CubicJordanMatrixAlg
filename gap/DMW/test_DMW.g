@@ -225,7 +225,7 @@ end;
 # a1, a2: Elements of ComRing if root1, root2 are long and elements of ConicAlg otherwise.
 # Returns: The commutator of the root group elements determined by [root1, a1]
 # and [root2, a2].
-GrpRootHomCom := function(root1, a1, root2, a2)
+GrpRootHomCom := function(conicAlg, root1, a1, root2, a2)
 	local hom;
 	hom := function(root, a)
 		return GrpRootHomF4(conicAlg, root, a);
@@ -252,24 +252,24 @@ TestGrpComRels := function(conicAlg)
 	g3 := ComRingGamIndet(3);
 	return TestEqualityPiecesOnList(conicAlg, [
 		# Commutator relation on [d1, d2]
-		[GrpRootHomCom(d1, t1, d2, t2), GrpRootHomF4(conicAlg, d1+d2, t1*t2)],
+		[GrpRootHomCom(conicAlg, d1, t1, d2, t2), GrpRootHomF4(conicAlg, d1+d2, t1*t2)],
 		# Commutator relation on [d2, d3]
 		[
-			GrpRootHomCom(d2, t1, d3, a1),
+			GrpRootHomCom(conicAlg, d2, t1, d3, a1),
 			GrpRootHomF4(conicAlg, d2+d3, -t1*a1) * GrpRootHomF4(conicAlg, d2+2*d3, t1*ConicAlgNorm(a1))
 		],
 		# Commutator relation on [d2+d3, d3]
 		[
-			GrpRootHomCom(d2+d3, a1, d3, a2),
+			GrpRootHomCom(conicAlg, d2+d3, a1, d3, a2),
 			GrpRootHomF4(conicAlg, d2+2*d3, -ConicAlgTr(a1 * ConicAlgInv(a2)))
 		],
 		# Commutator relation on [d2, d2+2*d3]
 		[
-			GrpRootHomCom(d2, t1, d2+2*d3, t2),
+			GrpRootHomCom(conicAlg, d2, t1, d2+2*d3, t2),
 			GrpOne
 		],
 		# Commutator relation on [d3, d4]
-		[GrpRootHomCom(d4, a1, d3, a2), GrpRootHomF4(conicAlg, d3+d4, ConicAlgInv(a2)*ConicAlgInv(a1))]
+		[GrpRootHomCom(conicAlg, d4, a1, d3, a2), GrpRootHomF4(conicAlg, d3+d4, ConicAlgInv(a2)*ConicAlgInv(a1))]
 	]);
 end;
 
@@ -277,7 +277,7 @@ end;
 
 # Returns: true if c(root1, root2) = -c(-root1, -root2) for all roots root1, root2 in F4 or G2
 # where c denotes the Chevalley structure constant
-TestChevStrucConstSigns := function()
+TestChevStrucConstSigns := function(conicAlg)
 	local i, j, k, root1, root2, roots, c;
 	for k in [1,2] do
 		if k=1 then
@@ -292,7 +292,7 @@ TestChevStrucConstSigns := function()
 			for j in [i+1..Length(roots)] do
 				root1 := roots[i];
 				root2 := roots[j];
-				if c(root1, root2) <> -c(-root1, -root2) then
+				if c(conicAlg, root1, root2) <> -c(conicAlg, -root1, -root2) then
 					return false;
 				fi;
 			od;
