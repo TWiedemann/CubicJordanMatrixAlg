@@ -49,7 +49,7 @@ Internally, we use the name <C>ConicAlg</C> for the multiplicative conic alterna
 The usual arithmetic operations in GAP for addition and multiplication (but not inversion) are available for elements of $k$.<P/>
 
 @Chapter The cubic Jordan matrix algebra
-Internally, we use the name <C>Cubic</C> for the cubic Jordan matrix algebra $J \coloneqq\text{Her}_3(C, \Gamma)$.<P/>
+Internally, we use the name <C>Cubic</C> for the cubic Jordan matrix algebra $J := \text{Her}_3(C, \Gamma)$.<P/>
 @Section Elements of the cubic Jordan matrix algebra
 <C>+, *</C>
 The usual GAP operations for addition $+: J \times J \to J$ and scalar multiplication $\cdot: k \times J \to J$ are available on $J$.<P/>
