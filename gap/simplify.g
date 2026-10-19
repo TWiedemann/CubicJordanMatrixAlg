@@ -5,6 +5,11 @@
 ### a function Simplify which applies all available
 ### simplification functions except for WithoutTraces because WithoutTraces is
 ### not always a desirable transformation. Hence the user will usually only call Simplify.
+### Most methods of the Simplify operation need not be supplied with the conic algebra
+### because it can be infered from the input element. However, it cannot be infered
+### from an element of ComRing or DD. To ensure a consistent interface, Simplify
+### always accepts a conic algebra as part of its input, but this conic algebra
+### is only used if necessary.
 
 ## -------- ComRing --------
 
@@ -73,15 +78,15 @@ end);
 # tr(xy') = tr(x)tr(y) - tr(xy) [GPR, (16.5.10)]. In this way, all occurences of conjugates a_i'
 # inside the argument of tr may be removed (though we only do this for products
 # of length up to 3)
-DeclareOperation("ComRingSimplifyTr", [IsRationalFunction]);
-InstallMethod(ComRingSimplifyTr, [IsRationalFunction], function(a)
+DeclareOperation("ComRingSimplifyTr", [IsFreeMagmaRing, IsRationalFunction]);
+InstallMethod(ComRingSimplifyTr, [IsFreeMagmaRing, IsRationalFunction], function(conicAlg, a)
 	local fam;
-	fam := CollectionsFamily(FamilyObj(a));
+	fam := FamilyObj(ConicAlgMagma(conicAlg));
 	return Value(a, fam!.trSubIndetList, fam!.trSubValueList, One(a));
 end);
 
-InstallMethod(Simplify, [IsRationalFunction], function(a)
-	return ComRingCancel(ComRingSimplifyTr(a));
+InstallMethod(Simplify, [IsFreeMagmaRing, IsRationalFunction], function(conicAlg, a)
+	return ComRingCancel(ComRingSimplifyTr(conicAlg, a));
 end);
 
 ## -------- Conic Algebra --------
@@ -212,8 +217,9 @@ end);
 # MakeTraces repeatedly until it no longer changes the input, and then
 # apply Simplify to all ComRing-coefficients.
 InstallMethod(Simplify, [IsElementOfFreeMagmaRing], function(a)
-	local coeffMagList, resultCoeffList, resultMagList, i, help, aNew, comRing;
-	comRing := ComRingOfConicAlg(ConicAlgebra(a));
+	local coeffMagList, resultCoeffList, resultMagList, i, help, aNew, conicAlg, comRing;
+	conicAlg := ConicAlgebra(a);
+	comRing := ComRingOfConicAlg(conicAlg);
 	# Apply MakeTraces until it no longer changes the result
 	aNew := MakeTraces(a);
 	while a <> aNew do
@@ -227,9 +233,14 @@ InstallMethod(Simplify, [IsElementOfFreeMagmaRing], function(a)
 	resultMagList := [];
 	for i in [1..Length(coeffMagList)/2] do
 		Add(resultMagList, coeffMagList[2*i-1]); # Magma element
-		Add(resultCoeffList, Simplify(coeffMagList[2*i])); # Coefficient
+		Add(resultCoeffList, Simplify(conicAlg, coeffMagList[2*i])); # Coefficient
 	od;
 	return ElementOfMagmaRing(FamilyObj(a), Zero(comRing), resultCoeffList, resultMagList);
+end);
+
+# For consistent interface
+InstallMethod(Simplify, [IsFreeMagmaRing, IsElementOfFreeMagmaRing], function(conicAlg, a)
+	return Simplify(a);
 end);
 
 ## -------- Cubic --------
@@ -247,14 +258,20 @@ end);
 
 # Applies Simplify to all components.
 InstallMethod(Simplify, [IsCubicElement], function(cubEl)
-	local t, a, i;
+	local t, a, i, conicAlg;
 	t := [];
 	a := [];
+	conicAlg := ConicAlgebra(cubEl);
 	for i in [1..3] do
-		t[i] := Simplify(CubicComPart(cubEl, i));
+		t[i] := Simplify(conicAlg, CubicComPart(cubEl, i));
 		a[i] := Simplify(CubicConicPart(cubEl, i));
 	od;
 	return CubicElFromTuple(t[1], t[2], t[3], a[1], a[2], a[3]);
+end);
+
+# For consistent interface
+InstallMethod(Simplify, [IsFreeMagmaRing, IsCubicElement], function(conicAlg, cubEl)
+	return Simplify(cubEl);
 end);
 
 ## -------- Brown --------
@@ -272,14 +289,20 @@ end);
 
 # Applies Simplify to all components.
 InstallMethod(Simplify, [IsBrownElement], function(brownEl)
-	local t, cub, i;
+	local t, cub, i, conicAlg;
 	t := [];
 	cub := [];
+	conicAlg := ConicAlgebra(brownEl);
 	for i in [1, 2] do
-		t[i] := Simplify(BrownElComPart(brownEl, i));
+		t[i] := Simplify(conicAlg, BrownElComPart(brownEl, i));
 		cub[i] := Simplify(BrownElCubicPart(brownEl, i));
 	od;
 	return BrownEl(t[1], cub[1], cub[2], t[2]);
+end);
+
+# For consistent interface
+InstallMethod(Simplify, [IsFreeMagmaRing, IsBrownElement], function(conicAlg, brownEl)
+	return Simplify(brownEl);
 end);
 
 ## -------- DD --------
@@ -630,13 +653,13 @@ end);
 
 # Applies Simplify to all components.
 # Does NOT apply ApplyDDLaws because the output would be in L0, not in DD.
-InstallMethod(Simplify, [IsDDElement], function(ddEl)
+InstallMethod(Simplify, [IsFreeMagmaRing, IsDDElement], function(conicAlg, ddEl)
 	local coeffList, resultCoeffList, list;
 	coeffList := DDCoeffList(ddEl);
 	resultCoeffList := [];
 	for list in coeffList do
 		Add(resultCoeffList,
-			[Simplify(list[1]), Simplify(list[2]), Simplify(list[3])]
+			[Simplify(conicAlg, list[1]), Simplify(list[2]), Simplify(list[3])]
 		);
 	od;
 	return DDElFromCoeffList(resultCoeffList);
@@ -671,17 +694,22 @@ InstallMethod(Simplify, [IsL0Element], function(L0El)
 	# We have to apply Simplify to the DD-part before applying
 	# ApplyDDLaws because Simplify may produce summands in
 	# ComRing*One(ConicAlg) which were not visible beforehand (e.g. a1+a1').
-	l0 := ApplyDDLaws(conicAlg, Simplify(L0DDPart(L0El)), true);
+	l0 := ApplyDDLaws(conicAlg, Simplify(conicAlg, L0DDPart(L0El)), true);
 	zeta := zeta + L0ZetaPart(l0);
 	xi := xi + L0XiPart(l0);
-	l0 := ApplyDDLaws(conicAlg, Simplify(L0DDPart(l0)), true);
+	l0 := ApplyDDLaws(conicAlg, Simplify(conicAlg, L0DDPart(l0)), true);
 	return Sum([
 		CubicPosToL0Emb(Simplify(pos)),
 		CubicNegToL0Emb(Simplify(neg)),
-		Simplify(zeta + L0ZetaPart(l0)) * L0Zeta(conicAlg),
-		Simplify(xi + L0XiPart(l0)) * L0Xi(conicAlg),
-		DDToL0Emb(conicAlg, Simplify(L0DDPart(l0)))
+		Simplify(conicAlg, zeta + L0ZetaPart(l0)) * L0Zeta(conicAlg),
+		Simplify(conicAlg, xi + L0XiPart(l0)) * L0Xi(conicAlg),
+		DDToL0Emb(conicAlg, Simplify(conicAlg, L0DDPart(l0)))
 	]);
+end);
+
+# For consistent interface
+InstallMethod(Simplify, [IsFreeMagmaRing, IsL0Element], function(conicAlg, L0El)
+	return Simplify(L0El);
 end);
 
 ## -------- Lie --------
@@ -701,12 +729,18 @@ end);
 # Applies Simplify to all components.
 
 InstallMethod(Simplify, [IsLieElement], function(lieEl)
-	local parts, i;
+	local parts, i, conicAlg;
 	parts := [];
+	conicAlg := ConicAlgebra(lieEl);
 	for i in [-2..2] do
-		Add(parts, Simplify(LiePart(lieEl, i)));
+		Add(parts, Simplify(conicAlg, LiePart(lieEl, i)));
 	od;
 	return LieElFromTuple(parts[1], parts[2], parts[3], parts[4], parts[5]);
+end);
+
+# For consistent interface
+InstallMethod(Simplify, [IsFreeMagmaRing, IsLieElement], function(conicAlg, lieEl)
+	return Simplify(lieEl);
 end);
 
 ## -------- LieEndo --------
@@ -718,4 +752,9 @@ InstallMethod(Simplify, [IsLieEndo], function(lieEndo)
 			return Simplify(lieEndo(lieEl));
 		end
 	);
+end);
+
+# For consistent interface
+InstallMethod(Simplify, [IsFreeMagmaRing, IsLieEndo], function(conicAlg, lieEndo)
+	return Simplify(lieEndo);
 end);

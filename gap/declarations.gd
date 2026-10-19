@@ -427,6 +427,7 @@ DeclareOperation("GrpStandardWeylF4", [ IsFreeMagmaRing, IsList ]);
 # Variant with additional sign. Not part of the main interface.
 DeclareOperation("GrpStandardWeylF4", [ IsFreeMagmaRing, IsList, IsInt ]);
 
+DeclareOperation("Simplify", [ IsFreeMagmaRing, IsObject ]);
 #! @Arguments u
 #! @Description
 #! Returns an element of the parent structure of <C>u</C> (that is, of $k$, $C$, $B$,
@@ -441,6 +442,10 @@ DeclareOperation("GrpStandardWeylF4", [ IsFreeMagmaRing, IsList, IsInt ]);
 #! For Lie algebra elements, we also provide the following function.
 #! @ChapterInfo Simplification and equality tests, Functions
 DeclareOperation("Simplify", [ IsObject ]);
+
+# For IsLieElement
+DeclareOperation("TestEquality", [ IsObject, IsObject, IsBool ]);
+DeclareOperation("TestEquality", [ IsObject, IsObject ]);
 
 #! @Description
 #! Returns <C>true</C> if <C>lie1</C>, <C>lie2</C> can be proven to represent the same elements

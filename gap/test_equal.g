@@ -8,25 +8,25 @@
 # Returns: If lieEl1 can be proven to be equal to lieEl2 using Simplify, returns true.
 # Otherwise returns false, but they may still be equal.
 # If print = true, additional information is printed for the parts which are not equal.
-# InstallMethod(TestEquality, [IsLieElement, IsLieElement, IsBool], function(lieEl1, lieEl2, print)
-# 	local diff, isEqual, i, part;
-# 	diff := Simplify(lieEl1 - lieEl2);
-# 	isEqual := true;
-# 	for i in [-2..2] do
-# 		part := LiePart(diff, i);
-# 		if not IsZero(part) and not (i in [-1..1] and IsZero(WithoutTraces(part))) then
-# 			isEqual := false;
-# 			if print then
-# 				Print(String(i), " part: ", part, "\n");
-# 			fi;
-# 		fi;
-# 	od;
-# 	return isEqual;
-# end);
+InstallMethod(TestEquality, [IsLieElement, IsLieElement, IsBool], function(lieEl1, lieEl2, print)
+	local diff, isEqual, i, part;
+	diff := Simplify(lieEl1 - lieEl2);
+	isEqual := true;
+	for i in [-2..2] do
+		part := LiePart(diff, i);
+		if not IsZero(part) and not (i in [-1..1] and IsZero(WithoutTraces(part))) then
+			isEqual := false;
+			if print then
+				Print(String(i), " part: ", part, "\n");
+			fi;
+		fi;
+	od;
+	return isEqual;
+end);
 
-# InstallMethod(TestEquality, [IsLieElement, IsLieElement], function(lieEl1, lieEl2)
-# 	return TestEquality(lieEl1, lieEl2, false);
-# end);
+InstallMethod(TestEquality, [IsLieElement, IsLieElement], function(lieEl1, lieEl2)
+	return TestEquality(lieEl1, lieEl2, false);
+end);
 
 # ----- Equality tests on LieEndo -----
 

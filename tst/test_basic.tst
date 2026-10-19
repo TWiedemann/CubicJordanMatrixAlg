@@ -91,9 +91,9 @@ gap> CubicConicElMat(a1, 1, 3);
 ((1)*a1')[31]
 gap> CubicConicElMat(a1, 2, 3);
 ((1)*a1)[23]
-gap> cubicGen1 := CubicGenericEl(0);
+gap> cubicGen1 := CubicGenericEl(C, 0);
 (t1)[11]+(t2)[22]+(t3)[33]+((1)*a1)[23]+((1)*a2)[31]+((1)*a3)[12]
-gap> cubicGen2 := CubicGenericEl(1);
+gap> cubicGen2 := CubicGenericEl(C, 1);
 (t4)[11]+(t5)[22]+(t6)[33]+((1)*a4)[23]+((1)*a5)[31]+((1)*a6)[12]
 
 ## Norm

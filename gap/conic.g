@@ -154,6 +154,7 @@ BindGlobal("_TrSubstitutionLists", function(magma, comRingIndets)
 			od;
 		od;
 	od;
+	return [trSubIndetList, trSubValueList];
 end);
 
 # ----- Constructors for conic algebras -----
