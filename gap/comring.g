@@ -158,7 +158,7 @@ BindGlobal("ConicAlgMagTrOnRep", function(magma, mRep)
 		left := mRep[1];
 		right := mRep[2];
 		if left = inv(right) then
-			return 2*inv(left); # tr(aa') = 2n(a)
+			return 2*ConicAlgMagNormOnRep(magma, left); # tr(aa') = 2n(a)
 		fi;
 		# A "candidate" is a triple [a,b,c] of reps such that tr(mRep) = tr(abc)
 		# or a pair [a,b] such that tr(mRep) = tr(ab).

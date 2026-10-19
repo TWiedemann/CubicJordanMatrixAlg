@@ -66,8 +66,15 @@ BindGlobal("_InitComRingIndeterminates", function(magma, comRank, comIndetSym, m
 		trace := ConicAlgMagTr(magEl);
 		polyRep := ExtRepNumeratorRatFun(trace); # rep of the polynomial `trace`
 		if Length(polyRep) = 2 then
-			Add(indetList, trace);
-			Add(comRingIndetInfo, ["tr", magEl]);
+			# In this case, `trace` has only one summand
+			if Length(polyRep[1]) = 2 and polyRep[1][2] = 1 then
+				# In this case, `trace` is (a scalar multiple of) a single indeterminate
+				# to the power of 1
+				if not trace in indetList then
+					Add(indetList, trace);
+					Add(comRingIndetInfo, ["tr", magEl]);
+				fi;
+			fi;
 		fi;
 	od;
 	return [indetList, comRingIndetInfo];
