@@ -305,6 +305,56 @@ InstallMethod(PrintObj, "Custom string for 0 in ConicAlg", [IsElementOfFreeMagma
 	fi;
 end);
 
+# ----- Nicer printing for conic algebra -----
+
+InstallMethod(String, "Custom string for conic algebra", [IsFreeMagmaRing], 2, function(conicAlg)
+	local conicRank, comRingRank, conicIndets, comRingIndets, i, string;
+	if IsBound( FamilyObj(conicAlg)!.conicAlg ) then
+		conicRank := ConicRank(conicAlg);
+		comRingRank := ComRingRank(conicAlg);
+		conicIndets := List([1..conicRank], i -> _ConicAlgIndetName(ConicIndetName(conicAlg), i));
+		comRingIndets := List(
+			[1..comRingRank], i -> _ComRingIndetName(ComRingIndetName(conicAlg), i)
+		);
+		if conicRank = 0 then
+			string := "Conic algebra with no generators ";
+		else
+			string := Concatenation("Conic algebra with generators ", conicIndets[1]);
+			for i in [2..conicRank] do
+				string := Concatenation(string, ",", conicIndets[i]);
+			od;
+		fi;
+		Append(string, " over commutative ring with ");
+		if comRingRank = 0 then
+			Append(string, "no generators");
+		else
+			string := Concatenation(string, "generators ", comRingIndets[1]);
+			for i in [2..comRingRank] do
+				string := Concatenation(string, ",", comRingIndets[i]);
+			od;
+		fi;
+		return string;
+	else
+		TryNextMethod();
+	fi;
+end);
+
+InstallMethod(PrintObj, "Custom string for conic algebra", [IsFreeMagmaRing], 2, function(conicAlg)
+	if IsBound(FamilyObj(conicAlg)!.conicAlg ) then
+		Print(String(conicAlg));
+	else
+		TryNextMethod();
+	fi;
+end);
+
+InstallMethod(ViewObj, "Custom string for conic algebra", [IsFreeMagmaRing], 100, function(conicAlg)
+	if IsBound(FamilyObj(conicAlg)!.conicAlg ) then
+		Print(String(conicAlg));
+	else
+		TryNextMethod();
+	fi;
+end);
+
 # ----- Functions which test requirements and throw errors ---
 
 # For runtime reasons, ReqComRingEl only tests whether an element is a rational function
