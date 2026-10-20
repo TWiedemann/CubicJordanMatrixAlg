@@ -24,6 +24,9 @@
 ##   the simplifaction functions to replace all appearances of a_i' in tr.
 ## - trSubValueList: A list whose i-th entry is the term by which
 ##   trSubIndetList[i] should be replaced in the simplification functions.
+##
+## comRingIndetInfo, traceIndets and traceValues are not used for much, but they
+## could be useful in the future.
 
 # magma: Conic algebra magma.
 # comRank, maxTrLenth: Integers.
