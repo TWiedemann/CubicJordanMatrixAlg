@@ -1,6 +1,17 @@
 *.xml
 *.tex
+*.aux
+*.bbl
+*.blg
+*.idx
+*.ilg
+*.ind
+*.log
+*.out
+*.pnr
+*.toc
 *.html
+*.pdf
 *.txt
 *.css
 *.six
