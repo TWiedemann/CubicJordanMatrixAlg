@@ -2,7 +2,10 @@
 
 LoadPackage( "AutoDoc" );
 AutoDoc( rec(
-  autodoc := rec( scan_dirs := [ ], files := [ "doc/manual.autodoc", "gap/declarations.gd" ] ),
+  autodoc := rec(
+    scan_dirs := [ ],
+    files := [ "doc/manual.autodoc", "gap/declarations.gd", "gap/conic.g" ]
+  ),
   scaffold := rec( includes := [ ] ),
   gapdoc := rec(
       LaTeXOptions := rec( EarlyExtraPreamble := """

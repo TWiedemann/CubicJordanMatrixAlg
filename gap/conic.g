@@ -425,6 +425,25 @@ end);
 
 # ----- Assign generator variables -----
 
+#! @Arguments C
+#! @Description
+#! This function defines global GAP variables that store the indeterminates of <C>C</C>
+#! of and of its coefficient ring $k$. The names of the GAP variables coincide
+#! with the names of the indeterminates. Any previously defined GAP variables
+#! with these names will be overwritten.
+#! @BeginExampleSession
+#! gap> C := ConicAlgebra(4, 2, 3, "b", "t");;
+#! gap> t1*b2;
+#! Error, Variable: 't1' must have a value
+#! not in any function at ...
+#! gap> AssignGeneratorVariables(C);
+#! gap> t1*b2;
+#! (t1)*b2
+#! @EndExampleSession
+#! This function also defines global variables <C>dd := Liedd</C> and
+#! <C>g1, g2, g3</C> for $\gamma_1, \gamma_2, \gamma_3$ that are independent
+#! of <C>C</C>.
+#! @ChapterInfo The multiplicative conic alternative algebra $C$, Functions
 InstallMethod(AssignGeneratorVariables, [IsFreeMagmaRing], function(conicAlg)
 	local i, varname, assignVar;
 	assignVar := function(num, sym, valueFunc)
