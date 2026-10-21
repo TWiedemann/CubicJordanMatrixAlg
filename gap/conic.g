@@ -322,19 +322,27 @@ InstallMethod(String, "Custom string for conic algebra", [IsFreeMagmaRing], 2, f
 		if conicRank = 0 then
 			string := "Conic algebra with no generators ";
 		else
-			string := Concatenation("Conic algebra with generators ", conicIndets[1]);
-			for i in [2..conicRank] do
-				string := Concatenation(string, ",", conicIndets[i]);
-			od;
+			if conicRank = 1 then
+				string := Concatenation("Conic algebra with generator ", conicIndets[1]);
+			else
+				string := Concatenation("Conic algebra with generators ", conicIndets[1]);
+				for i in [2..conicRank] do
+					string := Concatenation(string, ",", conicIndets[i]);
+				od;
+			fi;
 		fi;
 		Append(string, " over commutative ring with ");
 		if comRingRank = 0 then
 			Append(string, "no generators");
 		else
-			string := Concatenation(string, "generators ", comRingIndets[1]);
-			for i in [2..comRingRank] do
-				string := Concatenation(string, ",", comRingIndets[i]);
-			od;
+			if comRingRank = 1 then
+				string := Concatenation(string, "generator ", comRingIndets[1]);
+			else
+				string := Concatenation(string, "generators ", comRingIndets[1]);
+				for i in [2..comRingRank] do
+					string := Concatenation(string, ",", comRingIndets[i]);
+				od;
+			fi;
 		fi;
 		return string;
 	else
