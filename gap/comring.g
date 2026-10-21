@@ -1,5 +1,8 @@
-### This file contains the definition of the commutative base ring (often called ComRing)
-### of a conic algebra. It is a polynomial ring over Z with suitably named indeterminates.
+### This file contains the definition of the indeterminates in the commutative base ring
+### (often called ComRing) of a conic algebra.
+### It is a polynomial ring over Z with suitably named indeterminates.
+### In particular, this file contains the definition of the trace and norm maps
+### on the underlying magma of a conic algebra.
 
 # ----- Indeterminates names -----
 
