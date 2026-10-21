@@ -481,8 +481,12 @@ InstallMethod(AssignGeneratorVariables, [IsFreeMagmaRing], 2, function(conicAlg)
 		end;
 		assignVars(ConicRank(conicAlg), ConicIndetName(conicAlg), i -> ConicAlgIndet(conicAlg, i));
 		assignVars(ComRingRank(conicAlg), ComRingIndetName(conicAlg), i -> ComRingIndet(conicAlg, i));
-		assignVars(3, _ComRingGamIndetSymbol, i -> ComRingGamIndet(i));
-		assignVar("dd", Liedd);
+		if not (ISBOUND_GLOBAL("g1") or ISBOUND_GLOBAL("g2") or ISBOUND_GLOBAL("g3")) then
+			assignVars(3, _ComRingGamIndetSymbol, i -> ComRingGamIndet(i));
+		fi;
+		if not ISBOUND_GLOBAL("dd") then
+			assignVar("dd", Liedd);
+		fi;
 	else
 		TryNextMethod();
 	fi;
