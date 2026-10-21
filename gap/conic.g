@@ -444,27 +444,40 @@ end);
 #! <C>g1, g2, g3</C> for $\gamma_1, \gamma_2, \gamma_3$ that are independent
 #! of <C>C</C>.
 #! @ChapterInfo The multiplicative conic alternative algebra $C$, Functions
-InstallMethod(AssignGeneratorVariables, [IsFreeMagmaRing], function(conicAlg)
-	local i, varname, assignVar;
-	assignVar := function(num, sym, valueFunc)
-		for i in [1..num] do
-			varname := Concatenation(sym, String(i));
-			if IsBoundGlobal(varname) then
-				UnbindGlobal(varname);
+InstallMethod(AssignGeneratorVariables, [IsFreeMagmaRing], 2, function(conicAlg)
+	local assignVar, assignVars;
+	# Code closely follows "DoAssignGenVars" in wordass.gi in the GAP library
+	if IsBound(FamilyObj(conicAlg)!.conicAlg) then
+		assignVar := function(varname, value)
+			# remove < > enclosures
+			varname := Filtered(varname,x->x<>'<' and x<>'>');
+			if not IsValidIdentifier(varname) then
+				Error("Variable `", varname, "' would not be a proper identifier");
 			fi;
-			BindGlobal(varname, valueFunc(i));
-			MakeReadWriteGlobal(varname);
-		od;
-	end;
-	assignVar(ConicRank(conicAlg), ConicIndetName(conicAlg), i -> ConicAlgIndet(conicAlg, i));
-	assignVar(ComRingRank(conicAlg), ComRingIndetName(conicAlg), i -> ComRingIndet(conicAlg, i));
-	assignVar(3, _ComRingGamIndetSymbol, i -> ComRingGamIndet(i));
-	varname := "dd";
-	if IsBoundGlobal(varname) then
-		UnbindGlobal(varname);
+			if IS_READ_ONLY_GLOBAL(varname) then
+				Error("Variable `", varname, "' is write protected.");
+			fi;
+			if ISBOUND_GLOBAL(varname) then
+				Info(InfoWarning + InfoGlobal, 1, "Global variable `", varname,
+					"' is already defined and will be overwritten");
+			fi;
+			UNBIND_GLOBAL(varname);
+			ASS_GVAR(varname, value);
+		end;
+		assignVars := function(num, sym, valueFunc)
+			local i, varname;
+			for i in [1..num] do
+				varname := Concatenation(sym, String(i));
+				assignVar(varname, valueFunc(i));
+			od;
+		end;
+		assignVars(ConicRank(conicAlg), ConicIndetName(conicAlg), i -> ConicAlgIndet(conicAlg, i));
+		assignVars(ComRingRank(conicAlg), ComRingIndetName(conicAlg), i -> ComRingIndet(conicAlg, i));
+		assignVars(3, _ComRingGamIndetSymbol, i -> ComRingGamIndet(i));
+		assignVar("dd", Liedd);
+	else
+		TryNextMethod();
 	fi;
-	BindGlobal(varname, Liedd);
-	MakeReadWriteGlobal(varname);
 end);
 
 # ----- Conjugation, trace, norm on ConicAlg -----
