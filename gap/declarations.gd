@@ -119,13 +119,22 @@ DeclareOperation("ConicAlgMagma", [IsFreeMagmaRing]);
 
 #! @Arguments C
 #! @Description
-#! Returns the commutative coefficient ring of <C>C</C>.
-#! More precisely, returns the function field over the integers over all
+#! Since GAP does not support function fields over infinitely many indeterminates,
+#! it is not possible to return the full coefficient ring of the magma ring <C>C</C>.
+#! This function returns the function field over the integers over the finitely many
 #! indeterminates which were initialised during the construction of <C>C</C>.
 #! In particular, for elements <C>tr(d)</C> where d is a product in <C>C</C>
 #! of sufficiently high length, the expression <C>tr(d) in ComRingOfConicAlg(C)</C>
-#! is <C>false</C>.
+#! is <C>false</C>. Thus the user should not rely on this ring to be the full
+#! coeficient ring. However, it may be safely used to access the zero or one
+#! element of the coefficient ring.
+#! @ChapterInfo Conic, Conic-Stored
 DeclareOperation("ComRingOfConicAlg", [IsFreeMagmaRing]);
+
+#! @Arguments C
+#! @Description
+#! Returns the parameter <C>maxTrLength</C> that was specified during the
+#! construction of <C>C</C>.
 DeclareOperation("ConicAlgMaxTrLength", [IsFreeMagmaRing]);
 DeclareOperation("ConicAlgMagEmbedding", [IsFreeMagmaRing]);
 
