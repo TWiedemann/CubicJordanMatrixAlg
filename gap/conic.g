@@ -168,10 +168,26 @@ InstallMethod(ConicAlgebra, [IsInt, IsInt, IsInt, IsRecord],
 		local magma, initInfo, comRingIndets, comRingIndetInfo, comRing, conicAlg,
 			famConicAlg, famConicAlgMag, famComRing, traceLists, traceSubLists,
 			comSym, conicSym, zeroSym, oneSym;
-		comSym := symbols.comSym;
-		conicSym := symbols.conicSym;
-		zeroSym := symbols.zeroSym;
-		oneSym := symbols.oneSym;
+		if IsBound(symbols.comSym) then
+			comSym := symbols.comSym;
+		else
+			comSym := _ComRingIndetDefaultSymbol;
+		fi;
+		if IsBound(symbols.conicSym) then
+			conicSym := symbols.conicSym;
+		else
+			conicSym := _ConicIndetDefaultSymbol;
+		fi;
+		if IsBound(symbols.zeroSym) then
+			zeroSym := symbols.zeroSym;
+		else
+			zeroSym := _ConicDefaultZeroString;
+		fi;
+		if IsBound(symbols.oneSym) then
+			oneSym := symbols.oneSym;
+		else
+			oneSym := _ConicDefaultZeroString;
+		fi;
 		magma := ConicAlgMagma(conicRank, conicSym, oneSym, zeroSym);
 		initInfo := _InitComRingIndeterminates(magma, comRank, comSym, maxTrLength);
 		comRingIndets := initInfo[1];
@@ -451,7 +467,7 @@ end);
 #! This function also defines global variables <C>dd := Liedd</C> and
 #! <C>g1, g2, g3</C> for $\gamma_1, \gamma_2, \gamma_3$ that are independent
 #! of <C>C</C>.
-#! @ChapterInfo The multiplicative conic alternative algebra $C$, Functions
+#! @ChapterInfo Conic, Conic-Const
 InstallMethod(AssignGeneratorVariables, [IsFreeMagmaRing], 2, function(conicAlg)
 	local assignVar, assignVars;
 	# Code closely follows "DoAssignGenVars" in wordass.gi in the GAP library

@@ -1,52 +1,70 @@
 @Chapter Introduction
-This package allows symbolic computations in a free multiplicative conic alternative algebra $C$ on generators <C>a1, a2, ...</C> over a free commutative ring $k$ on generators <C>t1, t2, ...</C>.
+This package allows symbolic computations in free multiplicative conic alternative algebras $C$
+over a free commutative rings $k$.
+It also supports computations in several structures that can be constructed from $C$ and $k$:
+a cubic Jordan matrix algebra, a Brown algebra, a Lie algebra graded by the root systems $G_2$ and
+$F_4$ and a group graded by the same root systems.
 
-@Section Initialisation
-For technical reasons, three constants that must be set during initialisation limit the ring elements that may arise during runtime:
-* <C>ComRing_rank</C> is the number of <E>indeterminates</E> <C>t1, t2, ...</C>. If for example <C>ComRing_rank = 3</C>, then <C>t1, t2, t3</C> are defined but <C>t4</C> is not.
-* <C>ConicAlg_rank</C> is the number of <E>indeterminates</E> <C>a1, a2, ...</C>.
-* <C>Trace_MaxLength</C> is the maximal length of products that may appear inside the argument of the trace function of $C$. For example, if <C>Trace_MaxLength = 2</C>, then <C>tr(a1a2)</C> is defined but  <C>tr(a1a2a1)</C> is not.<P/>
-These constants may be set by the user with the following function (after loading the package with <C>LoadPackage("CubicJordanMatrixAlg")</C>):<P/>
-@BeginExampleSession
-gap> InitCJMA();
-gap> a := a1+a2;;
-gap> InitCJMA(); # issues GAP warnings
-#W NewRepresentation "CubicElementRep" in Reread. Change of Super-rep not handled
-[More GAP warnings]
-gap> b := a+a1; # a was defined before re-initialisation, a1 was defined afterwards
-Error, no method found! For debugging hints type ?Recovery from NoMethodFound
-[...]
-@EndExampleSession
+Internally
+
+This package was originally developed for certain computations in <Cite Key="DMW26"/>,
+which contains detailed descriptions of the underlying mathematical structures.
+A less technical overview of the functionality of the package is available in
+<Cite Key="Wiedemann26"/>.
 
 @Section Notational conventions
 Throughout this documentation, we use the following conventions:
-* Elements of $k$ are denoted by <C>t, s, r</C>.
-* Elements of $C$ are denoted by <C>a, b, c</C>.
-* Elements of the cubic Jordan matrix algebra are denoted by <C>cub</C>.
-* Elements of the Brown algebra $B$ are denoted by <C>brown</C>.
-* Elements of <C>DD</C> are denoted by <C>ddEl</C>.
-* Elements of $L_0$ are denoted by <C>l0</C>.
-* Elements of $L$ are denoted by <C>lie</C>.
-* Elements of <C>LieEndo</C> are denoted by <C>f, g</C>.
+* Conic algebras are denoted by <C>C</C>, their coefficient rings by <C>k</C>.
+* Elements of a conic algebra are denoted by <C>a, b, c</C>.
+* Elements of the commutative base ring of a conic algebra are denoted by <C>t, s, r</C>.
+* Elements of a cubic Jordan matrix algebra are denoted by <C>cub</C>.
+* Elements of a Brown algebra are denoted by <C>brown</C>.
+* Elements of the Lie algebra $L$ over a conic algebra are denoted by <C>lie</C>.
+* Elements of $L_0$, the 0-space of $L$, are denoted by <C>l0</C>.
+* Elements of <C>DD</C>, one component of $L_0$, are denoted by <C>ddEl</C>.
+* Endomorphisms of $L$ are denoted by <C>f, g</C>.
 * We denote by <C>i, j, l</C> integers in <C>[1,2,3]</C> and by <C>p</C> arbitrary integers.<P/>
 
 @Section For advanced users
 While the main functions of the package are described in this documentation,
-more functions and their documentation can be found by studying the GAP source files in <C>CubicJordanMatrixAlg/gap</C>.
-Most files are commited to building up the desired structures step by step (similarly as this manual does),
-and the precise order in which they are loaded can be read off from <C>CubicJordanMatrixAlg/init.g</C>.
+more functions and their documentation can be found by studying the GAP source files in
+<C>CubicJordanMatrixAlg/gap</C>.
+Most files are commited to building up the desired structures step by step
+(similarly as this manual does),
+and the precise order in which they are loaded can be read off from
+<C>CubicJordanMatrixAlg/init.g</C>.
 The most complicated tasks are the simplification functions in <C>simplify.g</C>
 and the construction of the trace function in <C>comring.g</C>.<P/>
+
+@Chapter Conic
+@ChapterTitle Conic algebras
+
+Throughout this documentation, we use the term "conic algebra" to mean
+"(free) multiplicative conic alternative algebra".
+Internally, these algebras are represented in <C>CubicJordanMatrixAlg</C>
+by free nonassociative algebras, that is, by magma rings over free magmas.
+If two elements $a,b$ of a conic algebra coincide, this implies that $a=b$ is an
+identity in all multiplicative conic alternative algebra.
+However, if $a \ne b$, this does not necessarily mean that $a=b$ is not an identity, but only
+that it is not proven to be an identity.
+
+See also Chapter <Ref Chap="Chapter_Simplify"/> for functions to prove identities in conic algebras
+(and in structures built from conic algebras).
+
+@Section Conic-Const
+@SectionTitle Constructing conic algebras and their elements
+
+@Section Conic-Maps
+@SectionTitle Maps defined on conic algebras
+
+@Section Conic-Stored
+@SectionTitle Information stored in a conic algebra
+
 
 @Chapter The commutative ring $k$
 Internally, we use the name <C>ComRing</C> for the commutative ring $k$.<P/>
 <C>+, *, ^-1</C>
 The usual arithmetic operations in GAP for addition, multiplication and inversion are available for elements of $k$.<P/>
-
-@Chapter The multiplicative conic alternative algebra $C$
-Internally, we use the name <C>ConicAlg</C> for the multiplicative conic alternative $k$-algebra $C$.<P/>
-<C>+, *, ^-1</C>
-The usual arithmetic operations in GAP for addition and multiplication (but not inversion) are available for elements of $k$.<P/>
 
 @Chapter The cubic Jordan matrix algebra
 Internally, we use the name <C>Cubic</C> for the cubic Jordan matrix algebra $J := \text{Her}_3(C, \Gamma)$.<P/>
@@ -130,7 +148,8 @@ The zero elements in $k$, $C$, $B$, <C>DD</C>, $L_0$, $L$, <C>LieEndo</C>, respe
 <C>GrpOne</C>
 The identity element in <C>LieEndo</C>.<P/>
 
-@Chapter Simplification and equality tests
+@Chapter Simplify
+@ChapterTitle Simplification and equality tests
 Let <C>u, v</C> be two element of $k$ (or of $C$, $B$, <C>DD</C>, $L_0$ or $L$, but not of <C>LieEndo</C> which is handled somewhat differently). Then <C>u = v</C> evaluates to <C>true</C> if and only if the internal representations of <C>u</C> and <C>v</C> coincide. In particular, if it evaluates to <C>true</C>, then <C>u</C> and <C>v</C> are certainly equal (in the mathematical sense, i.e. regarded as elements of a "free" mathematical structure). If for example <C>u</C>, <C>v</C> lies in $C$, this means that for any multiplicative conic alternative algebra $\tilde{C}$ over any commutative ring $\tilde{k}$, the identity <C>u = v</C> holds whenever <C>a1, a2, ...</C> are replaced by arbitrary elements of $\tilde{C}$ and <C>t1, t2, ...</C> are replaced by arbitrary elements of $\tilde{k}$.<P/>
 However, it <C>u = v</C> evaluates to <C>false</C>, then this does not prove that <C>u</C> and <C>v</C> are not equal (in the mathematical sense). The following key function of this package aims to mitigate this problem:<P/>
 
