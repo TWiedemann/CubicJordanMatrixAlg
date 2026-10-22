@@ -41,8 +41,8 @@ DeclareOperation("ComRingGamIndet", [ IsInt ]);
 #! on the other hand, may depend on the order in which these traces have appeared
 #! in the current GAP session.<P/>
 #! The record <C>nameRec</C> may contain the following entries:
-#! * <C>comSym</C>: The symbol used for the generators in the commutative base ring. Default: <C>t</C>.
-#! * <C>conicSym</C>: The symbol used for the generators in the conic algebra. Default: <C>a</C>.
+#! * <C>comSym</C>: The symbol used for the generators in the commutative base ring, which are named <C>comSym1, comSym2, ...</C>. Default: <C>t</C>.
+#! * <C>conicSym</C>: The symbol used for the generators in the conic algebra, which are named <C>conicSym1, conicSym2, ...</C>. Default: <C>a</C>.
 #! * <C>zeroSym</C>: The symbol used for the zero element of the conic algebra. Default: <C>0_C</C>.
 #! * <C>oneSym</C>: The symbol used for the one element of the conic algebra. Default: <C>1_C</C>.
 #! There are several variants of <C>ConicAlgebra</C> which use default values for the
@@ -107,7 +107,7 @@ DeclareOperation("ConicNormLin", [ IsObject, IsObject ]);
 #! Several measures are taken to simplify (the display of) traces:
 #! * Multiplication signs in the argument of the trace are not printed: For <C>a=a1*a2</C>, the trace of <C>a</C> is printed as <C>tr(a1a2)</C>
 #! * By the relation <C>tr((ab)c) = tr(a(bc))</C>, we can omit brackets in products of length at most 3, so the result of <C>ConicTr((a1*a2)*a3)</C> is printed as <C>tr(a1a2a3)</C>.
-#! *  Using in addition the relations <C>tr(a') = tr(a)</C> and <C>tr(ab) = tr(ba)</C>, the arguments of the trace are often permuted and/or replaced by their conjugates to ensure proper cancellation of terms. For example, both <C>ConicTr(a1*ConicInv(a2))</C> and <C>ConicTr(ConicInv(a1)*a2)</C> evaluate to <C>tr(a1a2')</C>, and <C>ConicTr(ConicInv(a1)*a2*a3)</C> evaluates to <C>tr(a1a3'a2')</C> (which is correct because <C>tr(a1'a2a3) = tr((a1'a2a3)') = tr(a3'a2'a1) = tr(a1a3'a2')</C>).
+#! * Using in addition the relations <C>tr(a') = tr(a)</C> and <C>tr(ab) = tr(ba)</C>, the arguments of the trace are often permuted and/or replaced by their conjugates to ensure proper cancellation of terms. For example, both <C>ConicTr(a1*ConicInv(a2))</C> and <C>ConicTr(ConicInv(a1)*a2)</C> evaluate to <C>tr(a1a2')</C>, and <C>ConicTr(ConicInv(a1)*a2*a3)</C> evaluates to <C>tr(a1a3'a2')</C> (which is correct because <C>tr(a1'a2a3) = tr((a1'a2a3)') = tr(a3'a2'a1) = tr(a1a3'a2')</C>).
 #! @ChapterInfo Conic, Conic-Maps
 DeclareOperation("ConicTr", [ IsObject ]);
 
@@ -116,6 +116,7 @@ DeclareOperation("ConicAlgMagma", [IsInt, IsString]);
 DeclareOperation("ConicAlgMagma", [IsInt, IsString, IsString, IsString]);
 DeclareOperation("ConicAlgMagma", [IsNonassocWord]);
 DeclareOperation("ConicAlgMagma", [IsFreeMagmaRing]);
+DeclareOperation("ConicAlgMagEmbedding", [IsFreeMagmaRing]);
 
 #! @Arguments C
 #! @Description
@@ -126,8 +127,8 @@ DeclareOperation("ConicAlgMagma", [IsFreeMagmaRing]);
 #! In particular, for elements <C>tr(d)</C> where d is a product in <C>C</C>
 #! of sufficiently high length, the expression <C>tr(d) in ComRingOfConicAlg(C)</C>
 #! is <C>false</C>. Thus the user should not rely on this ring to be the full
-#! coeficient ring. However, it may be safely used to access the zero or one
-#! element of the coefficient ring.
+#! coeficient ring. However, it may be safely used to access
+#! <C>Zero(ComRingOfConicAlg(C))</C> and <C>One(ComRingOfConicAlg(C))</C>.
 #! @ChapterInfo Conic, Conic-Stored
 DeclareOperation("ComRingOfConicAlg", [IsFreeMagmaRing]);
 
@@ -135,12 +136,31 @@ DeclareOperation("ComRingOfConicAlg", [IsFreeMagmaRing]);
 #! @Description
 #! Returns the parameter <C>maxTrLength</C> that was specified during the
 #! construction of <C>C</C>.
+#! @ChapterInfo Conic, Conic-Stored
 DeclareOperation("ConicAlgMaxTrLength", [IsFreeMagmaRing]);
-DeclareOperation("ConicAlgMagEmbedding", [IsFreeMagmaRing]);
-
+#! @Arguments C
+#! @Description
+#! Returns the argument <C>conicRank</C> that was specified during the creation
+#! of <C>C</C>, that is, the number of independent elements of <C>C</C>.
+#! @ChapterInfo Conic, Conic-Stored
 DeclareOperation("ConicRank", [ IsObject ]);
+#! @Arguments C
+#! @Description
+#! Returns the argument <C>conicSym</C> that was specified during the creation
+#! of <C>C</C>, that is, the name given to the generators of <C>C</C>.
+#! @ChapterInfo Conic, Conic-Stored
 DeclareOperation("ConicIndetName", [ IsObject ]);
+#! @Arguments C
+#! @Description
+#! Returns the argument <C>comRingRank</C> that was specified during the creation
+#! of <C>C</C>, that is, the number of independent elements of <C>ComRingOfConicAlg(C)</C>.
+#! @ChapterInfo Conic, Conic-Stored
 DeclareOperation("ComRingRank", [ IsObject ]);
+#! @Arguments C
+#! @Description
+#! Returns the argument <C>comSym</C> that was specified during the creation
+#! of <C>C</C>, that is, the name given to the generators of <C>C</C>.
+#! @ChapterInfo Conic, Conic-Stored
 DeclareOperation("ComRingIndetName", [ IsObject ]);
 
 DeclareOperation("ReqComRingEl", [IsRingElement]);
