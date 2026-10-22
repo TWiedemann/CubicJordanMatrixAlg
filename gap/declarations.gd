@@ -2,7 +2,7 @@
 
 #! @Arguments C, p
 #! @Description
-#! Returns the <C>p</C>-th indeterminate in the coefficient ring of <C>C</C>, which is printed as <C>tp</C>.
+#! Returns the <C>p</C>-th indeterminate in the base ring of <C>C</C>, which is printed as <C>tp</C>.
 #! We must have <C>1 &lt;= p &lt;= ComRingRank(C)</C>.
 #! @ChapterInfo The commutative ring $k$, Functions
 DeclareOperation("ComRingIndet", [ IsRing, IsInt ]);
@@ -121,7 +121,7 @@ DeclareOperation("ConicAlgMagEmbedding", [IsFreeMagmaRing]);
 #! @Arguments C
 #! @Description
 #! Since GAP does not support function fields over infinitely many indeterminates,
-#! it is not possible to return the full coefficient ring of the magma ring <C>C</C>.
+#! it is not possible to return the full base ring of the magma ring <C>C</C>.
 #! This function returns the function field over the integers over the finitely many
 #! indeterminates which were initialised during the construction of <C>C</C>.
 #! In particular, for elements <C>tr(d)</C> where d is a product in <C>C</C>
@@ -462,51 +462,57 @@ DeclareOperation("L0ZetaPart", [ IsObject ]);
 #! @Description
 #! Returns the image of <C>F4Root</C> under the surjection $\pi: F_4 \to G_2 \cup \{0\}$
 #! described in [DMW, 10.24].
-#! @ChapterInfo The Lie algebra, Root homomorphisms
+#! @ChapterInfo Lie, Lie-Root
 DeclareOperation("F4RootG2Coord", [ IsObject ]);
 
 #! @Arguments F4Root1, F4Root2
 #! @Description
 #! Returns $\text{F4Root1}^{\sigma(\text{F4Root2})}$, the image of <C>F4Root1</C>
 #! under the reflection along the hyperplane orthogonal to <C>F4Root2</C>.
-#! @ChapterInfo The Lie algebra, Root homomorphisms
+#! @ChapterInfo Lie, Lie-Root
 DeclareOperation("F4Refl", [ IsObject, IsObject ]);
 
 #! @Arguments F4Root, z
 #! @Description
 #! Returns the element $\vartheta_\alpha(z)$ of $L$ as defined in [DMW, 10.29]. Thus <C>z</C>
 #! must be in $k$ if <C>F4Root</C> is long and in $C$ otherwise.
-#! @ChapterInfo The Lie algebra, Root homomorphisms
+#! @ChapterInfo Lie, Lie-Root
 DeclareOperation("LieRootHomF4", [ IsFreeMagmaRing, IsObject, IsObject, IsObject, IsObject ]);
 
 #! @Arguments F4Root, z
 #! @Description
 #! Returns the element $\vartheta_\alpha(z)$ of $L$ as defined in [DMW, 10.29]. Thus <C>z</C>
 #! must be in $k$ if <C>F4Root</C> is long and in $C$ otherwise.
-#! @ChapterInfo The Lie algebra, Root homomorphisms
+#! @ChapterInfo Lie, Lie-Root
 DeclareOperation("LieRootHomF4", [ IsFreeMagmaRing, IsObject, IsObject ]);
 
 # ----- The automorphisms of `Lie` -----
+
+#! @Description
+#! The identity element in the automorphism group of the Lie algebra over a conic algebra.
+#! It is the same for any conic algebra.
+#! @ChapterInfo Lie, Lie-Auto
+DeclareGlobalName("LieEndoOne");
 
 #! @Arguments F4Root, z
 #! @Description
 #! Returns the automorphism $\theta_\alpha(a)$ of $L$ in <C>LieEndo</C> as defined in
 #! [DMW, 11.2, 11.8]. Thus <C>z</C> must be in $k$ if <C>F4Root</C> is long and in $C$ otherwise.
-#! @ChapterInfo The automorphism group, Functions
+#! @ChapterInfo Lie, Lie-Auto
 DeclareOperation("GrpRootHomF4", [ IsFreeMagmaRing, IsObject, IsObject, IsObject ]);
 
 #! @Arguments F4Root, z
 #! @Description
 #! Returns the automorphism $\theta_\alpha(a)$ of $L$ in <C>LieEndo</C> as defined in
 #! [DMW, 11.2, 11.8]. Thus <C>z</C> must be in $k$ if <C>F4Root</C> is long and in $C$ otherwise.
-#! @ChapterInfo The automorphism group, Functions
+#! @ChapterInfo Lie, Lie-Auto
 DeclareOperation("GrpRootHomF4", [ IsFreeMagmaRing, IsObject, IsObject ]);
 
 #! @Arguments F4Root
 #! @Description
 #! Returns the Weyl element $w_\alpha = \theta_{-\alpha}(-1) \theta_\alpha(1)
 #! \theta_{-\alpha}(-1)$ in <C>LieEndo</C>.
-#! @ChapterInfo The automorphism group, Functions
+#! @ChapterInfo Lie, Lie-Auto
 DeclareOperation("GrpStandardWeylF4", [ IsFreeMagmaRing, IsList ]);
 
 # Variant with additional sign. Not part of the main interface.
@@ -527,7 +533,7 @@ DeclareOperation("Simplify", [ IsFreeMagmaRing, IsObject ]);
 #! usually easier than showing that <C>u-v</C> represents 0). The function <C>Simplify</C>
 #! relies on several subroutines which can be studied in detail in <C>gap/simplify.g</C>.
 #! For Lie algebra elements, we also provide the following function.
-#! @ChapterInfo Simplification and equality tests, Functions
+#! @ChapterInfo Simplify, Simplify-Test
 DeclareOperation("Simplify", [ IsObject ]);
 
 # For IsLieElement
@@ -544,10 +550,10 @@ DeclareOperation("TestEquality", [ IsObject, IsObject ]);
 #! <C>[gen, Simplify(g(gen) - h(gen))]</C> for any <C>gen</C> for which the test was not
 #! successfull. The list of all generators <C>gen</C> on which we test equality is obtained
 #! by evaluating all root homomorphisms with image in $L_{-2} + L_1$ on the last
-#! indeterminate in $k$ or $C$ (that is, on the last generators of the coefficient ring or
+#! indeterminate in $k$ or $C$ (that is, on the last generators of the base ring or
 #! <C>C</C>). The user should assure that these indeterminates do
 #! not occur in the definition of <C>g</C> and <C>h</C>.
-#! @ChapterInfo Simplification and equality tests, Functions
+#! @ChapterInfo Simplify, Simplify-Test
 DeclareOperation("TestEquality", [ IsFreeMagmaRing, IsObject, IsObject, IsObject ]);
 
 #! @Description
@@ -560,10 +566,10 @@ DeclareOperation("TestEquality", [ IsFreeMagmaRing, IsObject, IsObject, IsObject
 #! <C>[gen, Simplify(g(gen) - h(gen))]</C> for any <C>gen</C> for which the test was not
 #! successfull. The list of all generators <C>gen</C> on which we test equality is obtained
 #! by evaluating all root homomorphisms with image in $L_{-2} + L_1$ on the last
-#! indeterminate in $k$ or $C$ (that is, on the last generators of the coefficient ring or
+#! indeterminate in $k$ or $C$ (that is, on the last generators of the base ring or
 #! <C>C</C>). The user should assure that these indeterminates do
 #! not occur in the definition of <C>g</C> and <C>h</C>.
-#! @ChapterInfo Testing equality of automorphism of $L$, Functions
+#! @ChapterInfo Simplify, Simplify-Test
 DeclareOperation("TestEquality", [ IsFreeMagmaRing, IsObject, IsObject ]);
 
 #! @Arguments g, h
@@ -576,5 +582,5 @@ DeclareOperation("TestEquality", [ IsFreeMagmaRing, IsObject, IsObject ]);
 #! <C>TestEquality</C>, the user should assure that the final indeterminates of the coefficient
 #! ring or <C>C</C> do not occur in the definition of <C>g</C> and
 #! <C>h</C>.
-#! @ChapterInfo Testing equality of automorphism of $L$, Functions
+#! @ChapterInfo Simplify, Simplify-Test
 DeclareOperation("TestEqualityPieces", [ IsFreeMagmaRing, IsObject, IsObject ]);

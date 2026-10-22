@@ -1,5 +1,5 @@
 ### This file contains the definition of conic algebras.
-### These are free magma rings over the magmas from conic_mag.g with coefficient ring
+### These are free magma rings over the magmas from conic_mag.g with base ring
 ### as defined in comring.g.
 
 ## Some information about a conic algebra is stored in the family object of its
@@ -452,7 +452,7 @@ end);
 #! @Arguments C
 #! @Description
 #! This function defines global GAP variables that store the indeterminates of <C>C</C>
-#! of and of its coefficient ring $k$. The names of the GAP variables coincide
+#! of and of its base ring $k$. The names of the GAP variables coincide
 #! with the names of the indeterminates. Any previously defined GAP variables
 #! with these names will be overwritten.
 #! @BeginExampleSession

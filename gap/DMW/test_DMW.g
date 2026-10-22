@@ -266,7 +266,7 @@ TestGrpComRels := function(conicAlg)
 		# Commutator relation on [d2, d2+2*d3]
 		[
 			GrpRootHomCom(conicAlg, d2, t1, d2+2*d3, t2),
-			GrpOne
+			LieEndoOne
 		],
 		# Commutator relation on [d3, d4]
 		[GrpRootHomCom(conicAlg, d4, a1, d3, a2), GrpRootHomF4(conicAlg, d3+d4, ConicAlgInv(a2)*ConicAlgInv(a1))]

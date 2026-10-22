@@ -5,8 +5,6 @@ It also supports computations in several structures that can be constructed from
 a cubic Jordan matrix algebra, a Brown algebra, a Lie algebra graded by the root systems $G_2$ and
 $F_4$ and a group graded by the same root systems.
 
-Internally
-
 This package was originally developed for certain computations in <Cite Key="DMW26"/>,
 which contains detailed descriptions of the underlying mathematical structures.
 A less technical overview of the functionality of the package is available in
@@ -14,7 +12,7 @@ A less technical overview of the functionality of the package is available in
 
 @Section Notational conventions
 Throughout this documentation, we use the following conventions:
-* Conic algebras are denoted by <C>C</C>, their coefficient rings by <C>k</C>.
+* Conic algebras are denoted by <C>C</C>, their base rings by <C>k</C>.
 * Elements of a conic algebra are denoted by <C>a, b, c</C>.
 * Elements of the commutative base ring of a conic algebra are denoted by <C>t, s, r</C>.
 * Elements of a cubic Jordan matrix algebra are denoted by <C>cub</C>.
@@ -37,7 +35,7 @@ The most complicated tasks are the simplification functions in <C>simplify.g</C>
 and the construction of the trace function in <C>comring.g</C>.<P/>
 
 @Chapter Conic
-@ChapterTitle Conic algebras
+@ChapterTitle Conic algebras and their base rings
 
 Throughout this documentation, we use the term "conic algebra" to mean
 "(free) multiplicative conic alternative algebra".
@@ -58,51 +56,69 @@ See also Chapter <Ref Chap="Chapter_Simplify"/> for functions to prove identitie
 @SectionTitle Maps defined on conic algebras
 
 @Section Conic-Stored
-@SectionTitle Information stored in a conic algebra
+@SectionTitle Additional information stored in a conic algebra
 
+@Section Conic-ComRing
+@SectionTitle Coefficient rings of conic algebras
 
-@Chapter The commutative ring $k$
-Internally, we use the name <C>ComRing</C> for the commutative ring $k$.<P/>
-<C>+, *, ^-1</C>
-The usual arithmetic operations in GAP for addition, multiplication and inversion are available for elements of $k$.<P/>
-
-@Chapter The cubic Jordan matrix algebra
+@Chapter CJMA
+@ChapterTitle Cubic Jordan matrix algebras
 Internally, we use the name <C>Cubic</C> for the cubic Jordan matrix algebra $J := \text{Her}_3(C, \Gamma)$.<P/>
-@Section Elements of the cubic Jordan matrix algebra
+@Section Constructing elements of cubic Jordan matrix algebras
 <C>+, *</C>
 The usual GAP operations for addition $+: J \times J \to J$ and scalar multiplication $\cdot: k \times J \to J$ are available on $J$.<P/>
 
-@Section The cubic norm structure
-$J$ has the structure of a cubic norm structure, whose structural maps can be computed as follows.<P/>
+@Section CJMA-CNS
+@SectionTitle The cubic norm structure
+A cubic Jordan matrix algebra has the structure of a cubic norm structure,
+whose structural maps can be computed as follows.<P/>
 
-@Section The Jordan algebra structure
-$J$ has the structure of a quadratic Jordan algebra, whose structural maps can be computed as follows.<P/>
+@Section CJMA-Jordan
+@SectionTitle The Jordan algebra structure
+A cubic Jordan matrix algebra has the structure of a quadratic Jordan algebra,
+whose structural maps can be computed as follows.<P/>
 
+@Chapter Lie
+@ChapterTitle The Lie algebra
 
-@Chapter The Brown algebra
-We refer to the $k$-module $B = (k, J, J', k)$ as the <E>Brown algebra</E> because, if $2$ and $3$ are invertible in $k$, then it has the structure of a structurable algebra that is known under this name. It parametrises the $1$- and $(-1)$-parts of the Lie algebra that we construct in [DMW].<P/>
-Note that while elements of $B$ are internally represented and also printed as lists <C>[t, cub1, cub2, s]</C>, they are not lists in the GAP sense. Thus for an element <C>brown</C> of $B$, we have <C>IsList(brown) = false</C> and <C>brown[1]</C> is not a well-defined expression.<P/>
+The Lie algebra $L$ over any conic algebra $C$ has a direct sum decomposition
+$\bigoplus_{i=-2}^2 L_i$.
+As usual in GAP, the sum and Lie bracket of two elements of $L$ can be computed
+as <C>lie1 + lie2</C> and <C>lie1 * lie2</C>, respectively.
+Further, the scalar multiplication $k \times L \to L$, where $k$ is the base ring of $C$,
+can also be computed using <C>*</C>.
 
-@Chapter The Lie algebra
-@Section Operations
-The Lie algebra $L$ that we construct from $J$ is, as a $k$-module, a direct sum $\bigoplus_{i=-2}^2 L_i$. We refer to it as <C>Lie</C> in the documentation and in our naming conventions.<P/>
-<C>+, *</C>
-As usual in GAP, the sum and Lie bracket of two elements of $L$ can be computed as <C>lie1 + lie2</C> and <C>lie1 * lie2</C>, respectively. Further, the scalar multiplication $k \times L \to L$ can also be computed using <C>*</C>.<P/>
-@Section The parts $L_{-2}$ and $L_2$
+@Section Lie-Brown
+@SectionTitle The Brown algebra and its elements
+
+We refer to the $k$-module $B = (k, J, J', k)$ as the <E>Brown algebra</E> because,
+if $2$ and $3$ are invertible in $k$, then it has the structure of a structurable algebra
+that is known under this name.
+It parametrises the $1$- and $(-1)$-parts of the Lie algebra that is constructed in [DMW].<P/>
+Note that while elements of $B$ are internally represented and also printed as
+lists <C>[t, cub1, cub2, s]</C>, they are not lists in the GAP sense.
+Thus for an element <C>brown</C> of $B$, we have <C>IsList(brown) = false</C> and
+<C>brown[1]</C> is not a well-defined expression.
+
+@Section Lie-2
+@SectionTitle The parts $L_{-2}$ and $L_2$
 The $k$-submodules $L_{-2}$ and $L_2$ are isomorphic to $k$.<P/>
 <List><Item><C>LieX</C></Item><Item><C>LieY</C></Item></List>
 The generators of $L_{-2}$ and $L_2$, respectively. They are denoted by $x$ and $y$ in [DMW]. They are printed as <C>x</C> and <C>y</C>.<P/>
 
-@Section The parts $L_{-1}$ and $L_1$
+@Section Lie-1
+@SectionTitle The parts $L_{-1}$ and $L_1$
 The $k$-submodules $L_{-1}$ and $L_1$ are isomorphic to the Brown algebra $B$. However, just like elements of $B$ are not lists in the GAP sense, we strictly distinguish between elements of $B$, $L_{-1}$ and $L_1$. Elements of $L_{-1}$ and $L_1$ are printed as <C>[t, cub1, cub2, s]_-</C> and <C>[t, cub1, cub2, s]_+</C>, respectively. For example, <C>[ t1, a1[23], a2[12], t1+t2 ]_+</C> is an element of $L_1$.<P/>
 
-@Section The Lie subalgebra $L_0$
+@Section Lie-0
+@SectionTitle The Lie subalgebra $L_0$
 The subalgebra $L_0$ of $L$ is itself the direct sum of three components $L_{0,-1}, Z, L_{0,1}$. Again, we internally distinguish between elements of $L_0$ and their embedding into $L$.<P/>
 
-@Section The $L_0$ components
+@Subsection Lie-01
+@SubsectionTitle The components $L_{0,1}$ and $L_{0,-1}$
 The $k$-submodules $L_{0,-1}$ and $L_{0,1}$ are isomorphic to the cubic Jordan matrix algebra $J$. Again, we strictly distinguish between elements of $J$, $L_{0,-1}$ and $L_{0,1}$. For an element <C>cub</C> of $J$, the corresponding elements of $L_{0,-1}$ and $L_{0,1}$ are printed as <C>ad_{cub}^-</C> and <C>ad_{cub}^+</C>, respectively. While we internally distinguish between elements of $L_{0,\pm 1}$ and their embeddings into $L$, they are printed in the same way.<P/>
 
-@Section The parts $Z$ and `DD`
+@Subsection The components $Z$ and `DD`
 We refer to the $k$-module $\langle \mathbf{d}_{a,b} \mid a \in J, b \in J' \rangle$ (which is unnamed in [DMW]) as <C>DD</C> in (the documentation of) this GAP package. The $k$-module $Z$ is the (not necessarily direct) sum of <C>DD</C> with $k \xi + k\zeta$. Again, we internally distinguish between elements of <C>DD</C> and their embedding into $L_0$ and $L$.<P/>
 <List>
 <Item><C>LieXi</C></Item>
@@ -112,8 +128,11 @@ We refer to the $k$-module $\langle \mathbf{d}_{a,b} \mid a \in J, b \in J' \ran
 </List>
 The elements $\xi$ and $\zeta$ regarded as elements of $L$ or of $L_0$, respectively. They are printed as <C>xi</C> and <C>zeta</C>.<P/>
 
-@Section Root homomorphisms
-We represent a root in $G_2$ (respectively, $F_4$) as a list with two (respectively, four) elements, each of which is an integer in the range <C>[-2, -1, 0, 1, 2]</C>. This representation corresponds precisely to Figures 1 and 3 in [DMW].<P/>
+@Section Lie-Root
+@SectionTitle Root homomorphisms in the Lie algebra
+We represent a root in $G_2$ (respectively, $F_4$) as a list with two (respectively, four) elements,
+each of which is an integer in the range <C>[-2, -1, 0, 1, 2]</C>.
+This representation corresponds precisely to Figures 1 and 3 in [DMW].<P/>
 <List>
 <Item><C>F4Roots</C></Item>
 <Item><C>F4ShortRoots</C></Item>
@@ -127,32 +146,23 @@ Lists of all (resp. all short reps. all long) roots in $F_4$ (resp. $G_2$).<P/>
 The system <C>[[1,1,-1,-1], [-2, 0, 0, 0], [1, -1, 0, 0], [0, 1, 1, 0]</C> of simple roots in $F_4$. This is precisely $\Delta_F = (\delta_1, \delta_2, \delta_3, \delta_4)$ in [DMW, 11.1].<P/>
 
 
-@Chapter The automorphism group
+@Section Lie-Auto
+@SectionTitle Automorphisms of the Lie algebra
 The $F_4$-graded group constructed in [DMW] is a group of automorphisms of $L$. This package provides the internal structure <C>LieEndo</C> to perform computations with automorphisms of $L$.<P/>
 <C>f(lie)</C>
 For an element <C>f</C> of <C>LieEndo</C> and <C>lie</C> in $L$, <C>f(lie)</C> is the image of <C>lie</C> under <C>f</C>.<P/>
 <C>f+g, f*g</C>
 For two elements <C>f</C> and <C>g</C> of <C>LieEndo</C>, <C>f+g</C> and <C>f*g</C> are the elements of <C>LieEndo</C> that map <C>lie</C> to <C>f(lie) + g(lie)</C> and <C>f(g(lie))</C>, respectively.<P/>
 
-@Chapter Trivial elements
-<List>
-<Item><C>Zero(ComRing)</C></Item>
-<Item><C>Zero(ConicAlg)</C></Item>
-<Item><C>BrownZero</C></Item>
-<Item><C>DDZero</C></Item>
-<Item><C>L0Zero</C></Item>
-<Item><C>LieZero</C></Item>
-<Item><C>GrpZero</C></Item>
-</List>
-The zero elements in $k$, $C$, $B$, <C>DD</C>, $L_0$, $L$, <C>LieEndo</C>, respectively.<P/>
-<C>GrpOne</C>
-The identity element in <C>LieEndo</C>.<P/>
-
 @Chapter Simplify
 @ChapterTitle Simplification and equality tests
+
+@Section Simplify-Function
+@Section Simplification functions
 Let <C>u, v</C> be two element of $k$ (or of $C$, $B$, <C>DD</C>, $L_0$ or $L$, but not of <C>LieEndo</C> which is handled somewhat differently). Then <C>u = v</C> evaluates to <C>true</C> if and only if the internal representations of <C>u</C> and <C>v</C> coincide. In particular, if it evaluates to <C>true</C>, then <C>u</C> and <C>v</C> are certainly equal (in the mathematical sense, i.e. regarded as elements of a "free" mathematical structure). If for example <C>u</C>, <C>v</C> lies in $C$, this means that for any multiplicative conic alternative algebra $\tilde{C}$ over any commutative ring $\tilde{k}$, the identity <C>u = v</C> holds whenever <C>a1, a2, ...</C> are replaced by arbitrary elements of $\tilde{C}$ and <C>t1, t2, ...</C> are replaced by arbitrary elements of $\tilde{k}$.<P/>
 However, it <C>u = v</C> evaluates to <C>false</C>, then this does not prove that <C>u</C> and <C>v</C> are not equal (in the mathematical sense). The following key function of this package aims to mitigate this problem:<P/>
 
-@Chapter Testing equality of automorphism of $L$
+@Section Simplify-Test
+@SectionTitle Testing equality of automorphism of $L$
 For elements of <C>LieEndo</C>, equality tests with <C>=</C> are useless: Even <C>GrpRootHomF4(F4Root, z) = GrpRootHomF4(F4Root, z)</C> evaluates to <C>false</C> for technical reasons. Instead, the following functions should be used.<P/>
 
