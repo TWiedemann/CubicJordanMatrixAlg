@@ -162,9 +162,21 @@ to <C>f(lie)+g(lie)</C> and <C>f(g(lie))</C>, respectively.
 @ChapterTitle Simplification and equality tests
 
 @Section Simplify-Function
-@Section Simplification functions
-Let <C>u, v</C> be two element of $k$ (or of $C$, $B$, <C>DD</C>, $L_0$ or $L$, but not of <C>LieEndo</C> which is handled somewhat differently). Then <C>u = v</C> evaluates to <C>true</C> if and only if the internal representations of <C>u</C> and <C>v</C> coincide. In particular, if it evaluates to <C>true</C>, then <C>u</C> and <C>v</C> are certainly equal (in the mathematical sense, i.e. regarded as elements of a "free" mathematical structure). If for example <C>u</C>, <C>v</C> lies in $C$, this means that for any multiplicative conic alternative algebra $\tilde{C}$ over any commutative ring $\tilde{k}$, the identity <C>u = v</C> holds whenever <C>a1, a2, ...</C> are replaced by arbitrary elements of $\tilde{C}$ and <C>t1, t2, ...</C> are replaced by arbitrary elements of $\tilde{k}$.<P/>
-However, it <C>u = v</C> evaluates to <C>false</C>, then this does not prove that <C>u</C> and <C>v</C> are not equal (in the mathematical sense). The following key function of this package aims to mitigate this problem:<P/>
+@SectionTitle Simplification functions
+Let <C>u, v</C> be two element of $k$ (or of $C$, the Brown algebra, <C>DD</C>, $L_0$ or $L$,
+but not of <C>LieEndo</C> which is handled somewhat differently).
+Then <C>u = v</C> evaluates to <C>true</C> if and only if the internal representations
+of <C>u</C> and <C>v</C> coincide.
+In particular, if it evaluates to <C>true</C>, then <C>u</C> and <C>v</C> are certainly equal
+(in the mathematical sense, i.e. regarded as elements of a "free" mathematical structure).
+If for example <C>u</C>, <C>v</C> lie in $C$ and <C>u = v</C>,
+this means that for any multiplicative conic alternative algebra $\tilde{C}$
+over any commutative ring $\tilde{k}$, the identity <C>u = v</C> holds whenever
+<C>a1, a2, ...</C> are replaced by arbitrary elements of $\tilde{C}$ and
+<C>t1, t2, ...</C> are replaced by arbitrary elements of $\tilde{k}$.<P/>
+However, it <C>u = v</C> evaluates to <C>false</C>, then this does not prove that <C>u</C> and <C>v</C>
+are not equal (in the mathematical sense).
+The following key function of this package aims to mitigate this problem.
 
 @Section Simplify-Test
 @SectionTitle Testing equality of automorphism of $L$

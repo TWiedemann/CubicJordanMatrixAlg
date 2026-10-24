@@ -2,7 +2,6 @@
 
 # ----- Equality tests on Lie -----
 
-# TODO: Check if TestEquality for Lie elements is needed
 # lieEl1, lieEl2: Elements of Lie.
 # print: Bool (default: false).
 # Returns: If lieEl1 can be proven to be equal to lieEl2 using Simplify, returns true.

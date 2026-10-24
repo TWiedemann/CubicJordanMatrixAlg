@@ -267,7 +267,7 @@ end);
 # comIndetNum, conicIndetNum: Numbers of the indeterminates that should be used.
 # var: Bool.
 # Returns: A list of generic basic elements of Lie which generate it as a Lie algebra,
-# involving indeterminates t_comIndetNum, a_conicIndetNum
+# involving the indeterminates a_conicIndetNum
 # If the last (boolean) input variable is true, then the generator list contains
 # LieY and elements from L_{-1}. Otherwise (and by default) it contains LieX
 # and elements from L_1.
