@@ -4,7 +4,7 @@
 #! @Description
 #! Returns the <C>p</C>-th indeterminate in the base ring of <C>C</C>, which is printed as <C>tp</C>.
 #! We must have <C>1 &lt;= p &lt;= ComRingRank(C)</C>.
-#! @ChapterInfo The commutative ring $k$, Functions
+#! @ChapterInfo Conic, Conic-ComRing
 DeclareOperation("ComRingIndet", [ IsRing, IsInt ]);
 
 DeclareOperation("ComRingIndet", [ IsString, IsInt ]);
@@ -17,7 +17,7 @@ DeclareOperation("ComRingIndet", [ IsString, IsInt ]);
 #! They are printed as <C>g1, g2, g3</C>.
 #! If the package was initialised with <C>userVars = true</C>,
 #! then GAP variables <C>g1 := ComRingGamIndet(1), ...</C> are defined.
-#! @ChapterInfo The commutative ring $k$, Functions
+#! @ChapterInfo Conic, Conic-ComRing
 DeclareOperation("ComRingGamIndet", [ IsInt ]);
 
 # ----- The conic algebra C -----
@@ -174,26 +174,26 @@ DeclareOperation("ReqConicAlgEl", [IsList]);
 #! @Description
 #! Returns <C>a[jl]</C> where <C>[i,j,l]</C> is the unique cyclic permutation of <C>[1,2,3]</C>
 #! starting from <C>i</C>.
-#! @ChapterInfo The cubic Jordan matrix algebra, Elements of the cubic Jordan matrix algebra
+#! @ChapterInfo CJMA, CJMA-Elements
 DeclareOperation("CubicConicEl", [ IsRingElement, IsObject ]);
 
 #! @Arguments t, i
 #! @Description
 #! Returns the element of $J$ which is denoted by $te_i$ in [DMW]. It is printed as
 #! <C>t[ii]</C>.
-#! @ChapterInfo The cubic Jordan matrix algebra, Elements of the cubic Jordan matrix algebra
+#! @ChapterInfo CJMA, CJMA-Elements
 DeclareOperation("CubicComEl", [ IsFreeMagmaRing, IsRingElement, IsObject ]);
 
 #! @Arguments z, i, j
 #! @Description
 #! Returns <C>z[ij]</C>. Thus <C>z</C> must lie in $k$ if <C>i=j</C> and in $C$ otherwise.
-#! @ChapterInfo The cubic Jordan matrix algebra, Elements of the cubic Jordan matrix algebra
+#! @ChapterInfo CJMA, CJMA-Elements
 DeclareOperation("CubicEl", [ IsFreeMagmaRing, IsRingElement, IsInt, IsInt ]);
 
 #! @Arguments t, s, r, a, b, c
 #! @Description
 #! Returns <C>t[11] + s[22] + r[33] + a[23] + b[31] + c[12]</C>.
-#! @ChapterInfo The cubic Jordan matrix algebra, Elements of the cubic Jordan matrix algebra
+#! @ChapterInfo CJMA, CJMA-Elements
 DeclareOperation("CubicElFromTuple",
 	[ IsRingElement, IsRingElement, IsRingElement,
         IsElementOfFreeMagmaRing, IsElementOfFreeMagmaRing, IsElementOfFreeMagmaRing ]);
@@ -201,7 +201,7 @@ DeclareOperation("CubicElFromTuple",
 #! @Arguments C
 #! @Description
 #! Returns the zero element of the conic algebra over <C>C</C>
-#! @ChapterInfo The cubic Jordan matrix algebra, Elements of the cubic Jordan matrix algebra
+#! @ChapterInfo CJMA, CJMA-Elements
 DeclareOperation("CubicZero", [ IsFreeMagmaRing ]);
 
 #! @Arguments cub, i
@@ -209,7 +209,7 @@ DeclareOperation("CubicZero", [ IsFreeMagmaRing ]);
 #! Returns the corresponding component of <C>cub</C>. For example, for <C>cub = t[11] + s[22] +
 #! r[33] + a[23] + b[31] + c[12]</C>, we have <C>CubicConicPart(cub, 1) = a</C> and
 #! <C>CubicComPart(cub, 2) = s</C>.
-#! @ChapterInfo The cubic Jordan matrix algebra, Elements of the cubic Jordan matrix algebra
+#! @ChapterInfo CJMA, CJMA-Elements
 DeclareOperation("CubicConicPart", [ IsObject, IsObject ]);
 
 #! @Arguments cub, i
@@ -217,52 +217,52 @@ DeclareOperation("CubicConicPart", [ IsObject, IsObject ]);
 #! Returns the corresponding component of <C>cub</C>. For example, for <C>cub = t[11] + s[22] +
 #! r[33] + a[23] + b[31] + c[12]</C>, we have <C>CubicConicPart(cub, 1) = a</C> and
 #! <C>CubicComPart(cub, 2) = s</C>.
-#! @ChapterInfo The cubic Jordan matrix algebra, Elements of the cubic Jordan matrix algebra
+#! @ChapterInfo CJMA, CJMA-Elements
 DeclareOperation("CubicComPart", [ IsObject, IsObject ]);
 
 #! @Arguments cub
 #! @Description
 #! Returns the norm of <C>cub</C>, which is an element of $k$.
-#! @ChapterInfo The cubic Jordan matrix algebra, The cubic norm structure
+#! @ChapterInfo CJMA, CJMA-CNS
 DeclareOperation("CubicNorm", [ IsObject ]);
 
 #! @Arguments cub
 #! @Description
 #! Returns the adjoint $\text{cub}^\sharp$ of <C>cub</C>, which is an element of $J$.
-#! @ChapterInfo The cubic Jordan matrix algebra, The cubic norm structure
+#! @ChapterInfo CJMA, CJMA-CNS
 DeclareOperation("CubicAdj", [ IsObject ]);
 
 #! @Arguments cub1, cub2
 #! @Description
 #! Returns the bilinear trace $T(\text{cub1}, \text{cub2})$ of <C>cub1</C>, <C>cub2</C>, which
 #! is an element of $k$.
-#! @ChapterInfo The cubic Jordan matrix algebra, The cubic norm structure
+#! @ChapterInfo CJMA, CJMA-CNS
 DeclareOperation("CubicBiTr", [ IsObject, IsObject ]);
 
 #! @Arguments cub1, cub2
 #! @Description
 #! Returns $\text{cub1} \times \text{cub2}$, which is an element of $J$.
-#! @ChapterInfo The cubic Jordan matrix algebra, The cubic norm structure
+#! @ChapterInfo CJMA, CJMA-CNS
 DeclareOperation("CubicCross", [ IsObject, IsObject ]);
 
 #! @Arguments cub1, cub2
 #! @Description
 #! Returns $U_{\text{cub1}}(\text{cub2})$, which is an element of $J$.
-#! @ChapterInfo The cubic Jordan matrix algebra, The Jordan algebra structure
+#! @ChapterInfo CJMA, CJMA-Jordan
 DeclareOperation("JordanU", [ IsObject, IsObject ]);
 
 #! @Arguments cub1, cub2, cub3
 #! @Description
 #! Returns $U_{\text{cub1},\text{cub2}}(\text{cub3})=U_{\text{cub1}+\text{cub2}}(\text{cub3}) -
 #! U_{\text{cub1}}(\text{cub3}) - U_{\text{cub2}}(\text{cub3})$, which is an element of $J$.
-#! @ChapterInfo The cubic Jordan matrix algebra, The Jordan algebra structure
+#! @ChapterInfo CJMA, CJMA-Jordan
 DeclareOperation("JordanULin", [ IsObject, IsObject, IsObject ]);
 
 #! @Arguments cub1, cub2, cub3
 #! @Description
 #! Returns $D_{\text{cub1}, \text{cub2}}(\text{cub3}) = \{\text{cub1}, \text{cub2},
 #! \text{cub3}\} = U_{\text{cub1}, \text{cub3}}(\text{cub2})$, which is an element of $J$.
-#! @ChapterInfo The cubic Jordan matrix algebra, The Jordan algebra structure
+#! @ChapterInfo CJMA, CJMA-Jordan
 DeclareOperation("JordanD", [ IsObject, IsObject, IsObject ]);
 
 # ----- The Brown algebra `Brown` -----
@@ -270,34 +270,34 @@ DeclareOperation("JordanD", [ IsObject, IsObject, IsObject ]);
 #! @Arguments t, cub1, cub2, s
 #! @Description
 #! Returns the element <C>[ t, cub1, cub2, s ]</C> of $B$.
-#! @ChapterInfo The Brown algebra, Functions
+#! @ChapterInfo Lie, Lie-Brown
 DeclareOperation("BrownEl", [ IsObject, IsObject, IsObject, IsObject ]);
 
 #! @Arguments brown
 #! @Description
 #! Returns the GAP list <C>[ t, cub1, cub2, s ]</C> underlying <C>brown</C>.
-#! @ChapterInfo The Brown algebra, Functions
+#! @ChapterInfo Lie, Lie-Brown
 DeclareOperation("BrownElTuple", [ IsObject ]);
 
 #! @Arguments brown, p
 #! @Description
 #! Returns the <C>p</C>-th entry of the list underlying <C>brown</C>, where <C>1 &lt;= p &lt;=
 #! 4</C>.
-#! @ChapterInfo The Brown algebra, Functions
+#! @ChapterInfo Lie, Lie-Brown
 DeclareOperation("BrownElPart", [ IsObject, IsObject ]);
 
 #! @Arguments brown, p
 #! @Description
 #! Returns <C>BrownElPart(brown, 1)</C> for <C>p=1</C> and <C>BrownElPart(brown, 4)</C> for
 #! <C>p=2</C>.
-#! @ChapterInfo The Brown algebra, Functions
+#! @ChapterInfo Lie, Lie-Brown
 DeclareOperation("BrownElComPart", [ IsObject, IsObject ]);
 
 #! @Arguments brown, p
 #! @Description
 #! Returns <C>BrownElPart(brown, 2)</C> for <C>p=1</C> and <C>BrownElPart(brown, 3)</C> for
 #! <C>p=2</C>.
-#! @ChapterInfo The Brown algebra, Functions
+#! @ChapterInfo Lie, Lie-Brown
 DeclareOperation("BrownElCubicPart", [ IsObject, IsObject ]);
 
 # ----- The Lie algebra `Lie` -----
@@ -307,87 +307,87 @@ DeclareOperation("BrownElCubicPart", [ IsObject, IsObject ]);
 #! Returns the projection of <C>lie</C> to $L_p$ where <C>-2 &lt;= p &lt;= 2</C>. This is an
 #! element of $k$ if $p = \pm 2$, and element of $B$ if $p = \pm 1$ and an element of $L_0$
 #! if $p=0$.
-#! @ChapterInfo The Lie algebra, Functions
+#! @ChapterInfo Lie, Lie-5Grad
 DeclareOperation("LiePart", [ IsObject, IsObject ]);
 
 #! @Arguments brown
 #! @Description
 #! Returns the element <C>brown_+</C> of $L_1$ or <C>brown_-</C> of $L_{-1}$, respectively.
-#! @ChapterInfo The Lie algebra, The parts $L_{-1}$ and $L_1$
+#! @ChapterInfo Lie, Lie-1
 DeclareOperation("BrownPosToLieEmb", [ IsObject ]);
 
 #! @Arguments brown
 #! @Description
 #! Returns the element <C>brown_+</C> of $L_1$ or <C>brown_-</C> of $L_{-1}$, respectively.
-#! @ChapterInfo The Lie algebra, The parts $L_{-1}$ and $L_1$
+#! @ChapterInfo Lie, Lie-1
 DeclareOperation("BrownNegToLieEmb", [ IsObject ]);
 
 #! @Arguments t, cub1, cub2, s
 #! @Description
 #! Returns the element <C>[t, cub1, cub2, s]_+</C> of $L_1$ or <C>[t, cub1, cub2, s]_-</C> of
 #! $L_{-1}$, respectively.
-#! @ChapterInfo The Lie algebra, The parts $L_{-1}$ and $L_1$
+#! @ChapterInfo Lie, Lie-1
 DeclareOperation("BrownPosEl", [ IsObject, IsObject, IsObject, IsObject ]);
 
 #! @Arguments t, cub1, cub2, s
 #! @Description
 #! Returns the element <C>[t, cub1, cub2, s]_+</C> of $L_1$ or <C>[t, cub1, cub2, s]_-</C> of
 #! $L_{-1}$, respectively.
-#! @ChapterInfo The Lie algebra, The parts $L_{-1}$ and $L_1$
+#! @ChapterInfo Lie, Lie-1
 DeclareOperation("BrownNegEl", [ IsObject, IsObject, IsObject, IsObject ]);
 
 #! @Arguments l0
 #! @Description
 #! Returns the embedding of <C>l0</C> into $L$.
-#! @ChapterInfo The Lie algebra, The Lie subalgebra $L_0$
+#! @ChapterInfo Lie, Lie-0
 DeclareOperation("L0ToLieEmb", [ IsObject ]);
 
 #! @Arguments cub
 #! @Description
 #! Returns the elements <C>ad_{cub}^+</C> and <C>ad_{cub}^-</C> of $L_0$, respectively.
-#! @ChapterInfo The Lie algebra, The $L_0$ components
+#! @ChapterInfo Lie, Lie-0
 DeclareOperation("CubicPosToL0Emb", [ IsObject ]);
 
 #! @Arguments cub
 #! @Description
 #! Returns the elements <C>ad_{cub}^+</C> and <C>ad_{cub}^-</C> of $L_0$, respectively.
-#! @ChapterInfo The Lie algebra, The $L_0$ components
+#! @ChapterInfo Lie, Lie-0
 DeclareOperation("CubicNegToL0Emb", [ IsObject ]);
 
 #! @Arguments cub
 #! @Description
 #! Returns the elements <C>ad_{cub}^+</C> and <C>ad_{cub}^-</C> of $L$, respectively.
-#! @ChapterInfo The Lie algebra, The $L_0$ components
+#! @ChapterInfo Lie, Lie-0
 DeclareOperation("CubicPosToLieEmb", [ IsObject ]);
 
 #! @Arguments cub
 #! @Description
 #! Returns the elements <C>ad_{cub}^+</C> and <C>ad_{cub}^-</C> of $L$, respectively.
-#! @ChapterInfo The Lie algebra, The $L_0$ components
+#! @ChapterInfo Lie, Lie-0
 DeclareOperation("CubicNegToLieEmb", [ IsObject ]);
 
 #! @Arguments cub
 #! @Description
 #! These are alternative names for <C>CubicPosToLieEmb</C> and <C>CubicNegToLieEmb</C>.
-#! @ChapterInfo The Lie algebra, The $L_0$ components
+#! @ChapterInfo Lie, Lie-0
 DeclareOperation("adPos", [ IsObject ]);
 
 #! @Arguments cub
 #! @Description
 #! These are alternative names for <C>CubicPosToLieEmb</C> and <C>CubicNegToLieEmb</C>.
-#! @ChapterInfo The Lie algebra, The $L_0$ components
+#! @ChapterInfo Lie, Lie-0
 DeclareOperation("adNeg", [ IsObject ]);
 
 #! @Arguments l0
 #! @Description
 #! Returns the projection of <C>l0</C> onto $L_{0,1}$ or $L_{0,-1}$, respectively.
-#! @ChapterInfo The Lie algebra, The $L_0$ components
+#! @ChapterInfo Lie, Lie-0
 DeclareOperation("L0CubicPosPart", [ IsObject ]);
 
 #! @Arguments l0
 #! @Description
 #! Returns the projection of <C>l0</C> onto $L_{0,1}$ or $L_{0,-1}$, respectively.
-#! @ChapterInfo The Lie algebra, The $L_0$ components
+#! @ChapterInfo Lie, Lie-0
 DeclareOperation("L0CubicNegPart", [ IsObject ]);
 
 #! @Arguments cub1, cub2
@@ -396,7 +396,7 @@ DeclareOperation("L0CubicNegPart", [ IsObject ]);
 #! <C>DD</C>, $L_0$ or $L$, respectively. In all three cases, it is printed as
 #! <C>dd_{cub1,cub2}</C>. If the package was initialised with <C>userVars = true</C>, then
 #! the shortcut <C>dd := Liedd</C> is defined.
-#! @ChapterInfo The Lie algebra, The parts $Z$ and `DD`
+#! @ChapterInfo Lie, Lie-0
 DeclareOperation("DDdd", [ IsObject, IsObject ]);
 
 #! @Arguments cub1, cub2
@@ -405,7 +405,7 @@ DeclareOperation("DDdd", [ IsObject, IsObject ]);
 #! <C>DD</C>, $L_0$ or $L$, respectively. In all three cases, it is printed as
 #! <C>dd_{cub1,cub2}</C>. If the package was initialised with <C>userVars = true</C>, then
 #! the shortcut <C>dd := Liedd</C> is defined.
-#! @ChapterInfo The Lie algebra, The parts $Z$ and `DD`
+#! @ChapterInfo Lie, Lie-0
 DeclareOperation("L0dd", [ IsObject, IsObject ]);
 
 #! @Arguments cub1, cub2
@@ -414,20 +414,20 @@ DeclareOperation("L0dd", [ IsObject, IsObject ]);
 #! <C>DD</C>, $L_0$ or $L$, respectively. In all three cases, it is printed as
 #! <C>dd_{cub1,cub2}</C>. If the package was initialised with <C>userVars = true</C>, then
 #! the shortcut <C>dd := Liedd</C> is defined.
-#! @ChapterInfo The Lie algebra, The parts $Z$ and `DD`
+#! @ChapterInfo Lie, Lie-0
 DeclareOperation("Liedd", [ IsObject, IsObject ]);
 
 #! @Arguments ddEl
 #! @Description
 #! Returns the embedding of <C>ddEl</C> into $L_0$ or $L$, respectively.
-#! @ChapterInfo The Lie algebra, The parts $Z$ and `DD`
+#! @ChapterInfo Lie, Lie-0
 DeclareOperation("DDToL0Emb", [ IsObject ]);
 DeclareOperation("DDToL0Emb", [ IsFreeMagmaRing, IsObject ]);
 
 #! @Arguments ddEl
 #! @Description
 #! Returns the embedding of <C>ddEl</C> into $L_0$ or $L$, respectively.
-#! @ChapterInfo The Lie algebra, The parts $Z$ and `DD`
+#! @ChapterInfo Lie, Lie-0
 DeclareOperation("DDToLieEmb", [ IsObject ]);
 DeclareOperation("DDToLieEmb", [ IsFreeMagmaRing, IsObject ]);
 
@@ -437,7 +437,7 @@ DeclareOperation("DDToLieEmb", [ IsFreeMagmaRing, IsObject ]);
 #! <C>L0DDPart(l0) + L0XiPart(l0)*L0Xi + L0ZetaPart(l0)*L0Zeta</C>. Note that since the sum
 #! of <C>DD</C> and $k \xi + k \zeta$ is not necessarily direct, these elements are not
 #! uniquely determined by this property.
-#! @ChapterInfo The Lie algebra, The parts $Z$ and `DD`
+#! @ChapterInfo Lie, Lie-0
 DeclareOperation("L0DDPart", [ IsObject ]);
 
 #! @Arguments l0
@@ -446,7 +446,7 @@ DeclareOperation("L0DDPart", [ IsObject ]);
 #! <C>L0DDPart(l0) + L0XiPart(l0)*L0Xi + L0ZetaPart(l0)*L0Zeta</C>. Note that since the sum
 #! of <C>DD</C> and $k \xi + k \zeta$ is not necessarily direct, these elements are not
 #! uniquely determined by this property.
-#! @ChapterInfo The Lie algebra, The parts $Z$ and `DD`
+#! @ChapterInfo Lie, Lie-0
 DeclareOperation("L0XiPart", [ IsObject ]);
 
 #! @Arguments l0
@@ -455,7 +455,7 @@ DeclareOperation("L0XiPart", [ IsObject ]);
 #! <C>L0DDPart(l0) + L0XiPart(l0)*L0Xi + L0ZetaPart(l0)*L0Zeta</C>. Note that since the sum
 #! of <C>DD</C> and $k \xi + k \zeta$ is not necessarily direct, these elements are not
 #! uniquely determined by this property.
-#! @ChapterInfo The Lie algebra, The parts $Z$ and `DD`
+#! @ChapterInfo Lie, Lie-0
 DeclareOperation("L0ZetaPart", [ IsObject ]);
 
 #! @Arguments F4Root

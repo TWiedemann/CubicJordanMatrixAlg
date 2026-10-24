@@ -64,7 +64,9 @@ See also Chapter <Ref Chap="Chapter_Simplify"/> for functions to prove identitie
 @Chapter CJMA
 @ChapterTitle Cubic Jordan matrix algebras
 Internally, we use the name <C>Cubic</C> for the cubic Jordan matrix algebra $J := \text{Her}_3(C, \Gamma)$.<P/>
-@Section Constructing elements of cubic Jordan matrix algebras
+
+@Section CJMA-Elements
+@SectionTitle Constructing elements of cubic Jordan matrix algebras
 <C>+, *</C>
 The usual GAP operations for addition $+: J \times J \to J$ and scalar multiplication $\cdot: k \times J \to J$ are available on $J$.<P/>
 
@@ -80,6 +82,9 @@ whose structural maps can be computed as follows.<P/>
 
 @Chapter Lie
 @ChapterTitle The Lie algebra
+
+@Section Lie-5Grad
+@SectionTitle The 5-grading of the Lie algebra
 
 The Lie algebra $L$ over any conic algebra $C$ has a direct sum decomposition
 $\bigoplus_{i=-2}^2 L_i$.
@@ -114,11 +119,9 @@ The $k$-submodules $L_{-1}$ and $L_1$ are isomorphic to the Brown algebra $B$. H
 @SectionTitle The Lie subalgebra $L_0$
 The subalgebra $L_0$ of $L$ is itself the direct sum of three components $L_{0,-1}, Z, L_{0,1}$. Again, we internally distinguish between elements of $L_0$ and their embedding into $L$.<P/>
 
-@Subsection Lie-01
-@SubsectionTitle The components $L_{0,1}$ and $L_{0,-1}$
 The $k$-submodules $L_{0,-1}$ and $L_{0,1}$ are isomorphic to the cubic Jordan matrix algebra $J$. Again, we strictly distinguish between elements of $J$, $L_{0,-1}$ and $L_{0,1}$. For an element <C>cub</C> of $J$, the corresponding elements of $L_{0,-1}$ and $L_{0,1}$ are printed as <C>ad_{cub}^-</C> and <C>ad_{cub}^+</C>, respectively. While we internally distinguish between elements of $L_{0,\pm 1}$ and their embeddings into $L$, they are printed in the same way.<P/>
 
-@Subsection The components $Z$ and `DD`
+
 We refer to the $k$-module $\langle \mathbf{d}_{a,b} \mid a \in J, b \in J' \rangle$ (which is unnamed in [DMW]) as <C>DD</C> in (the documentation of) this GAP package. The $k$-module $Z$ is the (not necessarily direct) sum of <C>DD</C> with $k \xi + k\zeta$. Again, we internally distinguish between elements of <C>DD</C> and their embedding into $L_0$ and $L$.<P/>
 <List>
 <Item><C>LieXi</C></Item>
