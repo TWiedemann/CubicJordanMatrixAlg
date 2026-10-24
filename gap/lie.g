@@ -276,8 +276,8 @@ InstallMethod(Liedd, [IsCubicElement, IsCubicElement], function(cubicEl1, cubicE
 	return L0ToLieEmb(L0dd(cubicEl1, cubicEl2));
 end);
 
-BindGlobal("LieZeta", conicAlg -> L0ToLieEmb(L0Zeta(conicAlg)));
-BindGlobal("LieXi", conicAlg -> L0ToLieEmb(L0Xi(conicAlg)));
+InstallMethod(LieZeta, [IsFreeMagmaRing], conicAlg -> L0ToLieEmb(L0Zeta(conicAlg)));
+InstallMethod(LieXi, [IsFreeMagmaRing], conicAlg -> L0ToLieEmb(L0Xi(conicAlg)));
 
 # comRingIndetNum, conicAlgIndetNum: Integers.
 # Returns: A list of "generic generators" of L_0000 using the indeterminates

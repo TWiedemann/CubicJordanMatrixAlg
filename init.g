@@ -1,4 +1,15 @@
-ReadPackage("CubicJordanMatrixAlg", "gap/declarations.gd");
+### Declaration part
+ReadPackage("CubicJordanMatrixAlg", "gap/comring.gd");
+ReadPackage("CubicJordanMatrixAlg", "gap/conic.gd");
+ReadPackage("CubicJordanMatrixAlg", "gap/cubic.gd");
+ReadPackage("CubicJordanMatrixAlg", "gap/brown.gd");
+# Also contains declarations for DD, lie0, F4-roots, lie_roothom
+ReadPackage("CubicJordanMatrixAlg", "gap/lie.gd");
+ReadPackage("CubicJordanMatrixAlg", "gap/group.gd");
+# Also contains declarations for test_equal
+ReadPackage("CubicJordanMatrixAlg", "gap/simplify.gd");
+
+### Implementation part
 ReadPackage("CubicJordanMatrixAlg", "gap/constants.g");
 ReadPackage("CubicJordanMatrixAlg", "gap/F4-roots.g"); # The root systems F4 and G2
 ReadPackage("CubicJordanMatrixAlg", "gap/parity_lists.g"); # Stores the parity map of the F4-graded group

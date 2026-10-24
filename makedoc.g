@@ -4,7 +4,11 @@ LoadPackage( "AutoDoc" );
 AutoDoc( rec(
   autodoc := rec(
     scan_dirs := [ ],
-    files := [ "doc/manual.autodoc", "gap/declarations.gd", "gap/conic.g" ]
+    files := [ 
+      "doc/manual.autodoc", "gap/comring.gd", "gap/conic.gd", "gap/cubic.gd",
+      "gap/brown.gd", "gap/lie.gd", "gap/group.gd", "gap/simplify.gd",
+      "gap/conic.g"
+    ]
   ),
   scaffold := rec( includes := [ ] ),
   gapdoc := rec(
