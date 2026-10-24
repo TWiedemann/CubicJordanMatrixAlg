@@ -61,25 +61,29 @@ See also Chapter <Ref Chap="Chapter_Simplify"/> for functions to prove identitie
 @SectionTitle Additional information stored in a conic algebra
 
 @Section Conic-ComRing
-@SectionTitle Coefficient rings of conic algebras
+@SectionTitle Base rings of conic algebras
 
 @Chapter CJMA
 @ChapterTitle Cubic Jordan matrix algebras
-Internally, we use the name <C>Cubic</C> for the cubic Jordan matrix algebra $J := \text{Her}_3(C, \Gamma)$.<P/>
+This section describes the functions relating to the
+cubic Jordan matrix algebra $J := \text{Her}_3(C, \Gamma)$ that is defined over
+any conic algebra $C$. Throughout this section, we denote the conic algebra
+over which we work by $C$ and its base ring by $k$.
+The addition $J \times J \to J$ and the scalar multiplication
+$k \times J \to J$ are available as
+<C>+</C> and <C>*</C>.
 
 @Section CJMA-Elements
 @SectionTitle Constructing elements of cubic Jordan matrix algebras
-<C>+, *</C>
-The usual GAP operations for addition $+: J \times J \to J$ and scalar multiplication $\cdot: k \times J \to J$ are available on $J$.<P/>
 
 @Section CJMA-CNS
 @SectionTitle The cubic norm structure
-A cubic Jordan matrix algebra has the structure of a cubic norm structure,
+A cubic Jordan matrix algebra $J$ has the structure of a cubic norm structure,
 whose structural maps can be computed as follows.<P/>
 
 @Section CJMA-Jordan
 @SectionTitle The Jordan algebra structure
-A cubic Jordan matrix algebra has the structure of a quadratic Jordan algebra,
+A cubic Jordan matrix algebra $J$ has the structure of a quadratic Jordan algebra,
 whose structural maps can be computed as follows.<P/>
 
 @Chapter Lie
@@ -101,43 +105,41 @@ can also be computed using <C>*</C>.
 We refer to the $k$-module $B = (k, J, J', k)$ as the <E>Brown algebra</E> because,
 if $2$ and $3$ are invertible in $k$, then it has the structure of a structurable algebra
 that is known under this name.
-It parametrises the $1$- and $(-1)$-parts of the Lie algebra that is constructed in [DMW].<P/>
+It parametrises the $1$- and $(-1)$-parts of the Lie algebra that is constructed in <Cite Key="DMW26"/>.<P/>
 Note that while elements of $B$ are internally represented and also printed as
 lists <C>[t, cub1, cub2, s]</C>, they are not lists in the GAP sense.
 Thus for an element <C>brown</C> of $B$, we have <C>IsList(brown) = false</C> and
 <C>brown[1]</C> is not a well-defined expression.
+Further, we also distinguish between the element <C>[t, cub1, cub2, s]</C>
+of the Brown algebra and the corresponding elements <C>[t, cub1, cub2, s]_+</C>
+and <C>[t, cub1, cub2, s]_-</C> of $L_1$ and $L_{-1}$, respectively.
 
 @Section Lie-2
 @SectionTitle The parts $L_{-2}$ and $L_2$
-The $k$-submodules $L_{-2}$ and $L_2$ are isomorphic to $k$.<P/>
-<List><Item><C>LieX</C></Item><Item><C>LieY</C></Item></List>
-The generators of $L_{-2}$ and $L_2$, respectively. They are denoted by $x$ and $y$ in [DMW]. They are printed as <C>x</C> and <C>y</C>.<P/>
 
 @Section Lie-1
 @SectionTitle The parts $L_{-1}$ and $L_1$
-The $k$-submodules $L_{-1}$ and $L_1$ are isomorphic to the Brown algebra $B$. However, just like elements of $B$ are not lists in the GAP sense, we strictly distinguish between elements of $B$, $L_{-1}$ and $L_1$. Elements of $L_{-1}$ and $L_1$ are printed as <C>[t, cub1, cub2, s]_-</C> and <C>[t, cub1, cub2, s]_+</C>, respectively. For example, <C>[ t1, a1[23], a2[12], t1+t2 ]_+</C> is an element of $L_1$.<P/>
+The $k$-submodules $L_{-1}$ and $L_1$ are isomorphic to the Brown algebra $B$.
+However, as explained previously, we strictly distinguish between elements of
+$B$, $L_{-1}$ and $L_1$.
 
 @Section Lie-0
 @SectionTitle The Lie subalgebra $L_0$
-The subalgebra $L_0$ of $L$ is itself the direct sum of three components $L_{0,-1}, Z, L_{0,1}$. Again, we internally distinguish between elements of $L_0$ and their embedding into $L$.<P/>
+The subalgebra $L_0$ of $L$ is itself the direct sum of three components $L_{0,-1}, Z, L_{0,1}$.
+We internally distinguish between elements of $L_0$ and their embedding into $L$.<P/>
 
-The $k$-submodules $L_{0,-1}$ and $L_{0,1}$ are isomorphic to the cubic Jordan matrix algebra $J$. Again, we strictly distinguish between elements of $J$, $L_{0,-1}$ and $L_{0,1}$. For an element <C>cub</C> of $J$, the corresponding elements of $L_{0,-1}$ and $L_{0,1}$ are printed as <C>ad_{cub}^-</C> and <C>ad_{cub}^+</C>, respectively. While we internally distinguish between elements of $L_{0,\pm 1}$ and their embeddings into $L$, they are printed in the same way.<P/>
+The $k$-submodules $L_{0,-1}$ and $L_{0,1}$ are isomorphic to the cubic Jordan matrix algebra $J$.
+Again, we strictly distinguish between elements of $J$, $L_{0,-1}$ and $L_{0,1}$.
+For an element <C>cub</C> of $J$, the corresponding elements of $L_{0,-1}$ and $L_{0,1}$ are printed as <C>ad_{cub}^-</C> and <C>ad_{cub}^+</C>, respectively. While we internally distinguish between elements of $L_{0,\pm 1}$ and their embeddings into $L$, they are printed in the same way.<P/>
 
 
-We refer to the $k$-module $\langle \mathbf{d}_{a,b} \mid a \in J, b \in J' \rangle$ (which is unnamed in [DMW]) as <C>DD</C> in (the documentation of) this GAP package. The $k$-module $Z$ is the (not necessarily direct) sum of <C>DD</C> with $k \xi + k\zeta$. Again, we internally distinguish between elements of <C>DD</C> and their embedding into $L_0$ and $L$.<P/>
-<List>
-<Item><C>LieXi</C></Item>
-<Item><C>L0Xi</C></Item>
-<Item><C>LieZeta</C></Item>
-<Item><C>L0Zeta</C></Item>
-</List>
-The elements $\xi$ and $\zeta$ regarded as elements of $L$ or of $L_0$, respectively. They are printed as <C>xi</C> and <C>zeta</C>.<P/>
+We refer to the $k$-module $\langle \mathbf{d}_{a,b} \mid a \in J, b \in J' \rangle$ (which is unnamed in <Cite Key="DMW26"/>) as <C>DD</C> in (the documentation of) this GAP package. The $k$-module $Z$ is the (not necessarily direct) sum of <C>DD</C> with $k \xi + k\zeta$. Again, we internally distinguish between elements of <C>DD</C> and their embedding into $L_0$ and $L$.<P/>
 
 @Section Lie-Root
 @SectionTitle Root homomorphisms in the Lie algebra
 We represent a root in $G_2$ (respectively, $F_4$) as a list with two (respectively, four) elements,
 each of which is an integer in the range <C>[-2, -1, 0, 1, 2]</C>.
-This representation corresponds precisely to Figures 1 and 3 in [DMW].<P/>
+This representation corresponds precisely to Figures 1 and 3 in <Cite Key="DMW26"/>.<P/>
 <List>
 <Item><C>F4Roots</C></Item>
 <Item><C>F4ShortRoots</C></Item>
@@ -153,7 +155,7 @@ The system <C>[[1,1,-1,-1], [-2, 0, 0, 0], [1, -1, 0, 0], [0, 1, 1, 0]</C> of si
 
 @Section Lie-Auto
 @SectionTitle Automorphisms of the Lie algebra
-The $F_4$-graded group constructed in [DMW] is a group of automorphisms of $L$. This package provides the internal structure <C>LieEndo</C> to perform computations with automorphisms of $L$.<P/>
+The $F_4$-graded group constructed in <Cite Key="DMW26"/> is a group of automorphisms of $L$. This package provides the internal structure <C>LieEndo</C> to perform computations with automorphisms of $L$.<P/>
 <C>f(lie)</C>
 For an element <C>f</C> of <C>LieEndo</C> and <C>lie</C> in $L$, <C>f(lie)</C> is the image of <C>lie</C> under <C>f</C>.<P/>
 <C>f+g, f*g</C>

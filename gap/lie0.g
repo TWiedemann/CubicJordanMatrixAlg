@@ -131,7 +131,7 @@ InstallMethod(String, [IsL0Element], x -> L0RepToString(UnderlyingElement(x)));
 
 # ----- Constructors for elements of L0 -----
 
-BindGlobal("L0Zero", function(conicAlg)
+InstallMethod(L0Zero, [IsFreeMagmaRing], function(conicAlg)
 	local comRing, zero;
 	comRing := ComRingOfConicAlg(conicAlg);
 	zero := Zero(comRing);
@@ -139,7 +139,7 @@ BindGlobal("L0Zero", function(conicAlg)
 		cubicPos := CubicZero(conicAlg), cubicNeg := CubicZero(conicAlg)));
 end);
 
-BindGlobal("L0Xi", function(conicAlg)
+InstallMethod(L0Xi, [IsFreeMagmaRing], function(conicAlg)
 	local comRing, zero;
 	comRing := ComRingOfConicAlg(conicAlg);
 	zero := Zero(comRing);
@@ -152,7 +152,7 @@ BindGlobal("L0Xi", function(conicAlg)
 ));
 end);
 
-BindGlobal("L0Zeta", function(conicAlg)
+InstallMethod(L0Zeta, [IsFreeMagmaRing], function(conicAlg)
 	local comRing, zero;
 	comRing := ComRingOfConicAlg(conicAlg);
 	zero := Zero(comRing);

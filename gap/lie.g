@@ -161,7 +161,7 @@ BindGlobal("Lie", ArithmeticElementCreator(LieSpec));
 
 # ----- Constructors and embeddings for elements of Lie -----
 
-BindGlobal("LieZero", function(conicAlg)
+InstallMethod(LieZero, [IsFreeMagmaRing], function(conicAlg)
 	return Lie(rec(
 		neg2 := Zero(ComRingOfConicAlg(conicAlg)), neg1 := BrownZero(conicAlg),
 		zero := L0Zero(conicAlg), pos1 := BrownZero(conicAlg),
@@ -188,13 +188,14 @@ InstallMethod(
 	end
 );
 
-BindGlobal("LieX", function(conicAlg)
+InstallMethod(LieX, [IsFreeMagmaRing], function(conicAlg)
 	local comRing;
 	comRing := ComRingOfConicAlg(conicAlg);
 	return LieElFromTuple(One(comRing), BrownZero(conicAlg), L0Zero(conicAlg),
 		BrownZero(conicAlg), Zero(comRing));
 end);
-BindGlobal("LieY", function(conicAlg)
+
+InstallMethod(LieY, [IsFreeMagmaRing], function(conicAlg)
 	local comRing;
 	comRing := ComRingOfConicAlg(conicAlg);
 	return LieElFromTuple(Zero(comRing), BrownZero(conicAlg), L0Zero(conicAlg),

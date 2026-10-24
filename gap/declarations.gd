@@ -2,7 +2,7 @@
 
 #! @Arguments C, p
 #! @Description
-#! Returns the <C>p</C>-th indeterminate in the base ring of <C>C</C>, which is printed as <C>tp</C>.
+#! Returns the <C>p</C>-th indeterminate in the base ring of <C>C</C>.
 #! We must have <C>1 &lt;= p &lt;= ComRingRank(C)</C>.
 #! @ChapterInfo Conic, Conic-ComRing
 DeclareOperation("ComRingIndet", [ IsRing, IsInt ]);
@@ -15,9 +15,6 @@ DeclareOperation("ComRingIndet", [ IsString, IsInt ]);
 #! These are the (arbitrarily chosen, but fixed) constants that appear
 #! in the definition of cubic Jordan matrix algebras.
 #! They are printed as <C>g1, g2, g3</C>.
-#! If the package was initialised with <C>userVars = true</C>,
-#! then GAP variables <C>g1 := ComRingGamIndet(1), ...</C> are defined.
-#! @ChapterInfo Conic, Conic-ComRing
 DeclareOperation("ComRingGamIndet", [ IsInt ]);
 
 # ----- The conic algebra C -----
@@ -122,9 +119,10 @@ DeclareOperation("ConicAlgMagEmbedding", [IsFreeMagmaRing]);
 
 #! @Arguments C
 #! @Description
-#! Since GAP does not support function fields over infinitely many indeterminates,
-#! it is not possible to return the full base ring of the magma ring <C>C</C>.
-#! This function returns the function field over the integers over the finitely many
+#! Since GAP does not support function fields (or polynomial rings) over infinitely many indeterminates,
+#! it is not possible to return a commutative ring containing all symbols <C>tr(d)</C>
+#! for all monomials <C>d</C> in <C>C</C> of arbitrary length.
+#! Instead, this function returns the function field over the integers over the finitely many
 #! indeterminates which were initialised during the construction of <C>C</C>.
 #! In particular, for elements <C>tr(d)</C> where d is a product in <C>C</C>
 #! of sufficiently high length, the expression <C>tr(d) in ComRingOfConicAlg(C)</C>
@@ -143,8 +141,7 @@ DeclareOperation("ConicAlgMaxTrLength", [IsFreeMagmaRing]);
 #! @Arguments C
 #! @Description
 #! Returns the argument <C>conicRank</C> that was specified during the creation
-#! of <C>C</C>, that is, the number of independent elements of <C>C</C>.
-#! @ChapterInfo Conic, Conic-Stored
+#! of <C>C</C>.
 DeclareOperation("ConicRank", [ IsObject ]);
 #! @Arguments C
 #! @Description
@@ -161,8 +158,7 @@ DeclareOperation("ComRingRank", [ IsObject ]);
 #! @Arguments C
 #! @Description
 #! Returns the argument <C>comSym</C> that was specified during the creation
-#! of <C>C</C>, that is, the name given to the generators of <C>C</C>.
-#! @ChapterInfo Conic, Conic-Stored
+#! of <C>C</C>.
 DeclareOperation("ComRingIndetName", [ IsObject ]);
 
 DeclareOperation("ReqComRingEl", [IsRingElement]);
@@ -202,7 +198,7 @@ DeclareOperation("CubicElFromTuple",
 
 #! @Arguments C
 #! @Description
-#! Returns the zero element of the conic algebra over <C>C</C>
+#! Returns the zero element of the conic algebra over <C>C</C>.
 #! @ChapterInfo CJMA, CJMA-Elements
 DeclareOperation("CubicZero", [ IsFreeMagmaRing ]);
 
@@ -312,127 +308,153 @@ DeclareOperation("BrownElCubicPart", [ IsObject, IsObject ]);
 #! @ChapterInfo Lie, Lie-5Grad
 DeclareOperation("LiePart", [ IsObject, IsObject ]);
 
+#! @BeginGroup
+#! @ChapterInfo Lie, Lie-5Grad
+#! @GroupTitle LieZero and L0Zero
+#! @Arguments C
+#! @Description
+#! Returns the zero element of $L$ or $L_0$, respectively.
+DeclareOperation("LieZero", [IsFreeMagmaRing]);
+#! @Arguments C
+DeclareOperation("L0Zero", [IsFreeMagmaRing]);
+#! @EndGroup
+
+#! @BeginGroup
+#! @Arguments C
+#! @ChapterInfo Lie, Lie-2
+#! @GroupTitle LieX and LieY
+#! @Description
+#! Returns the "canonical" generators of the $k$-module $L_{-2}$ and $L_2$,
+#! which are isomorphic
+#! to $k$. They are printed as <C>x</C> and <C>y</C>, respectively.
+DeclareOperation("LieX", [IsFreeMagmaRing]);
+#! @Arguments C
+DeclareOperation("LieY", [IsFreeMagmaRing]);
+#! @EndGroup
+
+#! @BeginGroup
+#! @ChapterInfo Lie, Lie-1
+#! @GroupTitle BrownPosToLieEmb and BrownNegToLieEmb
 #! @Arguments brown
 #! @Description
 #! Returns the element <C>brown_+</C> of $L_1$ or <C>brown_-</C> of $L_{-1}$, respectively.
-#! @ChapterInfo Lie, Lie-1
 DeclareOperation("BrownPosToLieEmb", [ IsObject ]);
-
 #! @Arguments brown
-#! @Description
-#! Returns the element <C>brown_+</C> of $L_1$ or <C>brown_-</C> of $L_{-1}$, respectively.
-#! @ChapterInfo Lie, Lie-1
 DeclareOperation("BrownNegToLieEmb", [ IsObject ]);
+#! @EndGroup
 
+#! @BeginGroup
+#! @ChapterInfo Lie, Lie-1
+#! @GroupTitle BrownPosEl and BrownNegEl
 #! @Arguments t, cub1, cub2, s
 #! @Description
 #! Returns the element <C>[t, cub1, cub2, s]_+</C> of $L_1$ or <C>[t, cub1, cub2, s]_-</C> of
 #! $L_{-1}$, respectively.
-#! @ChapterInfo Lie, Lie-1
 DeclareOperation("BrownPosEl", [ IsObject, IsObject, IsObject, IsObject ]);
-
 #! @Arguments t, cub1, cub2, s
-#! @Description
-#! Returns the element <C>[t, cub1, cub2, s]_+</C> of $L_1$ or <C>[t, cub1, cub2, s]_-</C> of
-#! $L_{-1}$, respectively.
-#! @ChapterInfo Lie, Lie-1
 DeclareOperation("BrownNegEl", [ IsObject, IsObject, IsObject, IsObject ]);
+#! @EndGroup
+
+# --- L_0 ---
+
+#! @BeginGroup
+#! @ChapterInfo Lie, Lie-0
+#! @GroupTitle LieXi, LieZeta, L0Xi and L0Zeta
+#! @Description
+#! Returns the elements $\xi$ and $\zeta$ of $L$ or $L_0$, respectively.
+#! They are printed as <C>xi</C> and <C>zeta</C>, respectively.
+#! @Arguments C
+DeclareOperation("LieXi", [IsFreeMagmaRing]);
+#! @Arguments C
+DeclareOperation("LieZeta", [IsFreeMagmaRing]);
+#! @Arguments C
+DeclareOperation("L0Xi", [IsFreeMagmaRing]);
+#! @Arguments C
+DeclareOperation("L0Zeta", [IsFreeMagmaRing]);
+#! @EndGroup
 
 #! @Arguments l0
 #! @Description
-#! Returns the embedding of <C>l0</C> into $L$.
+#! Returns the image of <C>l0</C> into $L$.
 #! @ChapterInfo Lie, Lie-0
 DeclareOperation("L0ToLieEmb", [ IsObject ]);
 
+#! @BeginGroup
+#! @ChapterInfo Lie, Lie-0
+#! @GroupTitle CubicPosToL0Emb, CubicNegToL0Emb, CubicPosToLieEmb and CubicNegToLie
 #! @Arguments cub
 #! @Description
-#! Returns the elements <C>ad_{cub}^+</C> and <C>ad_{cub}^-</C> of $L_0$, respectively.
-#! @ChapterInfo Lie, Lie-0
+#! Returns the elements <C>ad_{cub}^+</C> and <C>ad_{cub}^-</C> of $L_0$ and $L$, respectively.
 DeclareOperation("CubicPosToL0Emb", [ IsObject ]);
-
 #! @Arguments cub
-#! @Description
-#! Returns the elements <C>ad_{cub}^+</C> and <C>ad_{cub}^-</C> of $L_0$, respectively.
-#! @ChapterInfo Lie, Lie-0
 DeclareOperation("CubicNegToL0Emb", [ IsObject ]);
-
 #! @Arguments cub
-#! @Description
-#! Returns the elements <C>ad_{cub}^+</C> and <C>ad_{cub}^-</C> of $L$, respectively.
-#! @ChapterInfo Lie, Lie-0
 DeclareOperation("CubicPosToLieEmb", [ IsObject ]);
-
 #! @Arguments cub
-#! @Description
-#! Returns the elements <C>ad_{cub}^+</C> and <C>ad_{cub}^-</C> of $L$, respectively.
-#! @ChapterInfo Lie, Lie-0
 DeclareOperation("CubicNegToLieEmb", [ IsObject ]);
+#! @EndGroup
 
+#! @BeginGroup
+#! @ChapterInfo Lie, Lie-0
+#! @GroupTitle adPos and adNeg
 #! @Arguments cub
 #! @Description
 #! These are alternative names for <C>CubicPosToLieEmb</C> and <C>CubicNegToLieEmb</C>.
-#! @ChapterInfo Lie, Lie-0
 DeclareOperation("adPos", [ IsObject ]);
-
 #! @Arguments cub
-#! @Description
-#! These are alternative names for <C>CubicPosToLieEmb</C> and <C>CubicNegToLieEmb</C>.
-#! @ChapterInfo Lie, Lie-0
 DeclareOperation("adNeg", [ IsObject ]);
+#! @EndGroup
 
+#! @BeginGroup
+#! @ChapterInfo Lie, Lie-0
+#! @GroupTitle L0CubicPosPart and L0CubicNegPart
 #! @Arguments l0
 #! @Description
 #! Returns the projection of <C>l0</C> onto $L_{0,1}$ or $L_{0,-1}$, respectively.
 #! @ChapterInfo Lie, Lie-0
 DeclareOperation("L0CubicPosPart", [ IsObject ]);
-
 #! @Arguments l0
-#! @Description
-#! Returns the projection of <C>l0</C> onto $L_{0,1}$ or $L_{0,-1}$, respectively.
-#! @ChapterInfo Lie, Lie-0
 DeclareOperation("L0CubicNegPart", [ IsObject ]);
+#! @EndGroup
 
+#! @BeginGroup
+#! @ChapterInfo Lie, Lie-0
+#! @GroupTitle DDdd, L0dd and Liedd
 #! @Arguments cub1, cub2
 #! @Description
 #! Returns the element $\mathbf{d}_{\text{cub1},\text{cub2}}$, regarded as an element of
 #! <C>DD</C>, $L_0$ or $L$, respectively. In all three cases, it is printed as
-#! <C>dd_{cub1,cub2}</C>. If the package was initialised with <C>userVars = true</C>, then
-#! the shortcut <C>dd := Liedd</C> is defined.
+#! <C>dd_{cub1,cub2}</C>.
 #! @ChapterInfo Lie, Lie-0
 DeclareOperation("DDdd", [ IsObject, IsObject ]);
-
 #! @Arguments cub1, cub2
-#! @Description
-#! Returns the element $\mathbf{d}_{\text{cub1},\text{cub2}}$, regarded as an element of
-#! <C>DD</C>, $L_0$ or $L$, respectively. In all three cases, it is printed as
-#! <C>dd_{cub1,cub2}</C>. If the package was initialised with <C>userVars = true</C>, then
-#! the shortcut <C>dd := Liedd</C> is defined.
-#! @ChapterInfo Lie, Lie-0
 DeclareOperation("L0dd", [ IsObject, IsObject ]);
-
 #! @Arguments cub1, cub2
-#! @Description
-#! Returns the element $\mathbf{d}_{\text{cub1},\text{cub2}}$, regarded as an element of
-#! <C>DD</C>, $L_0$ or $L$, respectively. In all three cases, it is printed as
-#! <C>dd_{cub1,cub2}</C>. If the package was initialised with <C>userVars = true</C>, then
-#! the shortcut <C>dd := Liedd</C> is defined.
-#! @ChapterInfo Lie, Lie-0
 DeclareOperation("Liedd", [ IsObject, IsObject ]);
+#! @EndGroup
 
+#! @BeginGroup
+#! @ChapterInfo Lie, Lie-0
+#! @GroupTitle DDToL0Emb and DDToLieEmb
 #! @Arguments ddEl
 #! @Description
-#! Returns the embedding of <C>ddEl</C> into $L_0$ or $L$, respectively.
+#! Returns the image of <C>ddEl</C> in $L_0$ or $L$, respectively.
+#! The argument <C>C</C> is only necessary if <C>ddEl</C> is the zero element,
+#! in which case the conic algebra over which $L$ is defined cannot be infered
+#! from <C>ddEl</C> alone. 
 #! @ChapterInfo Lie, Lie-0
 DeclareOperation("DDToL0Emb", [ IsObject ]);
+#! @Arguments C, ddEl
 DeclareOperation("DDToL0Emb", [ IsFreeMagmaRing, IsObject ]);
-
 #! @Arguments ddEl
-#! @Description
-#! Returns the embedding of <C>ddEl</C> into $L_0$ or $L$, respectively.
-#! @ChapterInfo Lie, Lie-0
 DeclareOperation("DDToLieEmb", [ IsObject ]);
+#! @Arguments C, ddEl
 DeclareOperation("DDToLieEmb", [ IsFreeMagmaRing, IsObject ]);
+#! @EndGroup
 
+#! @BeginGroup
+#! @ChapterInfo Lie, Lie-0
+#! @GroupTitle Components of elements of $L_0$
 #! @Arguments l0
 #! @Description
 #! Returns elements of <C>DD</C> and $k$ such that the projection of <C>l0</C> onto $Z$ is
@@ -441,24 +463,11 @@ DeclareOperation("DDToLieEmb", [ IsFreeMagmaRing, IsObject ]);
 #! uniquely determined by this property.
 #! @ChapterInfo Lie, Lie-0
 DeclareOperation("L0DDPart", [ IsObject ]);
-
 #! @Arguments l0
-#! @Description
-#! Returns elements of <C>DD</C> and $k$ such that the projection of <C>l0</C> onto $Z$ is
-#! <C>L0DDPart(l0) + L0XiPart(l0)*L0Xi + L0ZetaPart(l0)*L0Zeta</C>. Note that since the sum
-#! of <C>DD</C> and $k \xi + k \zeta$ is not necessarily direct, these elements are not
-#! uniquely determined by this property.
-#! @ChapterInfo Lie, Lie-0
 DeclareOperation("L0XiPart", [ IsObject ]);
-
 #! @Arguments l0
-#! @Description
-#! Returns elements of <C>DD</C> and $k$ such that the projection of <C>l0</C> onto $Z$ is
-#! <C>L0DDPart(l0) + L0XiPart(l0)*L0Xi + L0ZetaPart(l0)*L0Zeta</C>. Note that since the sum
-#! of <C>DD</C> and $k \xi + k \zeta$ is not necessarily direct, these elements are not
-#! uniquely determined by this property.
-#! @ChapterInfo Lie, Lie-0
 DeclareOperation("L0ZetaPart", [ IsObject ]);
+#! @EndGroup
 
 #! @Arguments F4Root
 #! @Description
