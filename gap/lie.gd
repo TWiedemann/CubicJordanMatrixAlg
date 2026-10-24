@@ -1,3 +1,5 @@
+# ----- The 5-grading -----
+
 #! @Arguments lie, p
 #! @Description
 #! Returns the projection of <C>lie</C> to $L_p$ where <C>-2 &lt;= p &lt;= 2</C>. This is an
@@ -17,6 +19,8 @@ DeclareOperation("LieZero", [IsFreeMagmaRing]);
 DeclareOperation("L0Zero", [IsFreeMagmaRing]);
 #! @EndGroup
 
+# ----- The components L_2 and L_{-2} -----
+
 #! @BeginGroup
 #! @Arguments C
 #! @ChapterInfo Lie, Lie-2
@@ -29,6 +33,8 @@ DeclareOperation("LieX", [IsFreeMagmaRing]);
 #! @Arguments C
 DeclareOperation("LieY", [IsFreeMagmaRing]);
 #! @EndGroup
+
+# ----- The components L_1 and L_{-1} -----
 
 #! @BeginGroup
 #! @ChapterInfo Lie, Lie-1
@@ -53,7 +59,7 @@ DeclareOperation("BrownPosEl", [ IsObject, IsObject, IsObject, IsObject ]);
 DeclareOperation("BrownNegEl", [ IsObject, IsObject, IsObject, IsObject ]);
 #! @EndGroup
 
-# --- L_0 ---
+# ----- The component L_0 -----
 
 #! @BeginGroup
 #! @ChapterInfo Lie, Lie-0
@@ -167,10 +173,37 @@ DeclareOperation("L0XiPart", [ IsObject ]);
 DeclareOperation("L0ZetaPart", [ IsObject ]);
 #! @EndGroup
 
+# ----- Roots and root homomorphisms -----
+
+#! @BeginGroup
+#! @ChapterInfo Lie, Lie-Root
+#! @Description
+#! Lists of all (resp. all short resp. all long) roots in $F_4$ (resp. $G_2$).
+DeclareGlobalName("F4Roots");
+#!
+DeclareGlobalName("F4ShortRoots");
+#!
+DeclareGlobalName("F4LongRoots");
+#!
+DeclareGlobalName("G2Roots");
+#!
+DeclareGlobalName("G2ShortRoots");
+#!
+DeclareGlobalName("G2LongRoots");
+#! @EndGroup
+
+#! @Description
+#! @ChapterInfo Lie, Lie-Root
+#! The system <C>[[1,1,-1,-1], [-2, 0, 0, 0], [1, -1, 0, 0], [0, 1, 1, 0]</C>
+#! of simple roots in $F_4$.
+#! This is precisely the tuple $\Delta_F = (\delta_1, \delta_2, \delta_3, \delta_4)$
+#! in 11.1 in <Cite Key="DMW26"/>.<P/>
+DeclareGlobalName("F4SimpleRoots");
+
 #! @Arguments F4Root
 #! @Description
 #! Returns the image of <C>F4Root</C> under the surjection $\pi: F_4 \to G_2 \cup \{0\}$
-#! described in [DMW, 10.24].
+#! described in 10.24 in <Cite Key="DMW26"/>.
 #! @ChapterInfo Lie, Lie-Root
 DeclareOperation("F4RootG2Coord", [ IsObject ]);
 
@@ -183,14 +216,16 @@ DeclareOperation("F4Refl", [ IsObject, IsObject ]);
 
 #! @Arguments F4Root, z
 #! @Description
-#! Returns the element $\vartheta_\alpha(z)$ of $L$ as defined in [DMW, 10.29]. Thus <C>z</C>
+#! Returns the element $\vartheta_\alpha(z)$ of $L$ as defined in 10.29 in <Cite Key="DMW26"/>.
+#! Thus <C>z</C>
 #! must be in $k$ if <C>F4Root</C> is long and in $C$ otherwise.
 #! @ChapterInfo Lie, Lie-Root
 DeclareOperation("LieRootHomF4", [ IsFreeMagmaRing, IsObject, IsObject, IsObject, IsObject ]);
 
 #! @Arguments F4Root, z
 #! @Description
-#! Returns the element $\vartheta_\alpha(z)$ of $L$ as defined in [DMW, 10.29]. Thus <C>z</C>
+#! Returns the element $\vartheta_\alpha(z)$ of $L$ as defined in 10.29
+#! in <Cite Key="DMW26"/>. Thus <C>z</C>
 #! must be in $k$ if <C>F4Root</C> is long and in $C$ otherwise.
 #! @ChapterInfo Lie, Lie-Root
 DeclareOperation("LieRootHomF4", [ IsFreeMagmaRing, IsObject, IsObject ]);

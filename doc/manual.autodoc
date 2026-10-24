@@ -130,36 +130,33 @@ We internally distinguish between elements of $L_0$ and their embedding into $L$
 
 The $k$-submodules $L_{0,-1}$ and $L_{0,1}$ are isomorphic to the cubic Jordan matrix algebra $J$.
 Again, we strictly distinguish between elements of $J$, $L_{0,-1}$ and $L_{0,1}$.
-For an element <C>cub</C> of $J$, the corresponding elements of $L_{0,-1}$ and $L_{0,1}$ are printed as <C>ad_{cub}^-</C> and <C>ad_{cub}^+</C>, respectively. While we internally distinguish between elements of $L_{0,\pm 1}$ and their embeddings into $L$, they are printed in the same way.<P/>
+For an element <C>cub</C> of $J$, the corresponding elements of $L_{0,-1}$ and $L_{0,1}$
+are printed as <C>ad_{cub}^-</C> and <C>ad_{cub}^+</C>, respectively.
+While we internally distinguish between elements of $L_{0,\pm 1}$ and their embeddings into $L$,
+they are printed in the same way.<P/>
 
 
-We refer to the $k$-module $\langle \mathbf{d}_{a,b} \mid a \in J, b \in J' \rangle$ (which is unnamed in <Cite Key="DMW26"/>) as <C>DD</C> in (the documentation of) this GAP package. The $k$-module $Z$ is the (not necessarily direct) sum of <C>DD</C> with $k \xi + k\zeta$. Again, we internally distinguish between elements of <C>DD</C> and their embedding into $L_0$ and $L$.<P/>
+We refer to the $k$-module $\langle \mathbf{d}_{a,b} \mid a \in J, b \in J' \rangle$
+(which is unnamed in <Cite Key="DMW26"/>) as <C>DD</C> in (the documentation of) this GAP package.
+The $k$-module $Z$ is the (not necessarily direct) sum of <C>DD</C> with $k \xi + k\zeta$.
+Again, we internally distinguish between elements of <C>DD</C> and their embedding into $L_0$ and $L$.<P/>
 
 @Section Lie-Root
 @SectionTitle Root homomorphisms in the Lie algebra
 We represent a root in $G_2$ (respectively, $F_4$) as a list with two (respectively, four) elements,
 each of which is an integer in the range <C>[-2, -1, 0, 1, 2]</C>.
-This representation corresponds precisely to Figures 1 and 3 in <Cite Key="DMW26"/>.<P/>
-<List>
-<Item><C>F4Roots</C></Item>
-<Item><C>F4ShortRoots</C></Item>
-<Item><C>F4LongRoots</C></Item>
-<Item><C>G2Roots</C></Item>
-<Item><C>G2ShortRoots</C></Item>
-<Item><C>G2LongRoots</C></Item>
-</List>
-Lists of all (resp. all short reps. all long) roots in $F_4$ (resp. $G_2$).<P/>
-<C>F4SimpleRoots</C>
-The system <C>[[1,1,-1,-1], [-2, 0, 0, 0], [1, -1, 0, 0], [0, 1, 1, 0]</C> of simple roots in $F_4$. This is precisely $\Delta_F = (\delta_1, \delta_2, \delta_3, \delta_4)$ in [DMW, 11.1].<P/>
-
+This representation corresponds precisely to Figures 1 and 3 in <Cite Key="DMW26"/>.
 
 @Section Lie-Auto
 @SectionTitle Automorphisms of the Lie algebra
-The $F_4$-graded group constructed in <Cite Key="DMW26"/> is a group of automorphisms of $L$. This package provides the internal structure <C>LieEndo</C> to perform computations with automorphisms of $L$.<P/>
-<C>f(lie)</C>
-For an element <C>f</C> of <C>LieEndo</C> and <C>lie</C> in $L$, <C>f(lie)</C> is the image of <C>lie</C> under <C>f</C>.<P/>
-<C>f+g, f*g</C>
-For two elements <C>f</C> and <C>g</C> of <C>LieEndo</C>, <C>f+g</C> and <C>f*g</C> are the elements of <C>LieEndo</C> that map <C>lie</C> to <C>f(lie) + g(lie)</C> and <C>f(g(lie))</C>, respectively.<P/>
+The $F_4$-graded group constructed in <Cite Key="DMW26"/> is a group of automorphisms of $L$.
+This package provides the internal structure <C>LieEndo</C> to perform computations with
+endomorphisms of $L$. <P/>
+For an element <C>f</C> of <C>LieEndo</C> and <C>lie</C> in $L$,
+the image of <C>lie</C> under <C>f</C> can be computed as <C>f(lie)</C>.
+For two elements <C>f</C> and <C>g</C> of <C>LieEndo</C>,
+<C>f+g</C> and <C>f*g</C> are the elements of <C>LieEndo</C> that map <C>lie</C>
+to <C>f(lie)+g(lie)</C> and <C>f(g(lie))</C>, respectively.
 
 @Chapter Simplify
 @ChapterTitle Simplification and equality tests

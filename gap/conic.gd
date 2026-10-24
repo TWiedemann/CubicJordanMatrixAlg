@@ -117,7 +117,9 @@ DeclareOperation("ComRingOfConicAlg", [IsFreeMagmaRing]);
 #! construction of <C>C</C>.
 #! @ChapterInfo Conic, Conic-Stored
 DeclareOperation("ConicAlgMaxTrLength", [IsFreeMagmaRing]);
+
 #! @Arguments C
+#! @ChapterInfo Conic, Conic-Stored
 #! @Description
 #! Returns the argument <C>conicRank</C> that was specified during the creation
 #! of <C>C</C>.
@@ -135,6 +137,7 @@ DeclareOperation("ConicIndetName", [ IsObject ]);
 #! @ChapterInfo Conic, Conic-Stored
 DeclareOperation("ComRingRank", [ IsObject ]);
 #! @Arguments C
+#! @ChapterInfo Conic, Conic-Stored
 #! @Description
 #! Returns the argument <C>comSym</C> that was specified during the creation
 #! of <C>C</C>.

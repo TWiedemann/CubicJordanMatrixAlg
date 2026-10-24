@@ -8,6 +8,7 @@ DeclareOperation("ComRingIndet", [ IsRing, IsInt ]);
 DeclareOperation("ComRingIndet", [ IsString, IsInt ]);
 
 #! @Arguments i
+#! @ChapterInfo Conic, Conic-ComRing
 #! @Description
 #! Returns the <C>i</C>-th element of $\Gamma = (\gamma_1, \gamma_2, \gamma_3)$.
 #! These are the (arbitrarily chosen, but fixed) constants that appear
