@@ -2,8 +2,8 @@
 This package allows symbolic computations in free multiplicative conic alternative algebras $C$
 over a free commutative rings $k$.
 It also supports computations in several structures that can be constructed from $C$ and $k$:
-a cubic Jordan matrix algebra, a Brown algebra, a Lie algebra graded by the root systems $G_2$ and
-$F_4$ and a group graded by the same root systems.
+namely, cubic Jordan matrix algebra as well as certain Lie algebras and groups
+which are graded by the root systems $G_2$ and $F_4$.
 
 This package was originally developed for certain computations in <Cite Key="DMW26"/>,
 which contains detailed descriptions of the underlying mathematical structures.
@@ -12,14 +12,14 @@ A less technical overview of the functionality of the package is available in
 
 @Section Notational conventions
 Throughout this documentation, we use the following conventions:
-* Conic algebras are denoted by <C>C</C>, their base rings by <C>k</C>.
+* Conic algebras are denoted by <C>C</C> and their commutative base rings by <C>k</C>.
 * Elements of a conic algebra are denoted by <C>a, b, c</C>.
 * Elements of the commutative base ring of a conic algebra are denoted by <C>t, s, r</C>.
 * Elements of a cubic Jordan matrix algebra are denoted by <C>cub</C>.
-* Elements of a Brown algebra are denoted by <C>brown</C>.
 * Elements of the Lie algebra $L$ over a conic algebra are denoted by <C>lie</C>.
+* Elements of a Brown algebra (that is, of the components $L_1$ and $L_{-1}$ of a Lie algebra $L$) are denoted by <C>brown</C>.
 * Elements of $L_0$, the 0-space of $L$, are denoted by <C>l0</C>.
-* Elements of <C>DD</C>, one component of $L_0$, are denoted by <C>ddEl</C>.
+* Elements of <C>DD</C> (one of the components of $L_0$) are denoted by <C>ddEl</C>.
 * Endomorphisms of $L$ are denoted by <C>f, g</C>.
 * We denote by <C>i, j, l</C> integers in <C>[1,2,3]</C> and by <C>p</C> arbitrary integers.<P/>
 
@@ -41,10 +41,12 @@ Throughout this documentation, we use the term "conic algebra" to mean
 "(free) multiplicative conic alternative algebra".
 Internally, these algebras are represented in <C>CubicJordanMatrixAlg</C>
 by free nonassociative algebras, that is, by magma rings over free magmas.
-If two elements $a,b$ of a conic algebra coincide, this implies that $a=b$ is an
-identity in all multiplicative conic alternative algebra.
-However, if $a \ne b$, this does not necessarily mean that $a=b$ is not an identity, but only
-that it is not proven to be an identity.
+If <C>a = b</C> evaluates to <C>true</C> for two elements <C>a, b</C> of a conic algebra,
+this implies that $a=b$ is indeed an identity
+(in a free conic algebra, and hence in all conic algebras).
+However, if <C>a = b</C> evaluates to <C>false</C>,
+this does not necessarily mean that $a \ne b$, but only
+that we have not proven that $a=b$.
 
 See also Chapter <Ref Chap="Chapter_Simplify"/> for functions to prove identities in conic algebras
 (and in structures built from conic algebras).

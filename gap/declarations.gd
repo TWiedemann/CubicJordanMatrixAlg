@@ -76,7 +76,9 @@ DeclareOperation("ConicAlgInv", [ IsElementOfFreeMagmaRing ]);
 #! @BeginGroup ConicInv
 #! @ChapterInfo Conic, Conic-Maps
 #! @Description
-#! Returns the conjugate of <C>a</C>. This is an element of $C$ which is printed as <C>a'</C>.
+#! Returns the conjugate of <C>a</C>.
+#! If <C>a</C> is a generator of the conic algebra in which it is contained,
+#! then its conjugate is printed as <C>a'</C>.
 #! <C>ConicInv</C> and <C>ConicConj</C> are different names for the same function.
 #! @Arguments a
 DeclareOperation("ConicInv", [ IsObject ]);
@@ -94,7 +96,7 @@ DeclareOperation("ConicNorm", [ IsObject ]);
 
 #! @Arguments a, b
 #! @Description
-#! Returns <C>ntr(a'b</C>, which is known to be the same as <C>(a+b)-n(a)-n(b)</C>.
+#! Returns <C>tr(a'b)</C>, which is known to be the same as <C>n(a+b)-n(a)-n(b)</C>.
 #! Thus <C>ConicNormLin</C> is the linearisation of <C>ConicNorm</C>.
 #! @ChapterInfo Conic, Conic-Maps
 DeclareOperation("ConicNormLin", [ IsObject, IsObject ]);

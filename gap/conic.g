@@ -452,7 +452,7 @@ end);
 #! @Arguments C
 #! @Description
 #! This function defines global GAP variables that store the indeterminates of <C>C</C>
-#! of and of its base ring $k$. The names of the GAP variables coincide
+#! of and of its base ring. The names of the GAP variables coincide
 #! with the names of the indeterminates. Any previously defined GAP variables
 #! with these names will be overwritten.
 #! @BeginExampleSession
@@ -465,8 +465,8 @@ end);
 #! (t1)*b2
 #! @EndExampleSession
 #! This function also defines global variables <C>dd := Liedd</C> and
-#! <C>g1, g2, g3</C> for $\gamma_1, \gamma_2, \gamma_3$ that are independent
-#! of <C>C</C>.
+#! <C>g1 := ComRingGamIndet(1), g2 := ComRingGamIndet(2), g3 := ComRingGamIndet(3)</C>
+#! that are independent of <C>C</C>.
 #! @ChapterInfo Conic, Conic-Const
 InstallMethod(AssignGeneratorVariables, [IsFreeMagmaRing], 2, function(conicAlg)
 	local assignVar, assignVars;
