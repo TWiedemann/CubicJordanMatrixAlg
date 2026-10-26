@@ -1,6 +1,6 @@
 @Chapter Introduction
 This package allows symbolic computations in free multiplicative conic alternative algebras $C$
-over a free commutative rings $k$.
+over free commutative rings $k$.
 It also supports computations in several structures that can be constructed from $C$ and $k$:
 namely, cubic Jordan matrix algebra as well as certain Lie algebras and groups
 which are graded by the root systems $G_2$ and $F_4$.
@@ -22,6 +22,33 @@ Throughout this documentation, we use the following conventions:
 * Elements of <C>DD</C> (one of the components of $L_0$) are denoted by <C>ddEl</C>.
 * Endomorphisms of $L$ are denoted by <C>f, g</C>.
 * We denote by <C>i, j, l</C> integers in <C>[1,2,3]</C> and by <C>p</C> arbitrary integers.<P/>
+
+@Section Multiple conic algebras in the same GAP session
+
+Elements of distinct conic algebras are always regarded as distinct, even if they
+share the same name:
+
+@BeginExampleSession
+gap> C := ConicAlgebra(3, 2, 2);; D := ConicAlgebra(3, 2, 2);;
+gap> ConicAlgIndet(C, 1);
+(1)*a1
+gap> ConicAlgIndet(D, 1);
+(1)*a1
+gap> ConicAlgIndet(C, 1) = ConicAlgIndet(D, 1);
+false
+@EndExampleSession
+
+However, the elements of their base rings are (quotients of) polynomials over
+the integers, and will coincide if they share the same name:
+
+@BeginExampleSession
+gap> ConicTr(ConicAlgIndet(C, 1));
+tr(a1)
+gap> ConicTr(ConicAlgIndet(D, 1));
+tr(a1)
+gap> ConicTr(ConicAlgIndet(C, 1)) = ConicTr(ConicAlgIndet(D, 1));
+true
+@EndExampleSession
 
 @Section For advanced users
 While the main functions of the package are described in this documentation,
