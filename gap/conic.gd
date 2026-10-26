@@ -15,7 +15,10 @@
 #! of higher length appear is always printed in the same way.
 #! The printing of elements containing traces of products of higher length,
 #! on the other hand, may depend on the order in which these traces have appeared
-#! in the current GAP session.<P/>
+#! in the current GAP session.
+#! (See <Cite Key="Wiedemann26"/> for a slightly more detailed discussion of the
+#! parameter <C>maxTrLength</C>.)
+#! <P/>
 #! The record <C>nameRec</C> may contain the following entries:
 #! * <C>comSym</C>: The symbol used for the generators in the commutative base ring, which are named <C>comSym1, comSym2, ...</C>. Default: <C>t</C>.
 #! * <C>conicSym</C>: The symbol used for the generators in the conic algebra, which are named <C>conicSym1, conicSym2, ...</C>. Default: <C>a</C>.
@@ -101,11 +104,11 @@ DeclareOperation("ConicAlgMagEmbedding", [IsFreeMagmaRing]);
 #! Since GAP does not support function fields (or polynomial rings) over infinitely many indeterminates,
 #! it is not possible to return a commutative ring containing all symbols <C>tr(d)</C>
 #! for all monomials <C>d</C> in <C>C</C> of arbitrary length.
-#! Instead, this function returns the function field over the integers over the finitely many
+#! Instead, this function returns the function field over the finitely many
 #! indeterminates which were initialised during the construction of <C>C</C>.
 #! In particular, for elements <C>tr(d)</C> where d is a product in <C>C</C>
 #! of sufficiently high length, the expression <C>tr(d) in ComRingOfConicAlg(C)</C>
-#! is <C>false</C>. Thus the user should not rely on this ring to be the full
+#! evaluates to <C>false</C>. Thus the user should not rely on this ring to be the full
 #! coeficient ring. However, it may be safely used to access
 #! <C>Zero(ComRingOfConicAlg(C))</C> and <C>One(ComRingOfConicAlg(C))</C>.
 #! @ChapterInfo Conic, Conic-Stored
@@ -127,13 +130,13 @@ DeclareOperation("ConicRank", [ IsObject ]);
 #! @Arguments C
 #! @Description
 #! Returns the argument <C>conicSym</C> that was specified during the creation
-#! of <C>C</C>, that is, the name given to the generators of <C>C</C>.
+#! of <C>C</C>.
 #! @ChapterInfo Conic, Conic-Stored
 DeclareOperation("ConicIndetName", [ IsObject ]);
 #! @Arguments C
 #! @Description
 #! Returns the argument <C>comRingRank</C> that was specified during the creation
-#! of <C>C</C>, that is, the number of independent elements of <C>ComRingOfConicAlg(C)</C>.
+#! of <C>C</C>.
 #! @ChapterInfo Conic, Conic-Stored
 DeclareOperation("ComRingRank", [ IsObject ]);
 #! @Arguments C

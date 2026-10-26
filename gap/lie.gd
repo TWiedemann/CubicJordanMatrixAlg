@@ -65,7 +65,7 @@ DeclareOperation("BrownNegEl", [ IsObject, IsObject, IsObject, IsObject ]);
 #! @ChapterInfo Lie, Lie-0
 #! @GroupTitle LieXi, LieZeta, L0Xi and L0Zeta
 #! @Description
-#! Returns the elements $\xi$ and $\zeta$ of $L$ or $L_0$, respectively.
+#! Returns the element $\xi$ and $\zeta$ of $L$ or $L_0$, respectively.
 #! They are printed as <C>xi</C> and <C>zeta</C>, respectively.
 #! @Arguments C
 DeclareOperation("LieXi", [IsFreeMagmaRing]);
@@ -88,7 +88,7 @@ DeclareOperation("L0ToLieEmb", [ IsObject ]);
 #! @GroupTitle CubicPosToL0Emb, CubicNegToL0Emb, CubicPosToLieEmb and CubicNegToLie
 #! @Arguments cub
 #! @Description
-#! Returns the elements <C>ad_{cub}^+</C> and <C>ad_{cub}^-</C> of $L_0$ and $L$, respectively.
+#! Returns the element <C>ad_{cub}^+</C> and <C>ad_{cub}^-</C> of $L_0$ or $L$, respectively.
 DeclareOperation("CubicPosToL0Emb", [ IsObject ]);
 #! @Arguments cub
 DeclareOperation("CubicNegToL0Emb", [ IsObject ]);

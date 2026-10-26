@@ -64,7 +64,7 @@ DeclareOperation("TestEquality", [ IsFreeMagmaRing, IsObject, IsObject ]);
 #! @Description
 #! Returns <C>true</C> in the same situations as <C>TestEquality</C>. Otherwise the output is a
 #! list of all non-zero "pieces" of all "error terms" <C>Simplify(g(gen) - h(gen))</C> that
-#! arise during the test. By "pieces" we mean the underlying elements of $k$, $C$ and $L_0$
+#! arise during the test. By "pieces" we mean the underlying elements of $k$, $C$ and <C>DD</C>
 #! that make up the error terms. Thus to prove that <C>g</C> and <C>h</C> are the same, it
 #! suffices to prove that all elements in the output list represent 0. As for
 #! <C>TestEquality</C>, the user should assure that <C>ConicAlgIndet(C, ConicRank(C))</C>

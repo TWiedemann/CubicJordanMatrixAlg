@@ -190,7 +190,7 @@ to <C>f(lie)+g(lie)</C> and <C>f(g(lie))</C>, respectively.
 
 @Section Simplify-Function
 @SectionTitle Simplification functions
-Let <C>u, v</C> be two element of $k$ (or of $C$, the Brown algebra, <C>DD</C>, $L_0$ or $L$,
+Let <C>u, v</C> be two elements of $k$ (or of $C$, the Brown algebra, <C>DD</C>, $L_0$ or $L$,
 but not of <C>LieEndo</C> which is handled somewhat differently).
 Then <C>u = v</C> evaluates to <C>true</C> if and only if the internal representations
 of <C>u</C> and <C>v</C> coincide.

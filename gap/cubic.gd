@@ -34,21 +34,18 @@ DeclareOperation("CubicElFromTuple",
 #! @ChapterInfo CJMA, CJMA-Elements
 DeclareOperation("CubicZero", [ IsFreeMagmaRing ]);
 
-#! @Arguments cub, i
+#! @BeginGroup
+#! @ChapterInfo CJMA, CJMA-Elements
+#! @GroupTitle CubicConicPart and CubicComPart
 #! @Description
 #! Returns the corresponding component of <C>cub</C>. For example, for <C>cub = t[11] + s[22] +
 #! r[33] + a[23] + b[31] + c[12]</C>, we have <C>CubicConicPart(cub, 1) = a</C> and
 #! <C>CubicComPart(cub, 2) = s</C>.
-#! @ChapterInfo CJMA, CJMA-Elements
+#! @Arguments cub, i
 DeclareOperation("CubicConicPart", [ IsObject, IsObject ]);
-
 #! @Arguments cub, i
-#! @Description
-#! Returns the corresponding component of <C>cub</C>. For example, for <C>cub = t[11] + s[22] +
-#! r[33] + a[23] + b[31] + c[12]</C>, we have <C>CubicConicPart(cub, 1) = a</C> and
-#! <C>CubicComPart(cub, 2) = s</C>.
-#! @ChapterInfo CJMA, CJMA-Elements
 DeclareOperation("CubicComPart", [ IsObject, IsObject ]);
+#! @EndGroup
 
 #! @Arguments cub
 #! @Description
