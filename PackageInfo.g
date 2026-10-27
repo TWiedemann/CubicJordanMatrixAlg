@@ -25,12 +25,15 @@ Persons := [
   ),
 ],
 
-#SourceRepository := rec( Type := "TODO", URL := "URL" ),
-#IssueTrackerURL := "TODO",
-PackageWWWHome := "https://github.com/TWiedemann/CubicJordanMatrixAlg",
-PackageInfoURL := Concatenation( ~.PackageWWWHome, "PackageInfo.g" ),
-README_URL     := Concatenation( ~.PackageWWWHome, "README.md" ),
-ArchiveURL     := Concatenation( ~.PackageWWWHome,
+SourceRepository := rec(
+  Type := "git", URL := "https://github.com/TWiedemann/CubicJordanMatrixAlg"
+),
+IssueTrackerURL := Concatenation(~.SourceRepository.URL, "/issues"),
+PackageWWWHome := "https://twiedemann.github.io/CubicJordanMatrixAlg/",
+PackageInfoURL := Concatenation( ~.SourceRepository.URL, "/PackageInfo.g" ),
+README_URL     := Concatenation( ~.SourceRepository.URL, "/README.md" ),
+ArchiveURL      := Concatenation( ~.SourceRepository.URL,
+                                 "/releases/download/v", ~.Version,
                                  "/", ~.PackageName, "-", ~.Version ),
 
 ArchiveFormats := ".tar.gz",
@@ -40,7 +43,7 @@ AbstractHTML   :=  "",
 PackageDoc := rec(
   BookName  := "CubicJordanMatrixAlg",
   ArchiveURLSubset := ["doc"],
-  HTMLStart := "doc/chap0.html",
+  HTMLStart := "doc/chap0_mj.html",
   PDFFile   := "doc/manual.pdf",
   SixFile   := "doc/manual.six",
   LongTitle := "Symbolic computation in cubic Jordan matrix algebras",
