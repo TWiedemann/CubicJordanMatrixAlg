@@ -40,14 +40,6 @@ You can find the location of this directory on your system by calling
 gap> GAPInfo.PackageDirectories;
 ```
 in a GAP session.
-4. Unix only: To build the documentation of this package, open a terminal in 
-the folder of `CubicJordanMatrixAlg` and run
-```
-gap makedoc.g
-```
-This builds the documentation of the package in `html` and `pdf` (if LaTeX is installed)
-format. It also creates the `.six` files for the interactive help that is available
-in a GAP session via `?`.
 
 As an alternative way of installation,
 you can manually download (or `git clone`) this repository into your package directory.
