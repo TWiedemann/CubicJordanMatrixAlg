@@ -22,6 +22,9 @@ The basic underlying principles of this package are described in \[DMW, Section 
 and in the preprint
 \[Wie26\] [*Symbolic computation in cubic Jordan matrix algebras and in related structures*](https://arxiv.org/abs/2604.13809).
 
+# Documentation
+
+The documentation of this package is available at https://twiedemann.github.io/CubicJordanMatrixAlg/.
 
 # Installation
 
