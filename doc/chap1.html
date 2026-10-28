@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<title>GAP (CubicJordanMatrixAlg) - Chapter 1: Introduction</title>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta name="generator" content="GAPDoc2HTML" />
+<link rel="stylesheet" type="text/css" href="manual.css" />
+<script src="manual.js" type="text/javascript"></script>
+<script type="text/javascript">overwriteStyle();</script>
+</head>
+<body class="chap1"  onload="jscontent()">
+
+
+<div class="chlinktop"><span class="chlink1">Goto Chapter: </span><a href="chap0.html">Top</a>  <a href="chap1.html">1</a>  <a href="chap2.html">2</a>  <a href="chap3.html">3</a>  <a href="chap4.html">4</a>  <a href="chap5.html">5</a>  <a href="chapBib.html">Bib</a>  <a href="chapInd.html">Ind</a>  </div>
+
+<div class="chlinkprevnexttop">&nbsp;<a href="chap0.html">[Top of Book]</a>&nbsp;  <a href="chap0.html#contents">[Contents]</a>&nbsp;  &nbsp;<a href="chap0.html">[Previous Chapter]</a>&nbsp;  &nbsp;<a href="chap2.html">[Next Chapter]</a>&nbsp;  </div>
+
+<p id="mathjaxlink" class="pcenter"><a href="chap1_mj.html">[MathJax on]</a></p>
+<p><a id="X7DFB63A97E67C0A1" name="X7DFB63A97E67C0A1"></a></p>
+<div class="ChapSects"><a href="chap1.html#X7DFB63A97E67C0A1">1 <span class="Heading">Introduction</span></a>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap1.html#X7C10CAF97EF42C57">1.1 <span class="Heading">Notational conventions</span></a>
+</span>
+</div>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap1.html#X8438E42385A697F6">1.2 <span class="Heading">Multiple conic algebras in the same GAP session</span></a>
+</span>
+</div>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap1.html#X86B8E45A851A149B">1.3 <span class="Heading">For advanced users</span></a>
+</span>
+</div>
+</div>
+
+<h3>1 <span class="Heading">Introduction</span></h3>
+
+<p>This package allows symbolic computations in free multiplicative conic alternative algebras <span class="Math">C</span> over free commutative rings <span class="Math">k</span>. It also supports computations in several structures that can be constructed from <span class="Math">C</span> and <span class="Math">k</span>: namely, cubic Jordan matrix algebra as well as certain Lie algebras and groups which are graded by the root systems <span class="Math">G_2</span> and <span class="Math">F_4</span>.</p>
+
+<p>This package was originally developed for certain computations in <a href="chapBib.html#biBDMW26">[DW26]</a>, which contains detailed descriptions of the underlying mathematical structures. A less technical overview of the functionality of the package is available in <a href="chapBib.html#biBWiedemann26">[Wie26]</a>.</p>
+
+<p><a id="X7C10CAF97EF42C57" name="X7C10CAF97EF42C57"></a></p>
+
+<h4>1.1 <span class="Heading">Notational conventions</span></h4>
+
+<p>Throughout this documentation, we use the following conventions:</p>
+
+
+<ul>
+<li><p>Conic algebras are denoted by <code class="code">C</code> and their commutative base rings by <code class="code">k</code>.</p>
+
+</li>
+<li><p>Elements of a conic algebra are denoted by <code class="code">a, b, c</code>.</p>
+
+</li>
+<li><p>Elements of the commutative base ring of a conic algebra are denoted by <code class="code">t, s, r</code>.</p>
+
+</li>
+<li><p>Elements of a cubic Jordan matrix algebra are denoted by <code class="code">cub</code>.</p>
+
+</li>
+<li><p>Elements of the Lie algebra <span class="Math">L</span> over a conic algebra are denoted by <code class="code">lie</code>.</p>
+
+</li>
+<li><p>Elements of a Brown algebra (that is, of the components <span class="Math">L_1</span> and <span class="Math">L_{-1}</span> of a Lie algebra <span class="Math">L</span>) are denoted by <code class="code">brown</code>.</p>
+
+</li>
+<li><p>Elements of <span class="Math">L_0</span>, the 0-space of <span class="Math">L</span>, are denoted by <code class="code">l0</code>.</p>
+
+</li>
+<li><p>Elements of <code class="code">DD</code> (one of the components of <span class="Math">L_0</span>) are denoted by <code class="code">ddEl</code>.</p>
+
+</li>
+<li><p>Endomorphisms of <span class="Math">L</span> are denoted by <code class="code">f, g</code>.</p>
+
+</li>
+<li><p>We denote by <code class="code">i, j, l</code> integers in <code class="code">[1,2,3]</code> and by <code class="code">p</code> arbitrary integers.</p>
+
+</li>
+</ul>
+<p><a id="X8438E42385A697F6" name="X8438E42385A697F6"></a></p>
+
+<h4>1.2 <span class="Heading">Multiple conic algebras in the same GAP session</span></h4>
+
+<p>Elements of distinct conic algebras are always regarded as distinct, even if they share the same name:</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">C := ConicAlgebra(3, 2, 2);; D := ConicAlgebra(3, 2, 2);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">ConicAlgIndet(C, 1);</span>
+(1)*a1
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">ConicAlgIndet(D, 1);</span>
+(1)*a1
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">ConicAlgIndet(C, 1) = ConicAlgIndet(D, 1);</span>
+false
+</pre></div>
+
+<p>However, the elements of their base rings are (quotients of) polynomials over the integers, and will coincide if they share the same name:</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">ConicTr(ConicAlgIndet(C, 1));</span>
+tr(a1)
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">ConicTr(ConicAlgIndet(D, 1));</span>
+tr(a1)
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">ConicTr(ConicAlgIndet(C, 1)) = ConicTr(ConicAlgIndet(D, 1));</span>
+true
+</pre></div>
+
+<p><a id="X86B8E45A851A149B" name="X86B8E45A851A149B"></a></p>
+
+<h4>1.3 <span class="Heading">For advanced users</span></h4>
+
+<p>While the main functions of the package are described in this documentation, more functions and their documentation can be found by studying the GAP source files in <code class="code">CubicJordanMatrixAlg/gap</code>. Most files are commited to building up the desired structures step by step (similarly as this manual does), and the precise order in which they are loaded can be read off from <code class="code">CubicJordanMatrixAlg/init.g</code>. The most complicated tasks are the simplification functions in <code class="code">simplify.g</code> and the construction of the trace function in <code class="code">comring.g</code>.</p>
+
+
+<div class="chlinkprevnextbot">&nbsp;<a href="chap0.html">[Top of Book]</a>&nbsp;  <a href="chap0.html#contents">[Contents]</a>&nbsp;  &nbsp;<a href="chap0.html">[Previous Chapter]</a>&nbsp;  &nbsp;<a href="chap2.html">[Next Chapter]</a>&nbsp;  </div>
+
+
+<div class="chlinkbot"><span class="chlink1">Goto Chapter: </span><a href="chap0.html">Top</a>  <a href="chap1.html">1</a>  <a href="chap2.html">2</a>  <a href="chap3.html">3</a>  <a href="chap4.html">4</a>  <a href="chap5.html">5</a>  <a href="chapBib.html">Bib</a>  <a href="chapInd.html">Ind</a>  </div>
+
+<hr />
+<p class="foot">generated by <a href="https://www.math.rwth-aachen.de/~Frank.Luebeck/GAPDoc">GAPDoc2HTML</a></p>
+</body>
+</html>
