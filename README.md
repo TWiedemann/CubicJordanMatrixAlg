@@ -78,15 +78,10 @@ simply have a look at the usage examples in (the test file) `tst/test_basic.tst`
 The directory `[gap]/pkg/CubicJordanMatrixAlg/tst` (where `[gap]/pkg` is the directory in which
 `CubicJordanMatrixAlg` is installed) contains several test files which verify certain claims
 in \[DMW\] (and which also serve as a test suite for the package).
-If you want to run these tests, do the following for each of these test files:
-1. Start a GAP session.
-2. Type `LoadPackage("CubicJordanMatrixAlg");` and press Enter to load the package. Do NOT call `InitCJMA()`, this will be done automatically by the following steps.
-3. Type `Test("filepath", rec(width:=50000));` and press Enter. Here `filepath` should be replaced by the path of the file you want to test. On Unix, if you started the GAP session inside `[gap]/pkg/CubicJordanMatrixAlg/tst`, then `filepath` can simply be the name of the file, e.g. `Test("test_basic.tst", rec(width:=50000));`. On Windows, this does not work, but you can drag and drop the `tst` file from your file explorer into your GAP session to obtain its path.
-Consult the [GAP manual](https://docs.gap-system.org/doc/ref/chap7_mj.html#X801051CC86594630) for more information on the GAP function `Test`.
-4. An output of `true` on the terminal signifies that all tests were successful. Some tests run only a few seconds, others may take several minutes.
-5. To test the next file, close GAP and start a new session.
+To run all tests, start a GAP session and run `TestPackage("CubicJordanMatrixAlg").
+The test should finish with the message "No errors detected while testing".
 
-Specifically, the files perform the following tests:
+Specifically, the test files perform the following tests:
 - `test_basic.tst` does not verify any specific claim in \[DMW\]. Rather, it tests that all basic functions of the package work as intended.
 - `test_jordan_brace.tst` verifies \[DMW, 9.15\] (explicit formulas for the $D$-operators in cubic Jordan matrix algebras).
 - `test_lie_comm.tst` verifies \[DMW, 10.32, 10.33, 10.34\] (existence of a Chevalley-type basis and explicit commutator formulas in the Lie algebra).
