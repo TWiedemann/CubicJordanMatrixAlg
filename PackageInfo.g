@@ -64,7 +64,7 @@ AvailabilityTest := ReturnTrue,
 # in the F4-graded group, which involves computations in the F4-graded Lie algebra,
 # which involves computations in the cubic norm structure, which involves computations
 # in Conic and ComRing.
-TestFile := "tst/test_weyl.tst",
+TestFile := "tst/testall.g",
 
 #Keywords := [ "TODO" ],
 
