@@ -20,7 +20,7 @@ TestGrpRootHom := function(conicAlg, root)
 	g1 := GrpRootHomF4(conicAlg, root, x1);
 	g2 := GrpRootHomF4(conicAlg, root, x2);
 	g3 := GrpRootHomF4(conicAlg, root, x1+x2);
-	if IsEmpty(TestEqualityPieces(g1*g2, g3)) then
+	if IsEmpty(TestEqualityPieces(conicAlg, g1*g2, g3)) then
 		return true;
 	else
 		return false;
