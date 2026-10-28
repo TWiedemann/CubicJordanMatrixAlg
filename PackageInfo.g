@@ -7,8 +7,8 @@ SetPackageInfo( rec(
 
 PackageName := "CubicJordanMatrixAlg",
 Subtitle := "Symbolic computation in cubic Jordan matrix algebras",
-Version := "1.0.7",
-Date := "27/10/2026", # dd/mm/yyyy format
+Version := "1.1.0",
+Date := "28/10/2026", # dd/mm/yyyy format
 License := "GPL-3.0-or-later",
 
 Persons := [
@@ -30,8 +30,8 @@ SourceRepository := rec(
 ),
 IssueTrackerURL := Concatenation(~.SourceRepository.URL, "/issues"),
 PackageWWWHome := "https://twiedemann.github.io/CubicJordanMatrixAlg/",
-PackageInfoURL := Concatenation( ~.PackageWWWHome.URL, "/PackageInfo.g" ),
-README_URL     := Concatenation( ~.PackageWWWHome.URL, "/README.md" ),
+PackageInfoURL := Concatenation( ~.PackageWWWHome, "/PackageInfo.g" ),
+README_URL     := Concatenation( ~.PackageWWWHome, "/README.md" ),
 ArchiveURL      := Concatenation( ~.SourceRepository.URL,
                                  "/releases/download/v", ~.Version,
                                  "/", ~.PackageName, "-", ~.Version ),
