@@ -87,10 +87,10 @@ TestG2WeylFormulas := function(conicAlg)
 	t1 := ComRingIndet(conicAlg, 1);
 	a1 := ConicAlgIndet(conicAlg, 1);
 	# Define phibs as w(bLie), a product of exponential automorphisms
-	bCub := Sum(
+	bCub := Sum([
 		t1*CubicComEl(conicAlg, t1, 1), CubicComEl(conicAlg, One(t1), 2),
 		CubicComEl(conicAlg, One(t1), 3)
-	);
+	]);
 	bCubInv := CubicNorm(bCub)^-1 * CubicAdj(bCub);
 	bLie := BrownNegEl(Zero(t1), bCub, CubicZero(conicAlg), Zero(t1));
 	bInvLie := BrownPosEl(Zero(t1), CubicZero(conicAlg), -bCubInv, Zero(t1));
