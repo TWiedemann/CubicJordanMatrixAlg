@@ -1,267 +1,95 @@
-# GitHubPagesForGAP
-
-This repository can be used to quickly set up a website hosted by
-[GitHub](https://github.com/) for GAP packages using a GitHub repository.
-Specifically, this uses [GitHub pages](https://pages.github.com/)
-by adding a `gh-pages` branch to your package repository which
-contains data generated from the `PackageInfo.g` file of your package.
-
-## Initial setup
-
-The easiest way to do this is to run the `setup-gh-pages` shell script
-provided in the [GitHubPagesForGAP]() from within a git clone of your
-package's GitHub repository.
-
-In case this does not work, or if you want to really know what's going
-on, you can also follow the manual instructions described after the fold.
-
-------
-
-The following instructions assume you do not already have a `gh-pages`
-branch in your repository. If you do have one, you should delete it before
-following these instructions.
-
-1. Go into your clone of your package repository.
-
-2. Setup a `gh-pages` branch in a `gh-pages` subdirectory.
-
-   Users with a recent enough git version (recommended is >= 2.7.0)
-   can do this using a "worktree", via the following commands:
-
-   ```sh
-   # Add a new remote pointing to the GitHubPagesForGAP repository
-   git remote add -f gh-gap https://github.com/gap-system/GitHubPagesForGAP
-
-   # Create a fresh gh-pages branch from the new remote
-   git branch gh-pages gh-gap/gh-pages --no-track
-
-   # Create a new worktree and change into it
-   git worktree add gh-pages gh-pages
-   cd gh-pages
-   ```
-
-   Everybody else should instead do the following, with the URL
-   in the initial clone command suitably adjusted:
-
-   ```sh
-   # Create a fresh clone of your repository, and change into it
-   git clone https://github.com/USERNAME/REPOSITORY gh-pages
-   cd gh-pages
-
-   # Add a new remote pointing to the GitHubPagesForGAP repository
-   git remote add gh-gap https://github.com/gap-system/GitHubPagesForGAP
-   git fetch gh-gap
-
-   # Create a fresh gh-pages branch from the new remote
-   git checkout -b gh-pages gh-gap/gh-pages --no-track
-   ```
-
-5. Add in copies of your `PackageInfo.g`, `README` (or `README.md`) and manual:
-
-   ```
-   cp -f ../PackageInfo.g ../README* .
-   cp -f ../doc/*.{css,html,js,txt} doc/
-   ```
-
-6. Now run the `update.g` GAP script. This extracts data from your
-   `PackageInfo.g` file and puts that data into `_data/package.yml`.
-   From this, the website template can populate the web pages with
-   some sensible default values.
-
-   ```
-   gap update.g
-   ```
-
-7. Commit and push everything.
-
-   ```
-   git add PackageInfo.g README* doc/ _data/package.yml
-   git commit -m "Setup gh-pages based on GitHubPagesForGAP"
-   git push --set-upstream origin gh-pages
-   ```
-
-That's it. You can now see your new package website under
-https://USERNAME.github.io/REPOSITORY/ (of course after
-adjusting USERNAME and REPOSITORY suitably).
-
-
-## Using an existing gh-pages branch
-
-If you previously set up [GitHubPagesForGAP]() and thus already have a `gh-pages`
-branch, you may on occasion have need to make a fresh clone of your package
-repository, and then also would like to recreate the `gh-pages` directory.
-
-The easiest way to do this is to run the `setup-gh-pages` shell script
-provided in the [GitHubPagesForGAP]() from within a git clone of your
-package's GitHub repository.
-
-In case this does not work, or if you want to really know what's going
-on, you can also follow the manual instructions described after the fold.
-
-------
-
-Users with a recent enough git version (recommended is >= 2.7)
-can do this using a "worktree", via the following commands:
-
-   ```sh
-   git branch gh-pages origin/gh-pages
-   git worktree add gh-pages gh-pages
-   ```
-
-If you are using an older version of git, you can instead use a second clone
-of your repository instead:
-
-   ```sh
-   git clone -b gh-pages https://github.com/USERNAME/REPOSITORY gh-pages
-   ```
-
-
-## Adjusting the content and layout
-
-[GitHubPagesForGAP]() tries to automatically provide good defaults for
-most packages. However, you can tweak everything about it:
-
-* To adjust the page layout, edit the files `stylesheets/styles.css`
-and `_layouts/default.html`.
-
-* To adjust the content of the front page, edit `index.md` (resp.
-  for the content of the sidebar, edit `_layouts/default.html`
-
-* You can also add additional pages, in various formats (HTML,
-Markdown, Textile, ...).
-
-For details, please consult the [Jekyll](http://jekyllrb.com/)
-manual.
-
-
-## Testing the site locally
-
-If you would like to test your site on your own machine, without
-uploading it to GitHub (where it is visible to the public), you can do
-so by installing [Jekyll](http://jekyllrb.com/), the static web site
-generator used by GitHub to power GitHub Pages.
-
-Once you have installed Jekyll as described on its homepage, you can
-test the website locally as follows:
-
-1. Go to the `gh-pages` directory we created above.
-
-2. Run jekyll (this launches a tiny web server on your machine):
-
-   ```
-   jekyll serve -w
-   ```
-
-3. Visit the URL http://localhost:4000 in a web browser.
-
-
-## Updating after you made a release
-
-Whenever you make a release of your package (and perhaps more often than
-that), you will want to update your website. The easiest way is to use
-the `release` script from the [ReleaseTools][], which performs all
-the necessary steps for you, except for the very last of actually
-publishing the package (and it can do even that for you, if you
-pass the `-p` option to it).
-
-However, you can also do it manually. The steps for doing it are quite
-similar to the above:
-
-1. Go to the `gh-pages` directory we created above.
-
-2. Add in copies of your `PackageInfo.g`, `README` (or `README.md`) and manual:
-
-   ```
-   cp -f ../PackageInfo.g ../README* .
-   cp -f ../doc/*.{css,html,js,txt} doc/
-   ```
-
-3. Now run the `update.g` GAP script.
-
-4. Commit and push the work we have just done.
-
-   ```
-   git add PackageInfo.g README* doc/ _data/package.yml
-   git commit -m "Update web pages"
-   git push
-   ```
-
-A few seconds after you have done this, your changes will be online
-under https://USERNAME.github.io/REPOSITORY/ .
-
-
-## Updating to a newer version of GitHubPagesForGAP
-
-Normally you should not have to ever do this. However, if you really want to,
-you can attempt to update to the most recent version of [GitHubPagesForGAP]() via
-the following instructions. The difficulty of such an update depends on how
-much you tweaked the site after initially cloning [GitHubPagesForGAP]().
-
-1. Go to the `gh-pages` directory we created above.
-   Make sure that there are no uncommitted changes, as they will be lost
-   when following these instructions.
-
-2. Make sure the `gh-gap` remote exists and has the correct URL. If in doubt,
-   just re-add it:
-   ```
-   git remote remove gh-gap
-   git remote add gh-gap https://github.com/gap-system/GitHubPagesForGAP
-   ```
-
-3. Attempt to merge the latest GitHubPagesForGAP.
-   ```
-   git pull gh-gap gh-pages
-   ```
-
-4. If this produced no errors and just worked, skip to the next step.
-   But it is quite likely that you will have conflicts in the file
-   `_data/package.yml`, or in your `README` or `PackageInfo.g` files.
-   These can usually be resolved by entering this:
-   ```
-   cp ../PackageInfo.g ../README* .
-   gap update.g
-   git add PackageInfo.g README* _data/package.yml
-   ```
-   If you are lucky, these were the only conflicts (check with `git status`).
-   If no merge conflicts remain, finish with this command:
-   ```
-   git commit -m "Merge gh-gap/gh-pages"
-   ```
-   If you still have merge conflicts, and don't know how to resolve them, or
-   get stuck some other way, you can abort the merge process and revert to the
-   original state by issuing this command:
-   ```
-   git merge --abort
-   ```
-
-5. You should be done now. Don't forget to push your changes if you want them
-   to become public.
-
-
-## Packages using GitHubPagesForGAP
-
-The majority of packages listed on <https://gap-packages.github.io> use
-[GitHubPagesForGAP](). If you want some specific examples, here are some:
-
-* <https://gap-packages.github.io/anupq>
-* <https://gap-packages.github.io/cvec>
-* <https://gap-packages.github.io/genss>
-* <https://gap-packages.github.io/io>
-* <https://gap-packages.github.io/NormalizInterface>
-* <https://gap-packages.github.io/nq>
-* <https://gap-packages.github.io/orb>
-* <https://gap-packages.github.io/polenta>
-* <https://gap-packages.github.io/recog>
-
-
-## Contact
-
-Please submit bug reports, suggestions for improvements and patches via
-the [issue tracker](https://github.com/gap-system/GitHubPagesForGAP/issues).
-
-You can also contact me directly via [email](max@quendi.de).
-
-Copyright (c) 2013-2025 Max Horn
-
-[GitHubPagesForGAP]: https://github.com/gap-system/GitHubPagesForGAP
-[ReleaseTools]: https://github.com/gap-system/ReleaseTools
+# Introduction
+
+The [GAP](https://www.gap-system.org/) package `CubicJordanMatrixAlg`
+allows basic symbolic computation in
+free multiplicative conic alternative algebras
+(over free commutative rings, that is, polynomial rings)
+and, as the main application, in cubic Jordan matrix algebras over them.
+In other words, it provides a framework to prove that certain identities hold in any multiplicative conic alternative algebra over any commutative ring.
+It does this by deriving these identities from a set of known identities in such objects.
+
+In the preprint \[DMW\] [*From cubic norm pairs to $G_2$- and $F_4$-graded groups and Lie algebras*](https://arxiv.org/abs/2602.06147), two objects are constructed
+from the cubic Jordan matrix algebra of an arbitrary multiplicative conic alternative algebra:
+* A Lie algebra $L$ (with a grading by the root system $F_4$).
+* A group $G$ of automorphisms of $L$ (which also has a grading by $F_4$).
+
+`CubicJordanMatrixAlg` also supports computations in $L$ and $G$. In fact, it was developed
+for this purpose, and is used to establish several computational results in \[DMW\].
+
+Not every valid identity in the objects described above can be proved by `CubicJordanMatrixAlg`.
+However, it is powerful enough to prove all identities that are needed in \[DMW\].
+The basic underlying principles of this package are described in \[DMW, Section 9.3\]
+and in the preprint
+\[Wie26\] [*Symbolic computation in cubic Jordan matrix algebras and in related structures*](https://arxiv.org/abs/2604.13809).
+
+# Documentation
+
+The documentation of this package is available at https://twiedemann.github.io/CubicJordanMatrixAlg/.
+
+# Installation
+
+1. Install the latest version of [GAP](https://www.gap-system.org/install/). This package requires GAP version at least 4.15.0, and has been tested with GAP version 4.15.1. It will run into errors with GAP version 4.14.0 or lower.
+2. Start the GAP package manager:
+```
+gap> LoadPackage("PackageManager");
+```
+3. Install the package from its git repository:
+```
+gap> InstallPackage("https://github.com/TWiedemann/CubicJordanMatrixAlg.git");
+```
+This will install the package into your local GAP package directory.
+You can find the location of this directory on your system by calling
+```
+gap> GAPInfo.PackageDirectories;
+```
+in a GAP session.
+
+As an alternative way of installation,
+you can manually download (or `git clone`) this repository into your package directory.
+
+# Updating the package
+
+1. Start the GAP package manager:
+```
+gap> LoadPackage("PackageManager");
+```
+2. Update the package:
+```
+gap> UpdatePackage("CubicJordanMatrixAlg");
+```
+
+# Using the package
+
+1. In GAP, load the package with
+```
+gap> LoadPackage("CubicJordanMatrixAlg");
+```
+2. Initialise the package with
+```
+gap> InitCJMA();
+```
+
+Now you can perform computations with this package.
+For details, see either [`doc/manual.md`](https://github.com/TWiedemann/CubicJordanMatrixAlg/blob/main/doc/manual.md) for a comprehensive description or
+simply have a look at the usage examples in (the test file) `tst/test_basic.tst`.
+
+# Verification of the claims in \[DMW\] (Tests)
+
+The directory `[gap]/pkg/CubicJordanMatrixAlg/tst` (where `[gap]/pkg` is the directory in which
+`CubicJordanMatrixAlg` is installed) contains several test files which verify certain claims
+in \[DMW\] (and which also serve as a test suite for the package).
+To run all tests, start a GAP session and run `TestPackage("CubicJordanMatrixAlg").
+The test should finish with the message "No errors detected while testing".
+
+Specifically, the test files perform the following tests:
+- `test_basic.tst` does not verify any specific claim in \[DMW\]. Rather, it tests that all basic functions of the package work as intended.
+- `test_jordan_brace.tst` verifies \[DMW, 9.15\] (explicit formulas for the $D$-operators in cubic Jordan matrix algebras).
+- `test_lie_comm.tst` verifies \[DMW, 10.32, 10.33, 10.34\] (existence of a Chevalley-type basis and explicit commutator formulas in the Lie algebra).
+- `test_group_comm.tst` verifies \[DMW, 11.13\] (commutator formulas in the $F_4$-graded group).
+- `test_weyl.tst` verifies \[DMW, 11.4, 11.7, 11.11\] (the elements $w_\delta$ are Weyl elements with the desired parities).
+
+The last two test files require a few more computations by hand to complete the proof of the specified claims. See the comments of the respective test files for details.
+
+# License
+
+This software is licensed under the GPL-3.0 license.
