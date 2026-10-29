@@ -1,72 +1,102 @@
-#
-# CubicJordanMatrixAlg: Provides basic functionality for symbolic computation in
-# cubic Jordan matrix algebras and associated F4-graded Lie algebras and groups
-#
+#############################################################################
+##  
+##  Demo PackageInfo.g for the GitHubPagesForGAP
+##
 
 SetPackageInfo( rec(
 
-PackageName := "CubicJordanMatrixAlg",
-Subtitle := "Symbolic computation in cubic Jordan matrix algebras",
-Version := "1.1.1",
-Date := "29/10/2026", # dd/mm/yyyy format
-License := "GPL-3.0-or-later",
+PackageName := "GitHubPagesForGAP",
+
+Subtitle := "A GitHub Pages generator for GAP packages",
+Version := "0.4",
+Date := "10/04/2025", # dd/mm/yyyy format
+License := "0BSD",
 
 Persons := [
   rec(
-    FirstNames := "Torben",
-    LastName := "Wiedemann",
-    WWWHome := "https://github.com/TWiedemann",
-    Email := "torben.wiedemann@rptu.de",
-    IsAuthor := true,
-    IsMaintainer := true,
-    #PostalAddress := TODO,
-    #Place := TODO,
-    #Institution := TODO,
+    LastName      := "Horn",
+    FirstNames    := "Max",
+    IsAuthor      := true,
+    IsMaintainer  := true,
+    Email         := "mhorn@rptu.de",
+    WWWHome       := "https://www.quendi.de/math",
+    GitHubUsername:= "fingolfin",
+    PostalAddress := Concatenation(
+                       "Fachbereich Mathematik\n",
+                       "RPTU Kaiserslautern-Landau\n",
+                       "Gottlieb-Daimler-Straße 48\n",
+                       "67663 Kaiserslautern\n",
+                       "Germany" ),
+    Place         := "Kaiserslautern, Germany",
+    Institution   := "RPTU Kaiserslautern-Landau"
+  ),
+
+  rec(
+    LastName      := "Thor",
+    FirstNames    := "A. U.",
+    IsAuthor      := true,
+    IsMaintainer  := false,
+    #Email         := "author@example.com",
+  ),
+
+  rec(
+    LastName      := "Itor",
+    FirstNames    := "Jan",
+    IsAuthor      := false,
+    IsMaintainer  := true,
+    #Email         := "janitor@example.com",
   ),
 ],
 
-SourceRepository := rec(
-  Type := "git", URL := "https://github.com/TWiedemann/CubicJordanMatrixAlg"
-),
-IssueTrackerURL := Concatenation(~.SourceRepository.URL, "/issues"),
-PackageWWWHome := "https://twiedemann.github.io/CubicJordanMatrixAlg/",
-PackageInfoURL := Concatenation( ~.PackageWWWHome, "/PackageInfo.g" ),
-README_URL     := Concatenation( ~.PackageWWWHome, "/README.md" ),
-ArchiveURL      := Concatenation( ~.SourceRepository.URL,
-                                 "/releases/download/v", ~.Version,
-                                 "/", ~.PackageName, "-", ~.Version ),
+Status := "other",
 
-ArchiveFormats := ".tar.gz",
+# The following are not strictly necessary in your own PackageInfo.g
+# (in the sense that update.g only looks at the usual fields
+# like PackageWWWHome, ArchiveURL etc.). But they are convenient
+# if you use exactly the scheme for your package website that we propose.
+GithubUser := "gap-system",
+GithubRepository := ~.PackageName,
+GithubWWW := Concatenation("https://github.com/", ~.GithubUser, "/", ~.GithubRepository),
 
-AbstractHTML   :=  "",
+PackageWWWHome := Concatenation("https://", ~.GithubUser, ".github.io/", ~.GithubRepository, "/"),
+README_URL     := Concatenation( ~.PackageWWWHome, "README.md" ),
+PackageInfoURL := Concatenation( ~.PackageWWWHome, "PackageInfo.g" ),
+# The following assumes you are using the Github releases system. If not, adjust
+# it accordingly.
+ArchiveURL     := Concatenation(~.GithubWWW,
+                    "/releases/download/v", ~.Version, "/",
+                    ~.GithubRepository, "-", ~.Version),
+
+ArchiveFormats := ".tar.gz .tar.bz2",
+
+AbstractHTML := 
+  "This is a pseudo package that contains no actual\
+  <span class=\"pkgname\">GAP</span> code. Instead, it is a template for other\
+  GAP packages that allows to quickly setup GitHub Pages.",
 
 PackageDoc := rec(
-  BookName  := "CubicJordanMatrixAlg",
+  BookName  := "GitHubPagesForGAP",
   ArchiveURLSubset := ["doc"],
-  HTMLStart := "doc/chap0_mj.html",
+  HTMLStart := "doc/chap0.html",
   PDFFile   := "doc/manual.pdf",
   SixFile   := "doc/manual.six",
-  LongTitle := "Symbolic computation in cubic Jordan matrix algebras",
+  LongTitle := "A GitHub Pages generator for GAP packages",
 ),
 
-AutoDoc := rec(),
-
+# The following dependencies are fake and for testing / demo purposes
 Dependencies := rec(
-  GAP := ">= 4.15",
-  NeededOtherPackages := [ ],
-  SuggestedOtherPackages := [ ],
-  ExternalConditions := [ ],
+  GAP := ">=4.8.1",
+  NeededOtherPackages := [
+    ["GAPDoc", ">= 1.2"],
+    ["IO", ">= 4.1"],
+  ],
+  SuggestedOtherPackages := [["orb", ">= 4.2"]],
+  ExternalConditions := []
 ),
 
 AvailabilityTest := ReturnTrue,
 
-# The most extensive test. It is also the "highest-level" test: It involves computations
-# in the F4-graded group, which involves computations in the F4-graded Lie algebra,
-# which involves computations in the cubic norm structure, which involves computations
-# in Conic and ComRing.
-TestFile := "tst/testall.g",
-
-#Keywords := [ "TODO" ],
+Keywords := ["GitHub Pages", "GAP"]
 
 ));
 
