@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<script type="text/javascript"
+  src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<title>GAP (CubicJordanMatrixAlg) - Chapter 2: Conic algebras and their base rings</title>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta name="generator" content="GAPDoc2HTML" />
+<link rel="stylesheet" type="text/css" href="manual.css" />
+<script src="manual.js" type="text/javascript"></script>
+<script type="text/javascript">overwriteStyle();</script>
+</head>
+<body class="chap2"  onload="jscontent()">
+
+
+<div class="chlinktop"><span class="chlink1">Goto Chapter: </span><a href="chap0_mj.html">Top</a>  <a href="chap1_mj.html">1</a>  <a href="chap2_mj.html">2</a>  <a href="chap3_mj.html">3</a>  <a href="chap4_mj.html">4</a>  <a href="chap5_mj.html">5</a>  <a href="chapBib_mj.html">Bib</a>  <a href="chapInd_mj.html">Ind</a>  </div>
+
+<div class="chlinkprevnexttop">&nbsp;<a href="chap0_mj.html">[Top of Book]</a>&nbsp;  <a href="chap0_mj.html#contents">[Contents]</a>&nbsp;  &nbsp;<a href="chap1_mj.html">[Previous Chapter]</a>&nbsp;  &nbsp;<a href="chap3_mj.html">[Next Chapter]</a>&nbsp;  </div>
+
+<p id="mathjaxlink" class="pcenter"><a href="chap2.html">[MathJax off]</a></p>
+<p><a id="X7EDC474B828D2F36" name="X7EDC474B828D2F36"></a></p>
+<div class="ChapSects"><a href="chap2_mj.html#X7EDC474B828D2F36">2 <span class="Heading">Conic algebras and their base rings</span></a>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap2_mj.html#X7A1D261480C34EC8">2.1 <span class="Heading">Constructing conic algebras and their elements</span></a>
+</span>
+<div class="ContSSBlock">
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap2_mj.html#X7FFC5FEA83E9A327">2.1-1 ConicAlgebra</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap2_mj.html#X7EE27D8F866699FD">2.1-2 ConicAlgIndet</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap2_mj.html#X7CF60EF17B84A088">2.1-3 AssignGeneratorVariables</a></span>
+</div></div>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap2_mj.html#X7EEB9A797D88A121">2.2 <span class="Heading">Maps defined on conic algebras</span></a>
+</span>
+<div class="ContSSBlock">
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap2_mj.html#X7B5F0C2E800BF837">2.2-1 ConicInv</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap2_mj.html#X7CE3B6517BA05B0F">2.2-2 ConicNorm</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap2_mj.html#X855AF02C82C16D26">2.2-3 ConicNormLin</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap2_mj.html#X835376ED7D96EE1A">2.2-4 ConicTr</a></span>
+</div></div>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap2_mj.html#X7C9C0A737E0A57B2">2.3 <span class="Heading">Additional information stored in a conic algebra</span></a>
+</span>
+<div class="ContSSBlock">
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap2_mj.html#X865AE21778DBCCCA">2.3-1 ComRingOfConicAlg</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap2_mj.html#X79007DFD814202FE">2.3-2 ConicAlgMaxTrLength</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap2_mj.html#X795A51F87C62054A">2.3-3 ConicRank</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap2_mj.html#X7CED00A086099444">2.3-4 ConicIndetName</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap2_mj.html#X86A403EE8356EA0D">2.3-5 ComRingRank</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap2_mj.html#X78BF19E9876A7E5E">2.3-6 ComRingIndetName</a></span>
+</div></div>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap2_mj.html#X81E0303E7D5B4172">2.4 <span class="Heading">Base rings of conic algebras</span></a>
+</span>
+<div class="ContSSBlock">
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap2_mj.html#X7E4F507C7A5D4AC4">2.4-1 ComRingIndet</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap2_mj.html#X81263120819E7F0D">2.4-2 ComRingGamIndet</a></span>
+</div></div>
+</div>
+
+<h3>2 <span class="Heading">Conic algebras and their base rings</span></h3>
+
+<p>Throughout this documentation, we use the term "conic algebra" to mean "(free) multiplicative conic alternative algebra". Internally, these algebras are represented in <code class="code">CubicJordanMatrixAlg</code> by free nonassociative algebras, that is, by magma rings over free magmas. If <code class="code">a = b</code> evaluates to <code class="code">true</code> for two elements <code class="code">a, b</code> of a conic algebra, this implies that <span class="SimpleMath">\(a=b\)</span> is indeed an identity (in a free conic algebra, and hence in all conic algebras). However, if <code class="code">a = b</code> evaluates to <code class="code">false</code>, this does not necessarily mean that <span class="SimpleMath">\(a \ne b\)</span>, but only that we have not proven that <span class="SimpleMath">\(a=b\)</span>.</p>
+
+<p>See also Chapter <a href="chap5_mj.html#X8118C95980B98762"><span class="RefLink">5</span></a> for functions to prove identities in conic algebras (and in structures built from conic algebras).</p>
+
+<p><a id="X7A1D261480C34EC8" name="X7A1D261480C34EC8"></a></p>
+
+<h4>2.1 <span class="Heading">Constructing conic algebras and their elements</span></h4>
+
+<p><a id="X7FFC5FEA83E9A327" name="X7FFC5FEA83E9A327"></a></p>
+
+<h5>2.1-1 ConicAlgebra</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; ConicAlgebra</code>( <var class="Arg">comRingRank</var>, <var class="Arg">conicRank</var>, <var class="Arg">maxTrLength</var>, <var class="Arg">nameRec</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; ConicAlgebra</code>( <var class="Arg">comRingRank</var>, <var class="Arg">conicRank</var>, <var class="Arg">maxTrLength</var>, <var class="Arg">comSym</var>, <var class="Arg">conicSym</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; ConicAlgebra</code>( <var class="Arg">comRingRank</var>, <var class="Arg">conicRank</var>, <var class="Arg">maxTrLength</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; ConicAlgebra</code>( <var class="Arg">comRingRank</var>, <var class="Arg">conicRank</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; ConicAlgebra</code>( <var class="Arg">a</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
+<p>The first variant creates a new (free) conic algebra object <code class="code">C</code> on <code class="code">conicRank</code> generators over a commutative ring with <code class="code">comRingRank</code> generators. For all products <code class="code">d</code> of length at most <code class="code">maxTrLength</code> of generators of the conic algebra, the symbol <code class="code">tr(d)</code> is initialised during the construction of <code class="code">C</code>. This guarantees that an element of <code class="code">C</code> in which no traces of products of higher length appear is always printed in the same way. The printing of elements containing traces of products of higher length, on the other hand, may depend on the order in which these traces have appeared in the current GAP session. (See <a href="chapBib_mj.html#biBWiedemann26">[Wie26]</a> for a slightly more detailed discussion of the parameter <code class="code">maxTrLength</code>.)</p>
+
+<p>The record <code class="code">nameRec</code> may contain the following entries:</p>
+
+
+<ul>
+<li><p><code class="code">comSym</code>: The symbol used for the generators in the commutative base ring, which are named <code class="code">comSym1, comSym2, ...</code>. Default: <code class="code">t</code>.</p>
+
+</li>
+<li><p><code class="code">conicSym</code>: The symbol used for the generators in the conic algebra, which are named <code class="code">conicSym1, conicSym2, ...</code>. Default: <code class="code">a</code>.</p>
+
+</li>
+<li><p><code class="code">zeroSym</code>: The symbol used for the zero element of the conic algebra. Default: <code class="code">0_C</code>.</p>
+
+</li>
+<li><p><code class="code">oneSym</code>: The symbol used for the one element of the conic algebra. Default: <code class="code">1_C</code>.</p>
+
+</li>
+</ul>
+<p>There are several variants of <code class="code">ConicAlgebra</code> which use default values for the omitted arguments. The default value for <code class="code">maxTrLength</code> is <code class="code">4</code>.</p>
+
+<p>For an element <code class="code">a</code> of a conic algebra, <code class="code">ConicAlgebra(a)</code> is the (full) conic algebra containing <code class="code">a</code>.</p>
+
+<p><a id="X7EE27D8F866699FD" name="X7EE27D8F866699FD"></a></p>
+
+<h5>2.1-2 ConicAlgIndet</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; ConicAlgIndet</code>( <var class="Arg">C</var>, <var class="Arg">p</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
+<p>Returns the <code class="code">p</code>-th indeterminate in <code class="code">C</code>. We must have <code class="code">1 &lt;= p &lt;= ConicRank(C)</code>.</p>
+
+<p><a id="X7CF60EF17B84A088" name="X7CF60EF17B84A088"></a></p>
+
+<h5>2.1-3 AssignGeneratorVariables</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; AssignGeneratorVariables</code>( <var class="Arg">C</var> )</td><td class="tdright">(&nbsp;method&nbsp;)</td></tr></table></div>
+<p>This function defines global GAP variables that store the indeterminates of <code class="code">C</code> of and of its base ring. The names of the GAP variables coincide with the names of the indeterminates. Any previously defined GAP variables with these names will be overwritten.</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">C := ConicAlgebra(4, 2, 3, "b", "t");;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">t1*b2;</span>
+Error, Variable: 't1' must have a value
+not in any function at ...
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">AssignGeneratorVariables(C);</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">t1*b2;</span>
+(t1)*b2
+</pre></div>
+
+<p>This function also defines global variables <code class="code">dd := Liedd</code> and <code class="code">g1 := ComRingGamIndet(1), g2 := ComRingGamIndet(2), g3 := ComRingGamIndet(3)</code> that are independent of <code class="code">C</code>.</p>
+
+<p><a id="X7EEB9A797D88A121" name="X7EEB9A797D88A121"></a></p>
+
+<h4>2.2 <span class="Heading">Maps defined on conic algebras</span></h4>
+
+<p><a id="X7B5F0C2E800BF837" name="X7B5F0C2E800BF837"></a></p>
+
+<h5>2.2-1 ConicInv</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; ConicInv</code>( <var class="Arg">a</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; ConicConj</code>( <var class="Arg">a</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
+<p>Returns the conjugate of <code class="code">a</code>. If <code class="code">a</code> is a generator of the conic algebra in which it is contained, then its conjugate is printed as <code class="code">a'</code>. <code class="code">ConicInv</code> and <code class="code">ConicConj</code> are different names for the same function.</p>
+
+<p><a id="X7CE3B6517BA05B0F" name="X7CE3B6517BA05B0F"></a></p>
+
+<h5>2.2-2 ConicNorm</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; ConicNorm</code>( <var class="Arg">a</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
+<p>Returns the norm of <code class="code">a</code>. If <code class="code">a</code> is a generator of the conic algebra in which it is contained, then its norm is printed as <code class="code">n(a)</code>.</p>
+
+<p><a id="X855AF02C82C16D26" name="X855AF02C82C16D26"></a></p>
+
+<h5>2.2-3 ConicNormLin</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; ConicNormLin</code>( <var class="Arg">a</var>, <var class="Arg">b</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
+<p>Returns <code class="code">tr(a'b)</code>, which is known to be the same as <code class="code">n(a+b)-n(a)-n(b)</code>. Thus <code class="code">ConicNormLin</code> is the linearisation of <code class="code">ConicNorm</code>.</p>
+
+<p><a id="X835376ED7D96EE1A" name="X835376ED7D96EE1A"></a></p>
+
+<h5>2.2-4 ConicTr</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; ConicTr</code>( <var class="Arg">a</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
+<p>Returns the trace of <code class="code">a</code>. If <code class="code">a</code> is a generator of the conic algebra in which it is contained, then its trace is printed as <code class="code">tr(a)</code>. Several measures are taken to simplify (the display of) traces:</p>
+
+
+<ul>
+<li><p>Multiplication signs in the argument of the trace are not printed: For <code class="code">a=a1*a2</code>, the trace of <code class="code">a</code> is printed as <code class="code">tr(a1a2)</code></p>
+
+</li>
+<li><p>By the relation <code class="code">tr((ab)c) = tr(a(bc))</code>, we can omit brackets in products of length at most 3, so the result of <code class="code">ConicTr((a1*a2)*a3)</code> is printed as <code class="code">tr(a1a2a3)</code>.</p>
+
+</li>
+<li><p>Using in addition the relations <code class="code">tr(a') = tr(a)</code> and <code class="code">tr(ab) = tr(ba)</code>, the arguments of the trace are often permuted and/or replaced by their conjugates to ensure proper cancellation of terms. For example, both <code class="code">ConicTr(a1*ConicInv(a2))</code> and <code class="code">ConicTr(ConicInv(a1)*a2)</code> evaluate to <code class="code">tr(a1a2')</code>, and <code class="code">ConicTr(ConicInv(a1)*a2*a3)</code> evaluates to <code class="code">tr(a1a3'a2')</code> (which is correct because <code class="code">tr(a1'a2a3) = tr((a1'a2a3)') = tr(a3'a2'a1) = tr(a1a3'a2')</code>).</p>
+
+</li>
+</ul>
+<p><a id="X7C9C0A737E0A57B2" name="X7C9C0A737E0A57B2"></a></p>
+
+<h4>2.3 <span class="Heading">Additional information stored in a conic algebra</span></h4>
+
+<p><a id="X865AE21778DBCCCA" name="X865AE21778DBCCCA"></a></p>
+
+<h5>2.3-1 ComRingOfConicAlg</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; ComRingOfConicAlg</code>( <var class="Arg">C</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
+<p>Since GAP does not support function fields (or polynomial rings) over infinitely many indeterminates, it is not possible to return a commutative ring containing all symbols <code class="code">tr(d)</code> for all monomials <code class="code">d</code> in <code class="code">C</code> of arbitrary length. Instead, this function returns the function field over the finitely many indeterminates which were initialised during the construction of <code class="code">C</code>. In particular, for elements <code class="code">tr(d)</code> where d is a product in <code class="code">C</code> of sufficiently high length, the expression <code class="code">tr(d) in ComRingOfConicAlg(C)</code> evaluates to <code class="code">false</code>. Thus the user should not rely on this ring to be the full coeficient ring. However, it may be safely used to access <code class="code">Zero(ComRingOfConicAlg(C))</code> and <code class="code">One(ComRingOfConicAlg(C))</code>.</p>
+
+<p><a id="X79007DFD814202FE" name="X79007DFD814202FE"></a></p>
+
+<h5>2.3-2 ConicAlgMaxTrLength</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; ConicAlgMaxTrLength</code>( <var class="Arg">C</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
+<p>Returns the parameter <code class="code">maxTrLength</code> that was specified during the construction of <code class="code">C</code>.</p>
+
+<p><a id="X795A51F87C62054A" name="X795A51F87C62054A"></a></p>
+
+<h5>2.3-3 ConicRank</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; ConicRank</code>( <var class="Arg">C</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
+<p>Returns the argument <code class="code">conicRank</code> that was specified during the creation of <code class="code">C</code>.</p>
+
+<p><a id="X7CED00A086099444" name="X7CED00A086099444"></a></p>
+
+<h5>2.3-4 ConicIndetName</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; ConicIndetName</code>( <var class="Arg">C</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
+<p>Returns the argument <code class="code">conicSym</code> that was specified during the creation of <code class="code">C</code>.</p>
+
+<p><a id="X86A403EE8356EA0D" name="X86A403EE8356EA0D"></a></p>
+
+<h5>2.3-5 ComRingRank</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; ComRingRank</code>( <var class="Arg">C</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
+<p>Returns the argument <code class="code">comRingRank</code> that was specified during the creation of <code class="code">C</code>.</p>
+
+<p><a id="X78BF19E9876A7E5E" name="X78BF19E9876A7E5E"></a></p>
+
+<h5>2.3-6 ComRingIndetName</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; ComRingIndetName</code>( <var class="Arg">C</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
+<p>Returns the argument <code class="code">comSym</code> that was specified during the creation of <code class="code">C</code>.</p>
+
+<p><a id="X81E0303E7D5B4172" name="X81E0303E7D5B4172"></a></p>
+
+<h4>2.4 <span class="Heading">Base rings of conic algebras</span></h4>
+
+<p><a id="X7E4F507C7A5D4AC4" name="X7E4F507C7A5D4AC4"></a></p>
+
+<h5>2.4-1 ComRingIndet</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; ComRingIndet</code>( <var class="Arg">C</var>, <var class="Arg">p</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
+<p>Returns the <code class="code">p</code>-th indeterminate in the base ring of <code class="code">C</code>. We must have <code class="code">1 &lt;= p &lt;= ComRingRank(C)</code>.</p>
+
+<p><a id="X81263120819E7F0D" name="X81263120819E7F0D"></a></p>
+
+<h5>2.4-2 ComRingGamIndet</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; ComRingGamIndet</code>( <var class="Arg">i</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
+<p>Returns the <code class="code">i</code>-th element of <span class="SimpleMath">\(\Gamma = (\gamma_1, \gamma_2, \gamma_3)\)</span>. These are the (arbitrarily chosen, but fixed) constants that appear in the definition of cubic Jordan matrix algebras. They are printed as <code class="code">g1, g2, g3</code>.</p>
+
+
+<div class="chlinkprevnextbot">&nbsp;<a href="chap0_mj.html">[Top of Book]</a>&nbsp;  <a href="chap0_mj.html#contents">[Contents]</a>&nbsp;  &nbsp;<a href="chap1_mj.html">[Previous Chapter]</a>&nbsp;  &nbsp;<a href="chap3_mj.html">[Next Chapter]</a>&nbsp;  </div>
+
+
+<div class="chlinkbot"><span class="chlink1">Goto Chapter: </span><a href="chap0_mj.html">Top</a>  <a href="chap1_mj.html">1</a>  <a href="chap2_mj.html">2</a>  <a href="chap3_mj.html">3</a>  <a href="chap4_mj.html">4</a>  <a href="chap5_mj.html">5</a>  <a href="chapBib_mj.html">Bib</a>  <a href="chapInd_mj.html">Ind</a>  </div>
+
+<hr />
+<p class="foot">generated by <a href="https://www.math.rwth-aachen.de/~Frank.Luebeck/GAPDoc">GAPDoc2HTML</a></p>
+</body>
+</html>
